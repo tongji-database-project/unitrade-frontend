@@ -1,4 +1,4 @@
-# unitrade-frontend
+# 校易购数据库项目前端部分
 
 ## Project Setup
 
