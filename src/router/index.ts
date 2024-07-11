@@ -72,6 +72,11 @@ const router = createRouter({
           component: OnsaleListView,
         },
         {
+          path: 'product-sub',
+          name: 'product-submission',
+          component: ProductSubmissionView,
+        },
+        {
           path: 'favorite',
           name: 'favorite',
           component: FavoriteView,
