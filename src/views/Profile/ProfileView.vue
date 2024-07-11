@@ -1,13 +1,7 @@
-<script lang="ts" setup>
-import SellerInformation from './components/SellerInformation.vue';
-import GoodsShow from './components/GoodsShow.vue';
-</script>
-
 <template>
-  <SellerInformation/>
-  <GoodsShow/>
+  <!-- TODO: 待完成 -->
+  <h1>个人主页页面（WIP）</h1>
+  <div v-for="i in 30" :key="i" style="padding-top: 1rem;">
+    填充内容，用于拉长页面长度
+  </div>
 </template>
-
-<style scoped>
-
-</style>

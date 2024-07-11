@@ -4,9 +4,6 @@
       <p>鼠标放在用户头像后出现的悬浮窗口</p>
       <!-- 具体布局待定，先放一些必要的内容 -->
       <div>
-        <RouterLink to="/profile/:1">个人主页</RouterLink>
-      </div>
-      <div>
         <RouterLink to="/login">登录</RouterLink>
       </div>
       <div>
