@@ -1,34 +1,6 @@
 <template>
-  <div id="app">
-    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-      <el-menu-item index="1" @click="() => navigateTo('/')">Dashboard</el-menu-item>
-      <el-menu-item index="2" @click="() => navigateTo('/products')">Products</el-menu-item>
-      <el-menu-item index="3" @click="() => navigateTo('/orders')">Orders</el-menu-item>
-      <el-menu-item index="4" @click="() => navigateTo('/profile')">Profile</el-menu-item>
-    </el-menu>
-    <router-view></router-view>
-  </div>
+  <RouterView />
 </template>
-
-<script setup lang="ts">
-// import { RouterLink, RouterView } from 'vue-router'
-// import HelloWorld from './components/HelloWorld.vue'
-import { ref } from "vue";
-import axios from "axios";
-import { useRouter } from 'vue-router'
-
-const activeIndex = ref('1')
-const router = useRouter()
-
-const handleSelect = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
-
-const navigateTo = (route: string) => {
-  router.push(route)
-}
-
-</script>
 
 <style scoped>
 header {
