@@ -9,11 +9,11 @@
 </template>
 
 <script>
-import UserInfo from './UserInfo.vue';
-import SalesInfo from './SalesInfo.vue';
-import ItemsForSale from './ItemsForSale.vue';
-import ChatButton from './ChatButton.vue';
-import ComplaintButton from './ComplaintButton.vue';
+import UserInfo from './components/UserInfo.vue';
+import SalesInfo from './components/SalesInfo.vue';
+import ItemsForSale from './components/ItemsForSale.vue';
+import ChatButton from './components/ChatButton.vue';
+import ComplaintButton from './components/ComplaintButton.vue';
 
 export default {
   components: {
