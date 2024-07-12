@@ -96,7 +96,7 @@
 
       <el-form-item>
         <el-button type="primary" @click="handleSubmit">提交</el-button>
-        <el-button type="primary" @click="handleSubmit">取消</el-button>        
+        <el-button type="primary" @click="handleCancle">取消</el-button>        
       </el-form-item>
     </el-form>
     <br>
@@ -142,6 +142,23 @@ const validatePrice = (rule: any, value: number, callback: (error?: Error) => vo
 }
 
 const handleSubmit = async () => {
+  if (!productForm.value) return
+
+  // await axios
+  // .get(`/api/test`)
+  // .then(response => {
+  //   if (response.status === 200) {
+  //     infos.value = response.data;
+  //   }
+  // })
+  // .catch(function (error) {
+  //   console.log(error);
+  // });
+
+  router.push('onsale')
+}
+
+const handleCancle = async () => {
   if (!productForm.value) return
 
   // await axios
