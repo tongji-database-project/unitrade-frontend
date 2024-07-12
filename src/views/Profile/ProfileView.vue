@@ -1,44 +1,48 @@
 <template>
   <div class="profile-view">
-    <header class="header">
+    <div class="header">
       <h1>个人主页</h1>
-    </header>
-    <UserInfo :user="user" />
-    <ItemsForSale :items="items" />
+    </div>
+    <UserInfo :user="user" :avatar="avatar" />
+    <div class="items-container">
+      <ItemsForSale :items="products" />
+    </div>
+    <div class="actions">
+      <ActionButton :userId="userId" buttonText="联系卖家" action="chat" />
+      <ActionButton :userId="userId" buttonText="投诉卖家" action="complaint" />
+    </div>
   </div>
 </template>
 
 <script>
 import UserInfo from './components/UserInfo.vue';
 import ItemsForSale from './components/ItemsForSale.vue';
-import avatar from './images/gclt.jpg';
-import colaImage from './images/cola.jpg';
+import ActionButton from './components/ActionButton.vue';
 
 export default {
   name: 'ProfileView',
   components: {
     UserInfo,
     ItemsForSale,
+    ActionButton,
   },
   data() {
     return {
+      userId: '12345',
       user: {
-        id: 'user123',
-        name: '张三',
-        reputationScore: 4.5,
-        avatar: avatar,
+        name: '张颖',
+        reputation: 10,
       },
-      items: [
-        { image: colaImage, name: '商品1', price: '￥10' },
-        { image: colaImage, name: '商品2', price: '￥20' },
-        { image: colaImage, name: '商品3', price: '￥30' },
-        { image: colaImage, name: '商品4', price: '￥40' },
-        { image: colaImage, name: '商品5', price: '￥50' },
-        { image: colaImage, name: '商品6', price: '￥60' },
-        { image: colaImage, name: '商品7', price: '￥70' },
-        { image: colaImage, name: '商品8', price: '￥80' },
-        { image: colaImage, name: '商品9', price: '￥90' },
-        { image: colaImage, name: '商品10', price: '￥100' },
+      avatar: '../images/gclt.jpg',
+      products: [
+        { id: 1, name: '商品1', price: '¥100', image: '../images/cola.jpg' },
+        { id: 2, name: '商品2', price: '¥200', image: '../images/cola.jpg' },
+        { id: 3, name: '商品3', price: '¥300', image: '../images/cola.jpg' },
+        { id: 4, name: '商品4', price: '¥400', image: '../images/cola.jpg' },
+        { id: 5, name: '商品5', price: '¥500', image: '../images/cola.jpg' },
+        { id: 6, name: '商品6', price: '¥600', image: '../images/cola.jpg' },
+        { id: 7, name: '商品7', price: '¥700', image: '../images/cola.jpg' },
+        { id: 8, name: '商品8', price: '¥800', image: '../images/cola.jpg' },
       ],
     };
   },
@@ -48,18 +52,28 @@ export default {
 <style scoped>
 .profile-view {
   background-color: white;
-  padding: 16px;
+  padding: 20px;
 }
 
 .header {
   background-color: lightblue;
-  padding: 16px;
-  text-align: left;
+  padding: 10px;
+  margin-bottom: 20px;
 }
 
 .header h1 {
   margin: 0;
-  font-size: 24px;
   font-weight: bold;
+}
+
+.items-container {
+  border: 2px solid green;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
 }
 </style>

@@ -1,20 +1,13 @@
 <template>
-  <div class="items-container">
-    <div class="item" v-for="(item, index) in paginatedItems" :key="index">
+  <div class="items-for-sale">
+    <div v-for="(item, index) in displayedItems" :key="item.id" class="item" @mouseover="hoverIndex = index" @mouseleave="hoverIndex = -1" :style="{ borderColor: hoverIndex === index ? 'red' : 'transparent' }">
       <img :src="item.image" :alt="item.name" />
-      <div class="item-info">
-        <h3>{{ item.name }}</h3>
-        <p>{{ item.price }}</p>
-      </div>
+      <p>{{ item.name }}</p>
+      <p>{{ item.price }}</p>
     </div>
-  </div>
-  <div class="pagination">
-    <span 
-      v-for="page in totalPages" 
-      :key="page" 
-      :class="{ active: currentPage === page }" 
-      @click="goToPage(page)"
-    ></span>
+    <div class="pagination">
+      <span v-for="(page, index) in totalPages" :key="index" :class="{ active: currentPage === index + 1 }" @click="changePage(index + 1)"></span>
+    </div>
   </div>
 </template>
 
@@ -31,20 +24,20 @@ export default {
     return {
       currentPage: 1,
       itemsPerPage: 8,
+      hoverIndex: -1,
     };
   },
   computed: {
     totalPages() {
       return Math.ceil(this.items.length / this.itemsPerPage);
     },
-    paginatedItems() {
+    displayedItems() {
       const start = (this.currentPage - 1) * this.itemsPerPage;
-      const end = start + this.itemsPerPage;
-      return this.items.slice(start, end);
+      return this.items.slice(start, start + this.itemsPerPage);
     },
   },
   methods: {
-    goToPage(page) {
+    changePage(page) {
       this.currentPage = page;
     },
   },
@@ -52,49 +45,52 @@ export default {
 </script>
 
 <style scoped>
-.items-container {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+.items-for-sale {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-around;
+  border: 2px solid green;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .item {
-  border: 1px solid #ccc;
-  padding: 16px;
+  width: 23%;
+  border: 2px solid transparent;
+  padding: 10px;
   text-align: center;
   transition: border-color 0.3s;
 }
 
-.item:hover {
-  border-color: red;
-}
-
 .item img {
-  max-width: 100%;
+  width: 100%;
   height: auto;
 }
 
+.item p {
+  margin: 5px 0;
+}
+
 .pagination {
-  text-align: center;
-  margin-top: 16px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
 }
 
 .pagination span {
   display: inline-block;
-  width: 12px;
-  height: 12px;
-  margin: 0 4px;
-  background-color: #ccc;
+  width: 10px;
+  height: 10px;
+  background-color: gray;
   border-radius: 50%;
+  margin: 0 5px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
 .pagination span.active {
-  background-color: #000;
-}
-
-.pagination span:hover {
-  background-color: #888;
+  background-color: black;
 }
 </style>
