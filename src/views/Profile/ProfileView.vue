@@ -17,7 +17,7 @@
 import UserInfo from './components/UserInfo.vue';
 import SalesInfo from './components/SalesInfo.vue';
 import ItemsForSale from './components/ItemsForSale.vue';
-import ActionButton from './components/ActioButton.vue';
+import ActionButton from './components/ActionButton.vue';
 
 export default {
   components: {
