@@ -24,6 +24,6 @@ main {
 .app-footer {
   overflow: hidden;
   background-color: var(--vt-c-black);
-  padding-top: 20px;
+  margin-top: 20px;
 }
 </style>
