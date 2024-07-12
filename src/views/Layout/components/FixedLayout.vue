@@ -12,8 +12,9 @@ const { x, y } = useWindowScroll();
 
 <style scoped>
 .stiky-header {
-  width: 100%;
+  width: 100vw;
   height: 80px;
+  padding: 0 2rem;
   position: fixed;
   left: 0;
   top: 0;
