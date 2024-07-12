@@ -10,11 +10,17 @@ const submitForm = async () => {
     const response = await axios.post('/api/aouth/login', {username:username.value, password:password.value})
     if(response.status === 200){
       localStorage.setItem('token', response.data);
-// 获取 token 从 LocalStorage
-// const token = localStorage.getItem('token');
+      // 获取 token 从 LocalStorage
+      // const token = localStorage.getItem('token');
+      //跳转到用户或者管理员页面
+    }
+    else{
+      alert("用户名或密码错误");
     }
   }catch (error){
     console.log(error)
+    alert("登录失败，请稍后重试");
+    
   }
 }
 </script>
