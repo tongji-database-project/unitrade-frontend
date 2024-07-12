@@ -46,6 +46,7 @@ function chooseEnroll(){
     flex-direction: column;
     align-items: center; 
     justify-content: center;
+    height: 100vh;
   }
   .main-container div { 
     margin-bottom: 10px;
@@ -61,4 +62,4 @@ function chooseEnroll(){
   .login-container:hover , .enroll-container:hover {
     transform: scale(1.25); 
   }
-</style>
+</style> 
