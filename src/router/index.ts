@@ -79,6 +79,14 @@ const router = createRouter({
           path: 'message',
           name: 'message',
           component: MessageView,
+          children: [
+            {
+              path: ':user_id',
+              name: 'chat',
+              component: ChatView,
+              props: true,
+            },
+          ]
         },
       ]
     },
