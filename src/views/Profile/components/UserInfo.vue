@@ -1,34 +1,42 @@
 <template>
-    <div class="user-info">
+  <div class="user-info">
+    <img :src="defaultAvatar" alt="用户头像">
+    <div>
       <h2>{{ user.name }}</h2>
-      <p>信誉值: {{ user.reputation }}</p>
+      <p>信誉度：{{ user.reputation }}</p>
+      <p>销售次数：{{ user.salesCount }}</p>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    props: {
-      user: {
-        type: Object,
-        required: true,
-      },
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    user: {
+      type: Object,
+      required: true,
     },
-  };
-  </script>
-  
-  <style scoped>
-  .user-info {
-    text-align: center;
-    padding: 20px;
-    border-bottom: 1px solid #ddd;
-  }
-  h2 {
-    margin: 0;
-    font-size: 24px;
-  }
-  p {
-    margin: 5px 0 0;
-    color: #888;
-  }
-  </style>
-  
+  },
+  data() {
+    return {
+      defaultAvatar: require('../images/gclt.jpg'),
+    };
+  },
+};
+</script>
+
+<style scoped>
+.user-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.user-info img {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
+}
+</style>
