@@ -82,6 +82,7 @@ const categories = [
   position: absolute;
   top: 2rem;
   right: 2rem;
+  z-index: 200;
 }
 
 .header-avatar:hover .header-profile {

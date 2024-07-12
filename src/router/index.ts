@@ -10,7 +10,6 @@ import MyAccountView from '@/views/MyAccount/MyAccountView.vue'
 import CartView from '@/views/Cart/CartView.vue'
 import CheckoutView from '@/views/Checkout/CheckoutView.vue'
 import PaymentView from '@/views/Payment/PaymentView.vue'
-import FavoriteView from '@/views/Favorite/FavoriteView.vue'
 import OnsaleListView from '@/views/OnsaleList/OnsaleListView.vue'
 import ProductSubmissionView from '@/views/ProductSubmission/ProductSubmissionView.vue'
 import OrderListView from '@/views/OrderList/OrderListView.vue'
@@ -72,11 +71,6 @@ const router = createRouter({
           component: OnsaleListView,
         },
         {
-          path: 'favorite',
-          name: 'favorite',
-          component: FavoriteView,
-        },
-        {
           path: 'order',
           name: 'order',
           component: OrderListView,
@@ -85,6 +79,14 @@ const router = createRouter({
           path: 'message',
           name: 'message',
           component: MessageView,
+          children: [
+            {
+              path: ':user_id',
+              name: 'chat',
+              component: ChatView,
+              props: true,
+            },
+          ]
         },
       ]
     },
