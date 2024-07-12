@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import { getImageUrl } from '@/utils/utils'
+
 defineProps(['user_id', 'is_active'])
 
 const contactItems = [
@@ -24,6 +27,10 @@ const contactItems = [
   },
 ]
 
+const avatar_path = ref<string>()
+
+avatar_path.value = getImageUrl('avatar2.jpg')
+
 // TODO: 需要改为从后端调取数据
 const getCurrentContactInfo = (user_id: string) => {
   const item = contactItems.find((item) => item.user_id === user_id);
@@ -45,7 +52,7 @@ const getCurrentContactInfo = (user_id: string) => {
     <el-avatar
       class="contact-avatar"
       :size="40"
-      src="http://47.97.215.255/img/avatar2.jpg"
+      :src="avatar_path"
     ></el-avatar>
 
     <div class="contact-info">
