@@ -43,13 +43,13 @@ export default {
     totalPages() {
       return Math.ceil(this.items.length / this.itemsPerPage)
     },
-    displayedItems() {
+    displayedItems(): any[] {
       const start = (this.currentPage - 1) * this.itemsPerPage
       return this.items.slice(start, start + this.itemsPerPage)
     }
   },
   methods: {
-    changePage(page) {
+    changePage(page: any) {
       this.currentPage = page
     }
   }
