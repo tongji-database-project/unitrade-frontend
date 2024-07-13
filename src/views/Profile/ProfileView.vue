@@ -14,10 +14,11 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import UserInfo from './components/UserInfo.vue';
 import ItemsForSale from './components/ItemsForSale.vue';
 import ActionButton from './components/ActionButton.vue';
+import { getImageUrl } from '@/utils/utils';
 
 export default {
   name: 'ProfileView',
@@ -33,16 +34,16 @@ export default {
         name: '张颖',
         reputation: 10,
       },
-      avatar: '../images/gclt.jpg',
+      avatar: getImageUrl('/gclt.jpg'),
       products: [
-        { id: 1, name: '商品1', price: '¥100', image: '../images/cola.jpg' },
-        { id: 2, name: '商品2', price: '¥200', image: '../images/cola.jpg' },
-        { id: 3, name: '商品3', price: '¥300', image: '../images/cola.jpg' },
-        { id: 4, name: '商品4', price: '¥400', image: '../images/cola.jpg' },
-        { id: 5, name: '商品5', price: '¥500', image: '../images/cola.jpg' },
-        { id: 6, name: '商品6', price: '¥600', image: '../images/cola.jpg' },
-        { id: 7, name: '商品7', price: '¥700', image: '../images/cola.jpg' },
-        { id: 8, name: '商品8', price: '¥800', image: '../images/cola.jpg' },
+        { id: 1, name: '商品1', price: '¥100', image: getImageUrl('/cola.jpg') },
+        { id: 2, name: '商品2', price: '¥200', image: getImageUrl('/cola.jpg') },
+        { id: 3, name: '商品3', price: '¥300', image: getImageUrl('/cola.jpg') },
+        { id: 4, name: '商品4', price: '¥400', image: getImageUrl('/cola.jpg') },
+        { id: 5, name: '商品5', price: '¥500', image: getImageUrl('/cola.jpg') },
+        { id: 6, name: '商品6', price: '¥600', image: getImageUrl('/cola.jpg') },
+        { id: 7, name: '商品7', price: '¥700', image: getImageUrl('/cola.jpg') },
+        { id: 8, name: '商品8', price: '¥800', image: getImageUrl('/cola.jpg') },
       ],
     };
   },

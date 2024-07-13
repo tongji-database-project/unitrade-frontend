@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { getImageUrl } from '@/utils/utils';
 
-const props = defineProps(['user_id', 'content', 'time'])
+const props = defineProps({
+  user_id: { type: String, required: true },
+  content: { type: String, required: true },
+  time: { type: String, required: true },
+})
 
 // TODO: 状态管理器中除了保存 token 外还需要保存用户 ID 方便调用
 

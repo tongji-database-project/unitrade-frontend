@@ -5,7 +5,9 @@ import type { FormInstance } from 'element-plus'
 import NormalMessage from './components/NormalMessage.vue'
 import type { Message } from '@/utils/interfaces'
 
-defineProps(['user_id'])
+defineProps({
+  user_id: { type: String, required: true },
+})
 const emit = defineEmits(['newUserId'])
 
 const route = useRoute()

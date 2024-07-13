@@ -2,7 +2,10 @@
 import { ref } from 'vue'
 import { getImageUrl } from '@/utils/utils'
 
-defineProps(['user_id', 'is_active'])
+defineProps({
+  user_id: { type: String, required: true },
+  is_active: { type: Boolean, required: true },
+})
 
 const contactItems = [
   {

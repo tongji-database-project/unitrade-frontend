@@ -1,47 +1,59 @@
 <template>
   <div class="items-for-sale">
-    <div v-for="(item, index) in displayedItems" :key="item.id" class="item" @mouseover="hoverIndex = index" @mouseleave="hoverIndex = -1" :style="{ borderColor: hoverIndex === index ? 'red' : 'transparent' }">
+    <div
+      v-for="(item, index) in displayedItems"
+      :key="item.id"
+      class="item"
+      @mouseover="hoverIndex = index"
+      @mouseleave="hoverIndex = -1"
+      :style="{ borderColor: hoverIndex === index ? 'red' : 'transparent' }"
+    >
       <img :src="item.image" :alt="item.name" />
       <p>{{ item.name }}</p>
       <p>{{ item.price }}</p>
     </div>
     <div class="pagination">
-      <span v-for="(page, index) in totalPages" :key="index" :class="{ active: currentPage === index + 1 }" @click="changePage(index + 1)"></span>
+      <span
+        v-for="(page, index) in totalPages"
+        :key="index"
+        :class="{ active: currentPage === index + 1 }"
+        @click="changePage(index + 1)"
+      ></span>
     </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   name: 'ItemsForSale',
   props: {
     items: {
       type: Array,
-      required: true,
-    },
+      required: true
+    }
   },
   data() {
     return {
       currentPage: 1,
       itemsPerPage: 8,
-      hoverIndex: -1,
-    };
+      hoverIndex: -1
+    }
   },
   computed: {
     totalPages() {
-      return Math.ceil(this.items.length / this.itemsPerPage);
+      return Math.ceil(this.items.length / this.itemsPerPage)
     },
     displayedItems() {
-      const start = (this.currentPage - 1) * this.itemsPerPage;
-      return this.items.slice(start, start + this.itemsPerPage);
-    },
+      const start = (this.currentPage - 1) * this.itemsPerPage
+      return this.items.slice(start, start + this.itemsPerPage)
+    }
   },
   methods: {
     changePage(page) {
-      this.currentPage = page;
-    },
-  },
-};
+      this.currentPage = page
+    }
+  }
+}
 </script>
 
 <style scoped>
