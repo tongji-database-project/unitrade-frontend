@@ -1,22 +1,44 @@
 <script setup lang="ts">
-function submitForm(){
-  
+import { ref } from "vue";
+import axios from "axios";
+
+const username = ref("")
+const password = ref("")
+const confirmpassword = ref("")
+
+const submitForm = async () => {
+  try{
+    const response = await axios.post('/api/aouth/enroll', {username:username.value, password:password.value, confirmpassword:confirmpassword.value})
+    if(response.status === 200){
+      localStorage.setItem('token', response.data);
+      // 获取 token 从 LocalStorage
+      // const token = localStorage.getItem('token');
+      //跳转到用户或者管理员页面
+    }
+    else{
+      alert("用户名已存在");
+    }
+  }catch (error){
+    console.log(error)
+    alert("登录失败，请稍后重试");
+    
+  }
 }
 </script>
 
 <template>
   <form @submit.prevent="submitForm" class="form-container">
       <div class="input-container">
-        <input type="text" id="username" placeholder="请输入用户名" required>
+        <input type="text" v-model="username" id="username" placeholder="请输入用户名" required>
       </div>
       <div class="input-container">
-        <input type="password" id="password" placeholder="请输入密码" required>
+        <input type="password" v-model="password" id="password" placeholder="请输入密码" required>
       </div>
       <div class="input-container">
-        <input type="password" id="confirmpassword" placeholder="请确认密码" required>
+        <input type="password" v-model="confirmpassword" id="confirmpassword" placeholder="请确认密码" required>
       </div>
       <div>
-        <button type="submit">提交</button>
+        <button type="submit">注册</button>
       </div>
     </form>
 </template>

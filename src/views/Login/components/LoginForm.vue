@@ -1,26 +1,54 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { defineProps } from 'vue'
 import axios from "axios";
 
 const username = ref("")
 const password = ref("")
 
+const props=defineProps({
+  isadmin:{
+    type:Boolean,
+    default:false,
+  },
+})
+
 const submitForm = async () => {
-  try{
+  if(props.isadmin==true){
+    //管理员登录
+    try{
+    const response = await axios.post('/api/adminlogin', {username:username.value, password:password.value})
+    if(response.status === 200){
+      localStorage.setItem('token', response.data);
+      // 获取 token 从 LocalStorage
+      // const token = localStorage.getItem('token');
+      //跳转到管理员页面
+    }
+    else{
+      alert("用户名或密码错误");
+    }
+    }catch (error){
+    console.log(error)
+    alert("登录失败，请稍后重试"); 
+    }
+  }
+  else{
+    //用户登录
+    try{
     const response = await axios.post('/api/aouth/login', {username:username.value, password:password.value})
     if(response.status === 200){
       localStorage.setItem('token', response.data);
       // 获取 token 从 LocalStorage
       // const token = localStorage.getItem('token');
-      //跳转到用户或者管理员页面
+      //跳转到用户页面
     }
     else{
       alert("用户名或密码错误");
     }
-  }catch (error){
+    }catch (error){
     console.log(error)
-    alert("登录失败，请稍后重试");
-    
+    alert("登录失败，请稍后重试"); 
+    }
   }
 }
 </script>
@@ -34,7 +62,7 @@ const submitForm = async () => {
         <input type="password" v-model="password" id="password" placeholder="请输入密码" required>
       </div>
       <div>
-        <button type="submit">提交</button>
+        <button type="submit">登录</button>
       </div>
     </form>
 </template>

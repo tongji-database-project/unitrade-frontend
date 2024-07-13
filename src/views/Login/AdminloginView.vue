@@ -1,15 +1,6 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
 import LoginForm from './components/LoginForm.vue'
-import EnrollForm from './components/EnrollForm.vue'
 
-let isLogin=ref(true)
-function chooseLogin(){
-  isLogin.value=true
-}
-function chooseEnroll(){
-  isLogin.value=false
-}
 </script>
 
 <template>
@@ -22,14 +13,9 @@ function chooseEnroll(){
  
   <main class="main-container">
     <div>
-      <LoginForm :isadmin="false" v-if="isLogin" />
-      <EnrollForm v-else />
+      <LoginForm :isadmin="true" />
     </div>
     <div>
-      <el-space class="container" spacer="|">
-        <p class="login-container" @click="chooseLogin">登录</p>
-        <p class="enroll-container" @click="chooseEnroll">注册</p>
-    </el-space>
     </div>
   </main>
 </template>
