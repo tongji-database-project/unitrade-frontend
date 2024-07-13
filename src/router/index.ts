@@ -71,6 +71,10 @@ const router = createRouter({
           component: OnsaleListView,
         },
         {
+          path: 'product-sub',
+          name: 'product-submission',
+          component: ProductSubmissionView,
+        },
           path: 'order',
           name: 'order',
           component: OrderListView,
