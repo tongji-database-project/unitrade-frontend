@@ -96,25 +96,21 @@
 
       <el-form-item>
         <el-button type="primary" @click="handleSubmit">提交</el-button>
-        <el-button type="primary" @click="handleCancle">取消</el-button>
+        <el-button type="primary" @click="handleCancle">取消</el-button>        
       </el-form-item>
     </el-form>
-    <br />
-    <br />
+    <br>
+    <br>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue'
 import type { UploadFile } from 'element-plus'
-
-const route = useRoute()
-
-//route.params.id
 
 interface Product {
   name: string
