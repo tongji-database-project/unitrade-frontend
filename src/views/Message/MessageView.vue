@@ -86,7 +86,7 @@ onMounted(async () => {
   }
 
   .conversation-panel {
-    /*background-image: url(http://47.97.215.255/img/new/bedroom.jpg);*/
+    /* 拉伸填充剩余空间 */
     flex-grow: 1;
   }
 }

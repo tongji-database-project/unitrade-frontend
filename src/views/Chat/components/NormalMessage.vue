@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { getImageUrl } from '@/utils/utils';
+
 const props = defineProps(['user_id', 'content', 'time'])
 
 // TODO: 状态管理器中除了保存 token 外还需要保存用户 ID 方便调用
@@ -6,8 +8,8 @@ const props = defineProps(['user_id', 'content', 'time'])
 // 假定当前登录用户的 ID 为 1234
 const is_self = props.user_id === '1234'
 const avatar = is_self
-  ? 'http://47.97.215.255/img/avatar.jpg'
-  : 'http://47.97.215.255/img/avatar2.jpg'
+  ? getImageUrl('avatar.jpg')
+  : getImageUrl('avatar2.jpg')
 console.log(props.user_id, props.content)
 </script>
 
