@@ -2,9 +2,13 @@
 // 页面头部导航栏，包含用户头像、购物车、商品发布
 // 如果需要商品分类可以再往上加
 import HeaderProfile from './HeaderProfile.vue'
+import { ref } from 'vue';
+import { getImageUrl } from '@/utils/utils';
 const onHoverUser = () => {
   console.log("hovered")
 }
+
+const user_avatar = ref(getImageUrl('avatar.jpg'))
 
 const categories = [
   {
@@ -48,7 +52,7 @@ const categories = [
         <!-- TODO: 为此处路由的 URL 添加 id -->
         <RouterLink to="/profile/idtest">
           <!-- TODO: 用户头像示例，之后图片的 src 用服务器的图片对应的 URL 进行替换 -->
-          <el-avatar :size="40" src="https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png"></el-avatar>
+          <el-avatar :size="40" :src="user_avatar"></el-avatar>
         </RouterLink>
         <div class="header-profile">
           <HeaderProfile />
@@ -82,6 +86,7 @@ const categories = [
   position: absolute;
   top: 2rem;
   right: 2rem;
+  z-index: 200;
 }
 
 .header-avatar:hover .header-profile {

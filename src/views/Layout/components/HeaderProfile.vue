@@ -7,9 +7,6 @@
         <RouterLink to="/account">个人中心</RouterLink>
       </div>
       <div>
-        <RouterLink to="/favorite">我的收藏</RouterLink>
-      </div>
-      <div>
         <RouterLink to="/order">我的订单</RouterLink>
       </div>
       <div>

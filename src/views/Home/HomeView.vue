@@ -1,7 +1,5 @@
-
-import { ElRow, ElCol, ElCard } from 'element-plus';
-
 <script setup lang="ts">
+import { getImageUrl } from '@/utils/utils';
 
 const images = [
   { url: 'image1.jpg', title: 'Image 1', description: 'Description for Image 1' },
@@ -14,11 +12,6 @@ const images = [
   { url: 'image1.jpg', title: 'Image 1', description: 'Description for Image 1' },
   // Add more images as needed
 ];
-
-const getImageUrl = (url) => {
-  // Assuming your image server URL is "http://47.97.215.255/img/"
-  return `http://47.97.215.255/img/${url}`;
-};
 </script>
 
 <template>

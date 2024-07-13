@@ -16,9 +16,14 @@ import FooterLayout from './components/FooterLayout.vue'
 </template>
 
 <style scoped>
+main {
+  min-height: 90vh;
+  padding: 0 2rem;
+}
+
 .app-footer {
   overflow: hidden;
   background-color: var(--vt-c-black);
-  padding-top: 20px;
+  margin-top: 20px;
 }
 </style>
