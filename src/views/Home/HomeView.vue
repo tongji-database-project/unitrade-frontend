@@ -20,7 +20,7 @@ const List = [
       <el-col :span="6" v-for="item in List" :key="item.id">
       <div class="goods-list">
           <RouterLink to="/merchandise/idtest">
-            <img :src="getImageUrl()">
+            <img :src="getImageUrl('avatar.jpg')">
             <p class="name">{{ item.name }}</p>
             <p class="price">&yen;{{ item.price }}</p>
           </RouterLink>
