@@ -2,6 +2,8 @@
 import { ref } from "vue";
 import { defineProps } from 'vue'
 import axios from "axios";
+import { useTokenStore } from "@/stores/token";
+const TokenStore=useTokenStore()
 
 const username = ref("")
 const password = ref("")
@@ -19,9 +21,7 @@ const submitForm = async () => {
     try{
     const response = await axios.post('/api/adminlogin', {username:username.value, password:password.value})
     if(response.status === 200){
-      localStorage.setItem('token', response.data);
-      // 获取 token 从 LocalStorage
-      // const token = localStorage.getItem('token');
+      TokenStore.updatetoken(response.data)
       //跳转到管理员页面
     }
     else{
@@ -37,9 +37,7 @@ const submitForm = async () => {
     try{
     const response = await axios.post('/api/aouth/login', {username:username.value, password:password.value})
     if(response.status === 200){
-      localStorage.setItem('token', response.data);
-      // 获取 token 从 LocalStorage
-      // const token = localStorage.getItem('token');
+      TokenStore.updatetoken(response.data)
       //跳转到用户页面
     }
     else{
