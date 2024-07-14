@@ -4,14 +4,27 @@
     <div class="onsale-list-header">
       <el-input v-model="searchQuery" placeholder="搜索商品..." class="search-input"></el-input>
       <el-button type="primary" @click="searchProducts" class="search-button">搜索</el-button>
+      <el-cascader
+        v-model="selectMethod"
+        :options="selectOptions"
+        :props="props"
+        @change="selectChange"
+        class="select-sort"
+      />
     </div>
     <div class="product-table-header">
       <div class="product-cover">封面</div>
       <div class="product-name">名称</div>
-      <div class="product-detail">价格</div>
-      <div class="product-detail">库存</div>
-      <div class="product-detail">销量</div>
-      <div class="product-detail">描述</div>
+      <div
+        class="product-price"
+        :class="{ 'arrow-up': priceSortOrder === 'asc', 'arrow-down': priceSortOrder === 'desc' }"
+        @click="sortProductsByPrice"
+      >
+        价格
+      </div>
+      <div class="product-stock">库存</div>
+      <div class="product-sales">销量</div>
+      <div class="product-description">描述</div>
     </div>
     <el-card v-for="product in products" :key="product.id" class="product-card">
       <OnsaleProduct
@@ -34,6 +47,12 @@ import { useRouter } from 'vue-router'
 import OnsaleProduct from './components/OnsaleProduct.vue'
 
 const router = useRouter()
+const priceSortOrder = ref('')
+const selectMethod = ref([])
+
+const props = {
+  expandTrigger: 'hover' as const
+}
 
 interface Product {
   id: string
@@ -69,6 +88,44 @@ const products = ref<Product[]>([
   // 其他商品数据
 ])
 
+const sortOrder = [
+  {
+    value: 'desc',
+    label: '降序'
+  },
+  {
+    value:'asc',
+    label:'升序'
+  }
+]
+
+const selectOptions = [
+  {
+    value: 'price',
+    label: '按价格排序',
+    children: sortOrder
+  },
+  {
+    value: 'price',
+    label: '按价格排序',
+    children: sortOrder
+  },
+  {
+    value: 'price',
+    label: '按价格排序',
+    children: sortOrder
+  },
+  {
+    value: 'price',
+    label: '按价格排序',
+    children: sortOrder
+  },
+]
+
+const selectChange = (value: any[]) => {
+  console.log(value)
+}
+
 const handleCancle = async (id: string) => {
   // await axios
   // .get(`/api/test`)
@@ -85,18 +142,30 @@ const handleCancle = async (id: string) => {
 }
 
 const searchProducts = async () => {}
+
+const sortProductsByPrice = () => {
+  if (priceSortOrder.value === 'asc') {
+    priceSortOrder.value = 'desc'
+    products.value.sort((a, b) => b.price - a.price)
+  } else if (priceSortOrder.value === 'desc') {
+    priceSortOrder.value = ''
+    products.value.sort((a, b) => a.id.localeCompare(b.id)) // 重置为初始排序
+  } else {
+    priceSortOrder.value = 'asc'
+    products.value.sort((a, b) => a.price - b.price)
+  }
+}
 </script>
 
 <style scoped>
 .product-table-header {
   display: flex;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f5f5f5;
 }
 .product-card {
   margin-bottom: 20px;
-}
-.product-card-content {
-  display: flex;
-  align-items: center;
 }
 
 .search-input {
@@ -110,5 +179,70 @@ const searchProducts = async () => {}
 
 .onsale-list-header {
   display: flex;
+}
+
+.product-cover {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 122px;
+  margin-right: 122px;
+  font-size: 18px;
+}
+
+.product-name {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 83px;
+  margin-right: 83px;
+  font-size: 18px;
+}
+
+.product-price {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 92px;
+  margin-right: 92px;
+  font-size: 18px;
+}
+
+.product-stock {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 55px;
+  margin-right: 55px;
+  font-size: 18px;
+}
+
+.product-sales {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 84px;
+  margin-right: 84px;
+  font-size: 18px;
+}
+
+.product-description {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+  font-size: 18px;
+}
+
+.arrow-up::after {
+  content: '▲';
+  margin-left: 5px;
+  color: #008b45;
+}
+
+.arrow-down::after {
+  content: '▼';
+  margin-left: 5px;
+  color: #008b45;
 }
 </style>

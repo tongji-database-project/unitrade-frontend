@@ -5,10 +5,10 @@
         <div class="product-name">
           {{ product_name }}
         </div>
-        <div class="product-detail">价格: {{ product_price }}</div>
-        <div class="product-detail">库存: {{ product_stock }}</div>
-        <div class="product-detail">销量: {{ product_sales }}</div>
-        <div class="product-detail">描述: {{ product_description }}</div>
+        <div class="product-detail">{{ product_price }}</div>
+        <div class="product-detail">{{ product_stock }}</div>
+        <div class="product-detail">{{ product_sales }}</div>
+        <div class="product-description">{{ product_description }}</div>
       </div>
       <div class="button-container">
         <el-button class="handle-button" type="primary" @click="handleModify">修改信息</el-button>
@@ -61,7 +61,7 @@
   }
   
   .product-name {
-    
+    margin: 80px;
     font-weight: bold;
     font-size: 30px;
   }
@@ -70,7 +70,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 20px;
+    margin: 80px;
+    font-size: 15px;
+  }
+
+  .product-description {
+    margin: 100px;
     font-size: 15px;
   }
   
@@ -79,7 +84,7 @@
     justify-content: center;
     align-items: center;
     
-    margin-left: 20px;
+    margin-left: 30px;
   }
   
   
