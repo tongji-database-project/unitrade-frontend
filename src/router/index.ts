@@ -61,6 +61,16 @@ const router = createRouter({
           component: CartView,
         },
         {
+          path: 'checkout',
+          name: 'checkout',
+          component: CheckoutView,
+        },
+        {
+          path: 'payment',
+          name: 'payment',
+          component: PaymentView,
+        },
+        {
           path: 'account',
           name: 'my-account',
           component: MyAccountView,
