@@ -81,6 +81,16 @@ const router = createRouter({
           component: OrderListView,
         },
         {
+          path: '/order-detail/:id',
+          name: 'OrderDetail',
+          component: OrderView
+        },
+        {
+          path: '/refund/:id',
+          name: 'RefundRequest',
+          component: RefundRequestView
+        },
+        {
           path: 'message',
           name: 'message',
           component: MessageView,

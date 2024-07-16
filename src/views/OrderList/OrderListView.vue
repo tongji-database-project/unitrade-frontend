@@ -11,7 +11,7 @@
         <span class="header-title" style="width: 140px">订单状态</span>
         <span class="header-title" style="width: 200px">下单时间</span>
         <span class="header-title" style="width: 200px">收获时间</span>
-        <span class="header-title" style="flex: 1">地址</span>
+        <span class="header-title" style="width: 180px">地址</span>
       </el-header>
       <el-main>
         <el-scrollbar>
@@ -24,6 +24,12 @@
             <el-table-column prop="order_time" width="220" />
             <el-table-column prop="receiving_time" width="220" />
             <el-table-column prop="address"/>
+            <el-table-column width="150">
+              <template #default="scope">
+                <el-button size="small" type="primary" @click="handleOrderClick(scope.row.order_id)">订单详情</el-button>
+                <el-button size="small" type="danger" @click="handleRefundClick(scope.row.order_id)">申请退款</el-button>
+              </template>
+            </el-table-column>
           </el-table>
         </el-scrollbar>
       </el-main>
@@ -33,6 +39,8 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const item = {
   order_id: '123456',
   merchandise_id: '654321',
@@ -43,10 +51,15 @@ const item = {
   receiving_time: '2023-07-15 10:00:00',
   address: 'No. 189, Grove St, Los Angeles',
 }
-const tableData = ref(Array.from({ length: 20 }).fill(item))
+const tableData = ref(Array.from({ length: 5 }).fill(item))
 
-const handleOrderClick = () => {
-  console.log('点击我的订单')
+const handleOrderClick = (orderId: string) => {
+  console.log('点击订单详情，订单号:', orderId)
+  router.push(`/order-detail/${orderId}`)
+}
+const handleRefundClick = (orderId: string) => {
+  console.log('点击申请退款，订单号:', orderId)
+  router.push(`/refund/${orderId}`)
 }
 </script>
 
@@ -76,5 +89,10 @@ const handleOrderClick = () => {
   margin-right: 20px;
   font-weight: bold;
   padding-right: 10px; /* 添加右边距使其间距一致 */
+}
+.button-container {
+  display: flex;
+  justify-content: space-between; /* 确保按钮水平分布 */
+  width: 100%; /* 确保容器宽度为100% */
 }
 </style>
