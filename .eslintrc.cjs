@@ -9,6 +9,11 @@ module.exports = {
     '@vue/eslint-config-typescript',
     '@vue/eslint-config-prettier/skip-formatting'
   ],
+  globals: {
+    ElMessage: "readonly",
+    ElMessageBox: "readonly",
+    ElLoading: "readonly",
+  },
   parserOptions: {
     ecmaVersion: 'latest'
   }

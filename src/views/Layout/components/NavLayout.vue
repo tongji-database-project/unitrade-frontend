@@ -2,13 +2,36 @@
 // 页面头部导航栏，包含用户头像、购物车、商品发布
 // 如果需要商品分类可以再往上加
 import HeaderProfile from './HeaderProfile.vue'
-import { ref } from 'vue';
+import { computed, ref, watch, onMounted } from 'vue';
 import { getImageUrl } from '@/utils/utils';
-const onHoverUser = () => {
-  console.log("hovered")
+import { useTokenStore } from '@/stores/token';
+import { getUserInfo } from '@/apis/user';
+
+// 追踪登录状态
+const logged_in = computed(() => useTokenStore().logged_in)
+
+const user_avatar = ref("")
+
+// 用于加载用户头像的函数
+const load_avatar = async () => {
+  if (logged_in.value) {
+    const info = await getUserInfo()
+    user_avatar.value = getImageUrl(info.avatar)
+  }
+  else {
+    user_avatar.value = ""
+  }
 }
 
-const user_avatar = ref(getImageUrl('avatar.jpg'))
+// 登录状态变化时加载用户头像
+watch(logged_in, () => {
+  load_avatar()
+})
+
+// 组件挂载时加载用户头像
+onMounted(() => {
+  load_avatar()
+})
 
 const categories = [
   {
@@ -41,14 +64,14 @@ const categories = [
         <RouterLink :to="path">{{ name }}</RouterLink>
       </div>
     </el-space>
-    <el-space class="container" spacer="|">
+    <el-space class="container" v-if="logged_in" spacer="|">
       <div class="user-cart">
         <RouterLink to="/cart">购物车</RouterLink>
       </div>
       <div class="user-shelf">
         <RouterLink to="/onsale">我的发布</RouterLink>
       </div>
-      <div class="header-avatar" @hover="onHoverUser">
+      <div class="header-avatar">
         <!-- TODO: 为此处路由的 URL 添加 id -->
         <RouterLink to="/profile/idtest">
           <!-- TODO: 用户头像示例，之后图片的 src 用服务器的图片对应的 URL 进行替换 -->
@@ -57,6 +80,14 @@ const categories = [
         <div class="header-profile">
           <HeaderProfile />
         </div>
+      </div>
+    </el-space>
+    <el-space class="container" v-else spacer="|">
+      <div class="login">
+        <RouterLink to="/login">登录</RouterLink>
+      </div>
+      <div class="enroll">
+        <RouterLink to="/login">注册</RouterLink>
       </div>
     </el-space>
   </div>
