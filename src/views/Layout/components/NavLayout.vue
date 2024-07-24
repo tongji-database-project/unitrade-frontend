@@ -2,24 +2,23 @@
 // 页面头部导航栏，包含用户头像、购物车、商品发布
 // 如果需要商品分类可以再往上加
 import HeaderProfile from './HeaderProfile.vue'
-import { computed, ref, watch, onMounted } from 'vue';
-import { getImageUrl } from '@/utils/utils';
-import { useTokenStore } from '@/stores/token';
-import { getUserInfo } from '@/apis/user';
+import { computed, ref, watch, onMounted } from 'vue'
+import { getImageUrl } from '@/utils/utils'
+import { useTokenStore } from '@/stores/token'
+import { getUserInfo } from '@/apis/user'
 
 // 追踪登录状态
 const logged_in = computed(() => useTokenStore().logged_in)
 
-const user_avatar = ref("")
+const user_avatar = ref('')
 
 // 用于加载用户头像的函数
 const load_avatar = async () => {
   if (logged_in.value) {
     const info = await getUserInfo()
     user_avatar.value = getImageUrl(info.avatar)
-  }
-  else {
-    user_avatar.value = ""
+  } else {
+    user_avatar.value = ''
   }
 }
 
@@ -35,17 +34,17 @@ onMounted(() => {
 
 const categories = [
   {
-    name: "分类 1",
-    path: "/",
+    name: '分类 1',
+    path: '/'
   },
   {
-    name: "分类 2",
-    path: "/",
+    name: '分类 2',
+    path: '/'
   },
   {
-    name: "路由测试",
-    path: "/test",
-  },
+    name: '路由测试',
+    path: '/test'
+  }
 ]
 </script>
 
@@ -56,11 +55,7 @@ const categories = [
         <!-- TODO: logo 待替换 -->
         <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="30" height="30" />
       </RouterLink>
-      <div
-        class="header-category"
-        v-for="({name, path}, index) in categories"
-        :key="index"
-      >
+      <div class="header-category" v-for="({ name, path }, index) in categories" :key="index">
         <RouterLink :to="path">{{ name }}</RouterLink>
       </div>
     </el-space>

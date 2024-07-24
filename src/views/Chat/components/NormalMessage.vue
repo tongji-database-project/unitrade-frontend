@@ -1,19 +1,17 @@
 <script setup lang="ts">
-import { getImageUrl } from '@/utils/utils';
+import { getImageUrl } from '@/utils/utils'
 
 const props = defineProps({
   user_id: { type: String, required: true },
   content: { type: String, required: true },
-  time: { type: String, required: true },
+  time: { type: String, required: true }
 })
 
 // TODO: 状态管理器中除了保存 token 外还需要保存用户 ID 方便调用
 
 // 假定当前登录用户的 ID 为 1234
 const is_self = props.user_id === '1234'
-const avatar = is_self
-  ? getImageUrl('avatar.jpg')
-  : getImageUrl('avatar2.jpg')
+const avatar = is_self ? getImageUrl('avatar.jpg') : getImageUrl('avatar2.jpg')
 console.log(props.user_id, props.content)
 </script>
 
@@ -51,7 +49,7 @@ console.log(props.user_id, props.content)
   margin-left: var(--bubble-offset);
   position: relative;
   top: 1rem;
-  border-width: .5rem;
+  border-width: 0.5rem;
   border-style: solid;
   border-color: transparent var(--receiver-background) transparent transparent;
 }
@@ -63,9 +61,9 @@ console.log(props.user_id, props.content)
 }
 
 .message-box {
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   background-color: var(--receiver-background);
-  padding: .7rem 1rem;
+  padding: 0.7rem 1rem;
   /*margin-top: .3rem;
   margin-left: .6rem;*/
   min-width: 30%;

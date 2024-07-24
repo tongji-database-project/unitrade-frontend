@@ -62,14 +62,14 @@ onMounted(() => {
   flex-wrap: nowrap;
   background-color: #f7f7f7;
   border: solid 1px rgb(223, 223, 223);
-  border-radius: .3rem;
-  padding: .4rem;
+  border-radius: 0.3rem;
+  padding: 0.4rem;
 }
 
 .merchandise-card-cover {
   width: 160px;
   height: 120px;
-  border-radius: .3rem;
+  border-radius: 0.3rem;
 }
 
 .merchandise-card-name {
@@ -77,7 +77,7 @@ onMounted(() => {
 }
 
 .merchandise-card-info {
-  margin-top: .3rem;
+  margin-top: 0.3rem;
 
   .merchandise-card-price {
     font-size: x-large;
@@ -85,7 +85,7 @@ onMounted(() => {
   }
 
   .merchandise-card-sales {
-    margin-left: .4rem;
+    margin-left: 0.4rem;
   }
 }
 </style>

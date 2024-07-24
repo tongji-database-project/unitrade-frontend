@@ -69,19 +69,19 @@ const input = ref('')
   box-sizing: border-box;
 }
 
-.home-header{
+.home-header {
   display: flex;
   flex-direction: row;
   justify-content: center; /* 水平居中 */
   align-items: center; /* 垂直居中 */
 }
 
-.logo{
+.logo {
   width: 50px;
   height: 50px;
 }
 
-.input-box{
+.input-box {
   width: 500px;
   margin: 0 auto; /* 水平居中 */
 }
