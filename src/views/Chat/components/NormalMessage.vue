@@ -37,10 +37,10 @@ console.log(props.user_id, props.content)
 
   display: flex;
   flex-wrap: wrap;
+}
 
-  &.self-message {
-    flex-direction: row-reverse;
-  }
+.single-message.self-message {
+  flex-direction: row-reverse;
 }
 
 .bubble-triangle {
@@ -54,12 +54,12 @@ console.log(props.user_id, props.content)
   border-width: .5rem;
   border-style: solid;
   border-color: transparent var(--receiver-background) transparent transparent;
+}
 
-  &.self-message {
-    margin-left: 0;
-    margin-right: var(--bubble-offset);
-    border-color: transparent transparent transparent var(--sender-background);
-  }
+.bubble-triangle.self-message {
+  margin-left: 0;
+  margin-right: var(--bubble-offset);
+  border-color: transparent transparent transparent var(--sender-background);
 }
 
 .message-box {
@@ -72,11 +72,11 @@ console.log(props.user_id, props.content)
   /* 消息框最大不能超过对话窗口减去两个头像和其他间距的宽度 */
   max-width: calc(100% - 110px);
   font-size: large;
+}
 
-  &.self-message {
-    background-color: var(--sender-background);
-    /*margin-right: .6rem;*/
-  }
+.message-box.self-message {
+  background-color: var(--sender-background);
+  /*margin-right: .6rem;*/
 }
 
 .message-time {
@@ -86,10 +86,10 @@ console.log(props.user_id, props.content)
   margin-left: var(--time-offset);
   display: flex;
   justify-content: left;
+}
 
-  &.self-message {
-    margin-right: var(--time-offset);
-    justify-content: right;
-  }
+.message-time.self-message {
+  margin-right: var(--time-offset);
+  justify-content: right;
 }
 </style>

@@ -72,10 +72,10 @@ const getCurrentContactInfo = (user_id: string) => {
   border-radius: 0.7rem;
   display: flex;
   align-items: center;
+}
 
-  &.is-active {
-    background-color: #ddd;
-  }
+.contact-card.is-active {
+  background-color: #ddd;
 }
 
 .contact-avatar {

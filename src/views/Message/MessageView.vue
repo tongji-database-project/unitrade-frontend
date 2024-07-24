@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router';
 import ContactItem from './components/ContactItem.vue'
+import { getUserInfo } from '@/apis/user';
 
 const router = useRouter()
 const relative_contact = ref<string[]>()
@@ -15,6 +16,7 @@ const changeSession = (user_id: string) => {
 onMounted(async () => {
   // TODO: 这个列表需要从后端获取
   relative_contact.value = ['2536', '2548', '2357', '3568']
+  console.log(await getUserInfo())
 })
 </script>
 
@@ -61,39 +63,39 @@ onMounted(async () => {
   overflow: hidden;
   display: flex;
   box-shadow: .7em .7em 2em #bdbdbd;
+}
 
-  .user-list-panel {
-    background-color: #f3f3f3;
-    padding-top: 0.3rem;
-    padding-left: 0.3rem;
-    padding-right: 0.3rem;
-    border-right: solid 2px grey;
-    width: 15rem;
-    min-width: 15rem;
+.message-interface .user-list-panel {
+  background-color: #f3f3f3;
+  padding-top: 0.3rem;
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+  border-right: solid 2px grey;
+  width: 15rem;
+  min-width: 15rem;
 
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-    overflow-y: scroll;
+  overflow-y: scroll;
 
-    /* 兼容火狐滚动条样式 */
-    scrollbar-width: none;
-  }
+  /* 兼容火狐滚动条样式 */
+  scrollbar-width: none;
+}
 
-  /* 隐藏用户列表处的滚动条 */
-  .user-list-panel::-webkit-scrollbar {
-    display: none;
-  }
+/* 隐藏用户列表处的滚动条 */
+.message-interface .user-list-panel::-webkit-scrollbar {
+  display: none;
+}
 
-  .conversation-panel {
-    /* 拉伸填充剩余空间 */
-    flex-grow: 1;
-  }
+.message-interface .conversation-panel {
+  /* 拉伸填充剩余空间 */
+  flex-grow: 1;
 }
 
 /* 为各卡片之间添加分割线用
 .contact-item {
-  border-bottom: solid 1px grey;
+border-bottom: solid 1px grey;
 }
 */
 </style>
