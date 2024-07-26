@@ -3,8 +3,9 @@ import { ref } from "vue";
 import { defineProps } from 'vue'
 import axios from "axios";
 import { useTokenStore } from "@/stores/token";
+import { useRouter } from 'vue-router'; 
 const TokenStore=useTokenStore()
-
+const router = useRouter();
 const username = ref("")
 const password = ref("")
 
@@ -21,8 +22,9 @@ const submitForm = async () => {
     try{
     const response = await axios.post('/api/adminlogin', {username:username.value, password:password.value})
     if(response.status === 200){
-      TokenStore.updatetoken(response.data)
+      TokenStore.updatetoken(response.data.token)
       //跳转到管理员页面
+      router.push('/admin/:'+response.data.id)
     }
     else{
       alert("用户名或密码错误");
@@ -37,8 +39,9 @@ const submitForm = async () => {
     try{
     const response = await axios.post('/api/aouth/login', {username:username.value, password:password.value})
     if(response.status === 200){
-      TokenStore.updatetoken(response.data)
+      TokenStore.updatetoken(response.data.token)
       //跳转到用户页面
+      router.push('/')
     }
     else{
       alert("用户名或密码错误");

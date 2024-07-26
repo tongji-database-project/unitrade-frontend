@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import axios from "axios";
+import { useRouter } from 'vue-router'; 
+
+const router = useRouter();
 
 const username = ref("")
 const password = ref("")
@@ -10,10 +13,7 @@ const submitForm = async () => {
   try{
     const response = await axios.post('/api/aouth/enroll', {username:username.value, password:password.value, confirmpassword:confirmpassword.value})
     if(response.status === 200){
-      localStorage.setItem('token', response.data);
-      // 获取 token 从 LocalStorage
-      // const token = localStorage.getItem('token');
-      //跳转到用户或者管理员页面
+      router.push('/login')
     }
     else{
       alert("用户名已存在");
