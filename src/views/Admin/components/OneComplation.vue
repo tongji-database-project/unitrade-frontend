@@ -1,10 +1,10 @@
-<!-- 推送 -->
+<!-- 投诉 -->
 <script lang="ts" setup>
-  import type { pushinformation } from './RecommandSection.vue';
+  import type { complationinformation } from './ComplationSection.vue';
 
   const props=defineProps({
-    onepushinformation:{
-      type:Object as () => pushinformation,
+    onecomplationinformation:{
+      type:Object as () => complationinformation,
       default:null,
     },
     num:{
@@ -18,7 +18,7 @@
     emit('delete', props.num);
   }
 
-  function pushjudge(isagree:boolean){
+  function deductpoint(point:number){
     deleteconfirm();
   }
 </script>
@@ -26,25 +26,28 @@
 <template>
   <div class="main">
     <div class="introduce">
-      商品名：{{ onepushinformation.commodity }}
+      投诉商家：{{ onecomplationinformation.seller }}
     </div>
     <div class="introduce">
-      商品类型：{{ onepushinformation.type }}
+      投诉原因：{{ onecomplationinformation.reason }}
     </div>
     <div class="introduce">
-      商家：{{ onepushinformation.seller }}
+      投诉人：{{ onecomplationinformation.complainant }}
     </div>
     <div class="introduce">
-      信誉分：{{ onepushinformation.credibility }}
+      投诉时间：{{ onecomplationinformation.time }}
     </div>
     <div class="introduce">
-      申请时间：{{ onepushinformation.time }}
+      信誉分：{{ onecomplationinformation.credibility }}
     </div>
-    <div @click="pushjudge(true)" class="button">
-      同意推送
+    <div @click="deductpoint(0)" class="button">
+      不扣分
     </div>
-    <div @click="pushjudge(false)" class="button">
-      拒绝推送
+    <div @click="deductpoint(5)" class="button">
+      扣除5分
+    </div>
+    <div @click="deductpoint(10)" class="button">
+      扣除10分
     </div>
   </div>
 </template>
@@ -52,8 +55,10 @@
 <style scoped>
   .main{
     height: 250px; 
-    background-color:antiquewhite;
+    background-color:rgb(246, 246, 246);
     margin-bottom: 10px;
+    border: 2px solid #a4a4a4b7;
+    border-radius: 15px;
   }
 
   .introduce{
@@ -66,14 +71,14 @@
   .button{
     width: 100px;
     height: 30px;
-    border: 2px solid black;
-    background-color: rgb(220, 253, 253);
+    border: 1.5px solid rgb(100, 100, 100);
+    background-color: #e9e9e9;;
+    color: rgb(0, 0, 0);
     transition: transform 0.3s ease;
     text-align: center;  
     margin-top: 1.5%;
     margin-left: 5%;
     display: inline-block;
-    border-radius: 5px;
   }
 
   .button:hover{

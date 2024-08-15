@@ -80,7 +80,6 @@
   .content{
     float: right;
     width: 80%;
-    background-color: #f0f2f5;
   }
 
   .content > * {
