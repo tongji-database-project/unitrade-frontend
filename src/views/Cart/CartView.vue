@@ -1,6 +1,7 @@
 <template>
   <div>
-    <el-table :data="cartItems" style="width: 100%">
+    <h1>购物车</h1>
+    <el-table :data="cartItems" style="width: 100%" v-loading="loading">
       <el-table-column label="商品图片">
         <template #default="{ row }">
           <el-image style="width: 50px; height: 50px" :src="row.picture" fit="cover"></el-image>
@@ -17,64 +18,77 @@
           ></el-input-number>
         </template>
       </el-table-column>
+      <el-table-column label="小计">
+        <template #default="{ row }">
+          {{ (row.price * row.quantity).toFixed(2) }}
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template #default="{ row }">
           <el-button size="mini" @click="removeItem(row)">移除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <div class="total-price">总价: {{ total }}</div>
+    <div class="total-price">总价: {{ total.toFixed(2) }}</div>
     <el-button type="primary" @click="goToCheckout">结算</el-button>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { ElTable, ElTableColumn, ElInputNumber, ElButton, ElImage } from 'element-plus'
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import axios from 'axios'; // 直接导入axios
+import { ElTable, ElTableColumn, ElInputNumber, ElButton, ElImage } from 'element-plus';
 
-const cartItems = ref([])
+const cartItems = ref([]);
+const total = ref(0);
+const loading = ref(false);
 
 const fetchCartItems = async () => {
-  // 假设 '/api/cart' 是获取购物车数据的API
-  const response = await fetch('/api/cart')
-  const data = await response.json()
-  cartItems.value = data
-  calculateTotal()
-}
+  loading.value = true;
+  try {
+    const { data } = await axios.get('/api/cart');
+    cartItems.value = data;
+    calculateTotal();
+  } catch (error) {
+    console.error('Failed to fetch cart items:', error);
+  } finally {
+    loading.value = false;
+  }
+};
 
 const updateQuantity = async (item) => {
-  // 更新数据库中的商品数量
-  await fetch('/api/update-cart', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ merchandiseId: item.merchandise_id, quantity: item.quantity })
-  })
-  calculateTotal()
-}
+  try {
+    await axios.post(`/api/update-cart`, { merchandiseId: item.merchandise_id, quantity: item.quantity });
+    calculateTotal();
+  } catch (error) {
+    console.error('Failed to update item quantity:', error);
+  }
+};
 
 const removeItem = async (item) => {
-  const index = cartItems.value.indexOf(item)
-  cartItems.value.splice(index, 1)
-  // 假设 '/api/remove-item' 是从购物车删除商品的API
-  await fetch('/api/remove-item', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ merchandiseId: item.merchandise_id })
-  })
-  calculateTotal()
-}
+  try {
+    const index = cartItems.value.indexOf(item);
+    if (index !== -1) {
+      cartItems.value.splice(index, 1);
+      await axios.post(`/api/remove-item`, { merchandiseId: item.merchandise_id });
+      calculateTotal();
+    }
+  } catch (error) {
+    console.error('Failed to remove item:', error);
+  }
+};
 
-const total = ref(0)
 const calculateTotal = () => {
-  total.value = cartItems.value.reduce((acc, item) => acc + item.price * item.quantity, 0)
-}
+  total.value = cartItems.value.reduce((acc, item) => acc + item.price * item.quantity, 0);
+};
 
+const router = useRouter();
 const goToCheckout = () => {
-  router.push('/checkout').catch((err) => {
-    console.error('Failed to navigate:', err)
-  })
-}
+  router.push('/checkout').catch(err => {
+    console.error('Failed to navigate:', err);
+  });
+};
 
-onMounted(fetchCartItems)
+onMounted(fetchCartItems);
 </script>
