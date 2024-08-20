@@ -37,22 +37,6 @@ const input = ref('')
   </div>
 </template>
 
-<!-- <template>
-  <HomePanel title="新鲜好物" sub-title="新鲜出炉 品质靠谱">
-    <el-row :gutter="20">
-      <el-col :span="6" v-for="item in List" :key="item.id">
-      <div class="goods-list">
-          <RouterLink to="/merchandise/idtest">
-            <img :src="getImageUrl('avatar.jpg')">
-            <p class="name">{{ item.name }}</p>
-            <p class="price">&yen;{{ item.price }}</p>
-          </RouterLink>
-        </div>
-      </el-col>
-    </el-row>   
-  </HomePanel>
-</template> -->
-
 <style scoped>
 .home-page {
   display: flex;
