@@ -23,6 +23,7 @@
             <el-table-column prop="state" width="150" />
             <el-table-column prop="order_time" width="220" />
             <el-table-column prop="receiving_time" width="220" />
+<<<<<<< HEAD
             <el-table-column prop="address"/>
             <el-table-column width="150">
               <template #default="scope">
@@ -30,6 +31,9 @@
                 <el-button size="small" type="danger" @click="handleRefundClick(scope.row.order_id)">申请退款</el-button>
               </template>
             </el-table-column>
+=======
+            <el-table-column prop="address" />
+>>>>>>> fec9bc37a3a67969812a8d11a7b3b20029940903
           </el-table>
         </el-scrollbar>
       </el-main>
@@ -49,7 +53,7 @@ const item = {
   state: '已发货',
   order_time: '2023-07-12 14:30:00',
   receiving_time: '2023-07-15 10:00:00',
-  address: 'No. 189, Grove St, Los Angeles',
+  address: 'No. 189, Grove St, Los Angeles'
 }
 const tableData = ref(Array.from({ length: 5 }).fill(item))
 

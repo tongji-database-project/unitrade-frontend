@@ -94,8 +94,8 @@ const sortOrder = [
     label: '降序'
   },
   {
-    value:'asc',
-    label:'升序'
+    value: 'asc',
+    label: '升序'
   }
 ]
 
@@ -119,7 +119,7 @@ const selectOptions = [
     value: 'price',
     label: '按价格排序',
     children: sortOrder
-  },
+  }
 ]
 
 const selectChange = (value: any[]) => {
