@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
 import ContactItem from './components/ContactItem.vue'
-import { getUserInfo } from '@/apis/user';
+import { getUserInfo } from '@/apis/user'
 
 const router = useRouter()
 const relative_contact = ref<string[]>()
-const current_contact = ref<string | undefined>();
+const current_contact = ref<string | undefined>()
 
 const changeSession = (user_id: string) => {
   // current_contact.value = user_id
@@ -31,15 +31,15 @@ onMounted(async () => {
           :key="index"
           @click="changeSession(user_id)"
         >
-          <ContactItem
-            :user_id
-            :is_active="user_id === current_contact"
-          />
+          <ContactItem :user_id :is_active="user_id === current_contact" />
         </div>
       </div>
       <div class="conversation-panel">
         <RouterView v-slot="{ Component }">
-          <component :is="Component" @new-user-id="(user_id: string) => current_contact = user_id" />
+          <component
+            :is="Component"
+            @new-user-id="(user_id: string) => (current_contact = user_id)"
+          />
         </RouterView>
       </div>
     </div>
@@ -62,7 +62,7 @@ onMounted(async () => {
   border-radius: 0.5rem;
   overflow: hidden;
   display: flex;
-  box-shadow: .7em .7em 2em #bdbdbd;
+  box-shadow: 0.7em 0.7em 2em #bdbdbd;
 }
 
 .message-interface .user-list-panel {

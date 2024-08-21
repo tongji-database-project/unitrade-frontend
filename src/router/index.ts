@@ -32,63 +32,63 @@ const router = createRouter({
         {
           path: '',
           name: 'home',
-          component: HomeView,
+          component: HomeView
         },
         {
           path: 'test',
           name: 'test',
-          component: TestView,
+          component: TestView
         },
         {
           path: 'merchandise/:id',
           name: 'merchandise',
-          component: MerchandiseView,
+          component: MerchandiseView
         },
         {
           path: 'comments/:id',
           name: 'comments',
-          component: CommentsView,
+          component: CommentsView
         },
         {
           path: 'profile/:id',
           name: 'profile',
-          component: ProfileView,
+          component: ProfileView
         },
         // 以下几个 URL 均结合当前的 token 来确定返回哪一个用户的信息
         {
           path: 'cart',
           name: 'cart',
-          component: CartView,
+          component: CartView
         },
         {
           path: 'checkout',
           name: 'checkout',
-          component: CheckoutView,
+          component: CheckoutView
         },
         {
           path: 'payment',
           name: 'payment',
-          component: PaymentView,
+          component: PaymentView
         },
         {
           path: 'account',
           name: 'my-account',
-          component: MyAccountView,
+          component: MyAccountView
         },
         {
           path: 'onsale',
           name: 'on-sale-list',
-          component: OnsaleListView,
+          component: OnsaleListView
         },
         {
           path: 'product-sub/:id',
           name: 'product-submission',
-          component: ProductSubmissionView,
+          component: ProductSubmissionView
         },
         {
           path: 'order',
           name: 'order',
-          component: OrderListView,
+          component: OrderListView
         },
         {
           path: 'message',
@@ -99,10 +99,10 @@ const router = createRouter({
               path: ':user_id',
               name: 'chat',
               component: ChatView,
-              props: true,
-            },
+              props: true
+            }
           ]
-        },
+        }
       ]
     },
     {

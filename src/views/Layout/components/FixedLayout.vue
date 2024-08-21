@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import NavLayout from './NavLayout.vue'
 import { useWindowScroll } from '@vueuse/core'
-const { x, y } = useWindowScroll();
+const { x, y } = useWindowScroll()
 </script>
 
 <template>

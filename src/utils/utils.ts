@@ -9,35 +9,36 @@ const getImageUrl = (path: string) => {
 }
 
 const httpInstance = axios.create({
-  baseURL: "/api",
-  timeout: 5000,
+  baseURL: '/api',
+  timeout: 5000
 })
 
-httpInstance.interceptors.request.use(config => {
-  const tokenStore = useTokenStore()
-  const token = tokenStore.token
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-  return config
-}, e => Promise.reject(e))
+httpInstance.interceptors.request.use(
+  (config) => {
+    const tokenStore = useTokenStore()
+    const token = tokenStore.token
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
+  },
+  (e) => Promise.reject(e)
+)
 
 httpInstance.interceptors.response.use(
-  response => response,
+  (response) => response,
   // 以下写法在不需要考虑返回的状态码情况下使用
   // response => response.data,
-  error => {
+  (error) => {
     if (error.response && error.response.status === 401) {
-      console.error("Unauthorized access")
+      console.error('Unauthorized access')
       ElMessage({
         type: 'error',
-        message: '用户未登录，请先登录/注册',
+        message: '用户未登录，请先登录/注册'
       })
     }
     return Promise.reject(error)
-  })
+  }
+)
 
-export {
-  getImageUrl,
-  httpInstance,
-}
+export { getImageUrl, httpInstance }
