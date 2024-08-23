@@ -70,17 +70,6 @@ const categories = [
 }
 
 .my-informations {
-  width: 100%;
-  height: 200px;
-  border: 2px solid #ccc;
-  border-radius: 10px; /* 设置所有四个角的圆角半径为 10px */
-}
-
-.my-orders{
   width:100%;
-  height: 40%;
-  display:flex;
-  justify-content: space-between;
-  padding:20px;
 }
 </style>
