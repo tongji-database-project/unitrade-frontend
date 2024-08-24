@@ -46,9 +46,6 @@
     <div @click="deductpoint(5)" class="button">
       扣除5分
     </div>
-    <div @click="deductpoint(10)" class="button">
-      扣除10分
-    </div>
   </div>
 </template>
 

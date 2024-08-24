@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
+import { useTokenStore } from "@/stores/token";
+import axios from "axios";
 import LayoutView from '@/views/Layout/LayoutView.vue'
 import HomeView from '@/views/Home/HomeView.vue'
 import MerchandiseView from '@/views/Merchandise/MerchandiseView.vue'
@@ -19,6 +20,7 @@ import MessageView from '@/views/Message/MessageView.vue'
 import ChatView from '@/views/Chat/ChatView.vue'
 
 import TestView from '@/views/TestView.vue'
+
 
 // TODO: 页面路由配置，可能会频繁调整
 const router = createRouter({
@@ -122,9 +124,27 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/Admin/AdminView.vue')
+      component: () => import('../views/Admin/AdminView.vue'),
+      //在完成后取消注释，恢复token验证
+      // beforeEnter: async (to, from, next) => {   
+      //   const TokenStore=useTokenStore();
+      //   const isadmin=await checkIsAdmin(TokenStore.token);
+      //   if (!isadmin) {  
+      //     next('/adminlogin');  
+      //   }
+      // },
     }
   ]
 })
+
+async function checkIsAdmin(token:string) {  
+  try {  
+    const response = await axios.post('/api/adminjudge', {token:token});
+    return response.data.isadmin;
+  } catch (error) {  
+    console.error('请求出错:', error);  
+    return false;
+  }  
+}
 
 export default router

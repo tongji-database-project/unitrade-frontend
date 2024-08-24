@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   import { ref } from 'vue';
+  import axios from "axios";
   import PersonalinformationSection from './components/PersonalinformationSection.vue';
   import RecommandSection from './components/RecommandSection.vue';
   import ComplationSection from './components/ComplationSection.vue';
