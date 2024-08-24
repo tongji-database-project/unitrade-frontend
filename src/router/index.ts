@@ -126,13 +126,17 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/Admin/AdminView.vue'),
       //在完成后取消注释，恢复token验证
-      // beforeEnter: async (to, from, next) => {   
-      //   const TokenStore=useTokenStore();
-      //   const isadmin=await checkIsAdmin(TokenStore.token);
-      //   if (!isadmin) {  
-      //     next('/adminlogin');  
-      //   }
-      // },
+      beforeEnter: async (to, from, next) => {   
+        const TokenStore=useTokenStore();
+        const isadmin=await checkIsAdmin(TokenStore.token);
+        if (!isadmin) {  
+          //在完成后取消注释，删除next()，恢复token验证
+          next();
+          // next('/adminlogin');  
+        }else{
+          next();
+        }
+      },
     }
   ]
 })
