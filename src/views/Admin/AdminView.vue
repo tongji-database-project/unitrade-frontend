@@ -2,7 +2,6 @@
   import { ref } from 'vue';
   import axios from "axios";
   import PersonalinformationSection from './components/PersonalinformationSection.vue';
-  import RecommandSection from './components/RecommandSection.vue';
   import ComplationSection from './components/ComplationSection.vue';
   import RefundSection from './components/RefundSection.vue';
   import AppealSection from './components/AppealSection.vue';
@@ -13,9 +12,6 @@
   //选择不同内容的函数
   function choosePersonalinformation(){
     contentclass.value="personalinformation";
-  }
-  function chooseRecommand(){
-    contentclass.value="recommand";
   }
   function chooseComplation(){
     contentclass.value="complation";
@@ -35,7 +31,6 @@
   <div class="main">
     <div class="list">
       <p @click='choosePersonalinformation'>个人信息</p>
-      <p @click='chooseRecommand'>推送</p>
       <p @click='chooseComplation'>投诉</p>
       <p @click='chooseRefund'>退款</p>
       <p @click='chooseAppeal'>申诉</p>
