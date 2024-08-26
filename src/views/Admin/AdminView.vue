@@ -38,7 +38,6 @@
     </div>
     <div class="content">
       <PersonalinformationSection v-if="contentclass=='personalinformation'" />
-      <RecommandSection v-else-if="contentclass=='recommand'" />
       <ComplationSection v-else-if="contentclass=='complation'" />
       <RefundSection v-else-if="contentclass=='refund'" />
       <AppealSection v-else-if="contentclass=='appeal'" />
