@@ -4,24 +4,24 @@ import ImfoLayout from "./components/ImfoLayout.vue"
 import myorderLayout from "./components/myorderLayout.vue";
 const categories = [ 
   {
-    name: "首页",
-    path: "/",
+    name: '首页',
+    path: '/'
   },
   {
-    name: "我的购物车",
-    path: "/cart",
+    name: '我的购物车',
+    path: '/cart'
   },
   {
     name: "我的订单",
     path: "/order",        
   },
   {
-    name: "我的收藏",
-    path: "/",      /*未设置 */
+    name: '我的收藏',
+    path: '/' /*未设置 */
   },
   {
-    name:"我的主页",
-    path:"/",       /*未设置 */
+    name: '我的主页',
+    path: '/' /*未设置 */
   },
   {
     name:"个人设置(进行密码修改等)",
@@ -35,16 +35,10 @@ const categories = [
 
 </script>
 
-
-
 <template>
   <div class="container">
     <div class="my-navigator">
-      <div
-        class="header-category"
-        v-for="({name, path}, index) in categories"
-        :key="index"
-      >
+      <div class="header-category" v-for="({ name, path }, index) in categories" :key="index">
         <RouterLink :to="path">{{ name }}</RouterLink>
       </div>
     </div>

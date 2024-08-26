@@ -15,24 +15,24 @@
 </template>
 
 <script lang="ts">
-import UserInfo from './components/UserInfo.vue';
-import ItemsForSale from './components/ItemsForSale.vue';
-import ActionButton from './components/ActionButton.vue';
-import { getImageUrl } from '@/utils/utils';
+import UserInfo from './components/UserInfo.vue'
+import ItemsForSale from './components/ItemsForSale.vue'
+import ActionButton from './components/ActionButton.vue'
+import { getImageUrl } from '@/utils/utils'
 
 export default {
   name: 'ProfileView',
   components: {
     UserInfo,
     ItemsForSale,
-    ActionButton,
+    ActionButton
   },
   data() {
     return {
       userId: '12345',
       user: {
         name: '张颖',
-        reputation: 10,
+        reputation: 10
       },
       avatar: getImageUrl('/gclt.jpg'),
       products: [
@@ -43,11 +43,11 @@ export default {
         { id: 5, name: '商品5', price: '¥500', image: getImageUrl('/cola.jpg') },
         { id: 6, name: '商品6', price: '¥600', image: getImageUrl('/cola.jpg') },
         { id: 7, name: '商品7', price: '¥700', image: getImageUrl('/cola.jpg') },
-        { id: 8, name: '商品8', price: '¥800', image: getImageUrl('/cola.jpg') },
-      ],
-    };
-  },
-};
+        { id: 8, name: '商品8', price: '¥800', image: getImageUrl('/cola.jpg') }
+      ]
+    }
+  }
+}
 </script>
 
 <style scoped>

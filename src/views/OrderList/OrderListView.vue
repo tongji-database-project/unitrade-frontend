@@ -23,7 +23,7 @@
             <el-table-column prop="state" width="150" />
             <el-table-column prop="order_time" width="220" />
             <el-table-column prop="receiving_time" width="220" />
-            <el-table-column prop="address"/>
+            <el-table-column prop="address" />
           </el-table>
         </el-scrollbar>
       </el-main>
@@ -41,7 +41,7 @@ const item = {
   state: '已发货',
   order_time: '2023-07-12 14:30:00',
   receiving_time: '2023-07-15 10:00:00',
-  address: 'No. 189, Grove St, Los Angeles',
+  address: 'No. 189, Grove St, Los Angeles'
 }
 const tableData = ref(Array.from({ length: 20 }).fill(item))
 

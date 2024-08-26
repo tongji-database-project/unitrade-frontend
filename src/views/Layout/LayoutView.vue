@@ -8,7 +8,7 @@ import FooterLayout from './components/FooterLayout.vue'
   <main>
     <FixedLayout />
     <NavLayout />
-    <RouterView/>
+    <RouterView />
   </main>
   <footer class="app-footer">
     <FooterLayout />
