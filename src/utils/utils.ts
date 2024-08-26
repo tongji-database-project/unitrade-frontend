@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { ElMessage } from 'element-plus'
 import { useTokenStore } from '@/stores/token'
 
 const getImageUrl = (path: string) => {

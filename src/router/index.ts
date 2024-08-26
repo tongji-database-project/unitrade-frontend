@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useTokenStore } from "@/stores/token";
-import axios from "axios";
+import { adminJudgeAPI } from '@/apis/user';
 import LayoutView from '@/views/Layout/LayoutView.vue'
 import HomeView from '@/views/Home/HomeView.vue'
 import MerchandiseView from '@/views/Merchandise/MerchandiseView.vue'
@@ -137,8 +136,7 @@ const router = createRouter({
       component: () => import('../views/Admin/AdminView.vue'),
       //在完成后取消注释，恢复token验证
       beforeEnter: async (to, from, next) => {   
-        const TokenStore=useTokenStore();
-        const isadmin=await checkIsAdmin(TokenStore.token);
+        const isadmin=await adminJudgeAPI();
         if (!isadmin) {  
           //在完成后取消注释，删除next()，恢复token验证
           next();
@@ -150,15 +148,5 @@ const router = createRouter({
     }
   ]
 })
-
-async function checkIsAdmin(token:string) {  
-  try {  
-    const response = await axios.post('/api/adminjudge', {token:token});
-    return response.data.isadmin;
-  } catch (error) {  
-    console.error('请求出错:', error);  
-    return false;
-  }  
-}
 
 export default router

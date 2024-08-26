@@ -1,3 +1,4 @@
+import { ElMessage } from 'element-plus'
 import { httpInstance } from '@/utils/utils'
 
 // 对于用户登录 API 的二次封装
@@ -23,6 +24,31 @@ export const adminLoginAPI = async (username: string, password: string) => {
       password: password
     }
   })
+}
+
+export const adminJudgeAPI = async () => {
+  return await httpInstance({
+    url: '/adminjudge',
+    method: 'GET'
+  })
+    .then((response) => {
+      if (response.status === 200) {
+        return response.data
+      } else {
+        ElMessage({
+          type: 'warning',
+          message: `无法获取用户信息，状态码：${response.status}`
+        })
+        return false;
+      }
+    })
+    .catch((error) => {
+      ElMessage({
+        type: 'warning',
+        message: `无法获取用户信息，错误信息：${error}`
+      })
+      return false;
+    })
 }
 
 export const getUserInfo = async () => {
