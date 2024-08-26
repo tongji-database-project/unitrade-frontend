@@ -4,7 +4,7 @@ import { getImageUrl } from '@/utils/utils'
 
 defineProps({
   user_id: { type: String, required: true },
-  is_active: { type: Boolean, required: true },
+  is_active: { type: Boolean, required: true }
 })
 
 const contactItems = [
@@ -27,7 +27,7 @@ const contactItems = [
     user_id: '3568',
     username: 'meoowny',
     last_message: 'Wow'
-  },
+  }
 ]
 
 const avatar_path = ref<string>()
@@ -36,27 +36,22 @@ avatar_path.value = getImageUrl('avatar2.jpg')
 
 // TODO: 需要改为从后端调取数据
 const getCurrentContactInfo = (user_id: string) => {
-  const item = contactItems.find((item) => item.user_id === user_id);
+  const item = contactItems.find((item) => item.user_id === user_id)
   if (item === undefined) {
-    console.log(user_id);
+    console.log(user_id)
     return {
       username: 'Error',
-      last_message: 'Unknown',
-    };
-  }
-  else {
-    return item;
+      last_message: 'Unknown'
+    }
+  } else {
+    return item
   }
 }
 </script>
 
 <template>
   <div class="contact-card" :class="{ 'is-active': is_active }">
-    <el-avatar
-      class="contact-avatar"
-      :size="40"
-      :src="avatar_path"
-    ></el-avatar>
+    <el-avatar class="contact-avatar" :size="40" :src="avatar_path"></el-avatar>
 
     <div class="contact-info">
       <div class="contact-user">{{ getCurrentContactInfo(user_id).username }}</div>
@@ -72,10 +67,10 @@ const getCurrentContactInfo = (user_id: string) => {
   border-radius: 0.7rem;
   display: flex;
   align-items: center;
+}
 
-  &.is-active {
-    background-color: #ddd;
-  }
+.contact-card.is-active {
+  background-color: #ddd;
 }
 
 .contact-avatar {

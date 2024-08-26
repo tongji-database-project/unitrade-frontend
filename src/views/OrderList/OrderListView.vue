@@ -49,7 +49,7 @@ const item = {
   state: '已发货',
   order_time: '2023-07-12 14:30:00',
   receiving_time: '2023-07-15 10:00:00',
-  address: 'No. 189, Grove St, Los Angeles',
+  address: 'No. 189, Grove St, Los Angeles'
 }
 const tableData = ref(Array.from({ length: 5 }).fill(item))
 
