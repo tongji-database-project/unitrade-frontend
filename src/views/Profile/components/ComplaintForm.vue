@@ -30,7 +30,7 @@
         }
   
         try {
-          const response = await axios.post('/api/sellercomplaints/submit', {
+          const response = await axios.post('https://服务器地址:端口号/api/sellercomplaints/submit', {
             sellerId: this.userId,
             complaintReason: this.complaintReason
           });
