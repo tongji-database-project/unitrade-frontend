@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import axios from "axios";
-
+import axios from "axios"
+import contentclass from '../MyAccountView.vue'
 import {onBeforeMount, ref}from 'vue'
 interface MyOrder{
       received:number;
@@ -54,6 +54,8 @@ onBeforeMount(()=>
 </template>
 <style>
 .my-orders{
+  border: 2px solid #ccc;
+  border-radius: 10px; /* 设置所有四个角的圆角半径为 10px */
   width:100%;
   height: 40%;
   display:flex;

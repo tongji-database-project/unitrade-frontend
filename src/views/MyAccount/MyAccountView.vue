@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import ItemsForSale from "../Profile/components/ItemsForSale.vue";
+import{ref} from 'vue'
 import ImfoLayout from "./components/ImfoLayout.vue"
 import myorderLayout from "./components/myorderLayout.vue";
+
 const categories = [ 
   {
     name: '首页',
@@ -24,15 +25,14 @@ const categories = [
     path: '/' /*未设置 */
   },
   {
-    name:"个人设置(进行密码修改等)",
-    path:"/",       /*未设置 */
+    name:"我的消息",
+    path:"/message",
   },
   {
-    name:"我的消息",
-    paht:"/message",
+    name:"个人信息修改",
+    path:"/Editinfo",
   }
 ]
-
 </script>
 
 <template>
@@ -42,9 +42,9 @@ const categories = [
         <RouterLink :to="path">{{ name }}</RouterLink>
       </div>
     </div>
-    <div class="my-informations">
-      <ImfoLayout />
-      <myorderLayout />
+    <div class="my-info">
+      <ImfoLayout/>
+      <myorderLayout/>
     </div>
   </div>
 </template>
@@ -62,8 +62,8 @@ const categories = [
   border-radius: 10px; /* 设置所有四个角的圆角半径为 10px */
   padding: 30px;
 }
-
-.my-informations {
+.my-info {
   width:100%;
+  padding:20px;
 }
 </style>

@@ -19,6 +19,7 @@ import MessageView from '@/views/Message/MessageView.vue'
 import ChatView from '@/views/Chat/ChatView.vue'
 
 import TestView from '@/views/TestView.vue'
+import EditInfoView from '@/views/Editinfo/EditInfoView.vue';
 
 
 // TODO: 页面路由配置，可能会频繁调整
@@ -103,7 +104,12 @@ const router = createRouter({
               props: true
             }
           ]
-        }
+        },
+        {
+          path:'Editinfo',
+          name:'Editinfo',
+          component:EditInfoView,
+        },
       ]
     },
     {
