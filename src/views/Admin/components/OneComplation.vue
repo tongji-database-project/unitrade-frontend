@@ -1,6 +1,7 @@
 <!-- 投诉 -->
 <script lang="ts" setup>
   import type { complationinformation } from './ComplationSection.vue';
+  import axios from 'axios';
 
   const props=defineProps({
     onecomplationinformation:{
@@ -13,12 +14,19 @@
     }
   })
 
+  const complation_id=props.onecomplationinformation.complation_id;
+
   const emit = defineEmits(['delete'])
   const deleteconfirm = () => {
     emit('delete', props.num);
   }
 
-  function deductpoint(point:number){
+  const deductpoint = async (point:number)=>{
+    try{
+      await axios.post('/api/complationAudit/audit', {complation_id:complation_id,is_passed:point>0?true:false});
+    } catch (error) {
+      console.log(error)
+    }
     deleteconfirm();
   }
 </script>

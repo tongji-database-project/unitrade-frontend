@@ -37,7 +37,7 @@ export const adminJudgeAPI = async () => {
       } else {
         ElMessage({
           type: 'warning',
-          message: `无法获取用户信息，状态码：${response.status}`
+          message: `管理员验证失败，状态码：${response.status}`
         })
         return false;
       }
@@ -45,9 +45,32 @@ export const adminJudgeAPI = async () => {
     .catch((error) => {
       ElMessage({
         type: 'warning',
-        message: `无法获取用户信息，错误信息：${error}`
+        message: `管理员验证失败，错误信息：${error}`
       })
       return false;
+    })
+}
+
+export const getAdminInfo = async () => {
+  return await httpInstance({
+    url: '/admininfo',
+    method: 'GET'
+  })
+    .then((response) => {
+      if (response.status === 200) {
+        return response.data
+      } else {
+        ElMessage({
+          type: 'warning',
+          message: `无法获取管理员信息，状态码：${response.status}`
+        })
+      }
+    })
+    .catch((error) => {
+      ElMessage({
+        type: 'warning',
+        message: `无法获取管理员信息，错误信息：${error}`
+      })
     })
 }
 
