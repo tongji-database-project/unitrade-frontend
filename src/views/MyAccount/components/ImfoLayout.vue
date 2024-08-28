@@ -17,21 +17,36 @@ interface Myinfos
 }
 let loading=ref(true)
 const infos = ref<[Myinfos]>();
+
+let id=""   /*暂时使用变量来防止报错，等登录功能完善后再修改 */
+
+
 const getMyinfo = async () => {
-  await axios
-  .get(`/api/getMyinfo`)  
-  .then(response => {
+  try{
+    const response= await axios.post('/api/getMyinfo',{userid:id})
     if (response.status === 200) {
       infos.value = response.data
       loading.value=(false)
     }
-  })
-  .catch(function (error) {
+  }catch(error){
     console.log(error)
     loading.value=(false)
     infos.value=[{id:"读取失败",name:"读取失败",level:0,sex:"读取失败",reputation:0,avator:"读取失败",address:"读取失败"}]
+  }
+  // await axios
+  // .get(`/api/getMyinfo`)  
+  // .then(response => {
+  //   if (response.status === 200) {
+  //     infos.value = response.data
+  //     loading.value=(false)
+  //   }
+  // })
+  // .catch(function (error) {
+  //   console.log(error)
+  //   loading.value=(false)
+  //   infos.value=[{id:"读取失败",name:"读取失败",level:0,sex:"读取失败",reputation:0,avator:"读取失败",address:"读取失败"}]
 
-  });
+  // });
 }
 onBeforeMount(()=>
 {

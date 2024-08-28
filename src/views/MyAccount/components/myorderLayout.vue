@@ -9,22 +9,32 @@ interface MyOrder{
 }
 let loading=ref(true)
 const orders=ref<[MyOrder]>();
+let id=""      /*等完成登录后再修改 */
 const getMyOrder = async () => {
-  await axios
-  // .get(`/api/getMyinfo`)
-  // 后端部署后将上面部分取消注释
-  .get(`/api/getMyOrder`)    //暂时为test，等后端代码部署再修改为`/api/getMyinfo`
-  .then(response => {
+  try{
+    const response=await axios.post('/api/getMyOrder',{user:id})
     if (response.status === 200) {
       orders.value = response.data
       loading.value=(false)
     }
-  })
-  .catch(function (error) {
+  }catch(error){
     console.log(error)
     loading.value=(false)
     orders.value=[{received:0,transit:0,uncommand:0}]
-  });
+  }
+  // await axios;
+  // .get(`/api/getMyOrder`)    //暂时为test，等后端代码部署再修改为`/api/getMyinfo`
+  // .then(response => {
+  //   if (response.status === 200) {
+  //     orders.value = response.data
+  //     loading.value=(false)
+  //   }
+  // })
+  // .catch(function (error) {
+  //   console.log(error)
+  //   loading.value=(false)
+  //   orders.value=[{received:0,transit:0,uncommand:0}]
+  // });
 }
 onBeforeMount(()=>
 {
