@@ -11,9 +11,9 @@ interface Newinfos
     address:string;
 }
 
-let newName = ''
-let newSex = ''
-let newAddress = ''
+let newName = ref("")
+let newSex = ref("")
+let newAddress = ref("")
 let submit=ref(false)
 let transit=ref(true)
 let result=ref("")
