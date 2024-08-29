@@ -1,8 +1,8 @@
 
 <script setup lang="ts">
-import axios from "axios";
-
-import {onBeforeMount, ref}from 'vue'
+import { useTokenStore } from '@/stores/token'
+import {  getUserInfo } from '@/apis/user'
+import {onBeforeMount, ref,computed}from 'vue'
 
 interface Myinfos
 {
@@ -13,44 +13,39 @@ interface Myinfos
   avator:string;
   reputation:number;
   sex:string;
-
 }
 let loading=ref(true)
 const infos = ref<[Myinfos]>();
+//追踪登录状态
+const logged_in = computed(() => useTokenStore().logged_in)
 
-let id=""   /*暂时使用变量来防止报错，等登录功能完善后再修改 */
 
-
-const getMyinfo = async () => {
-  try{
-    const response= await axios.post('/api/getMyinfo',{userid:id})
-    if (response.status === 200) {
-      infos.value = response.data
-      loading.value=(false)
-    }
-  }catch(error){
-    console.log(error)
+// const getMyinfo = async () => {
+//   try{
+//     const response= await axios.post('/api/getMyinfo',{userid:id})
+//     if (response.status === 200) {
+//       infos.value = response.data
+//       loading.value=(false)
+//     }
+//   }catch(error){
+//     console.log(error)
+//     loading.value=(false)
+//     infos.value=[{id:"读取失败",name:"读取失败",level:0,sex:"读取失败",reputation:0,avator:"读取失败",address:"读取失败"}]
+//   }
+// }
+const refreshInfo=async()=>{
+  if(logged_in.value){
+    const info=await getUserInfo()
+    infos.value=[{id:info.id,name:info.name,level:info.level,sex:info.sex,reputation:info.reputation,avator:info.avator,address:info.address}]
+    loading.value=(false)
+  }else{
     loading.value=(false)
     infos.value=[{id:"读取失败",name:"读取失败",level:0,sex:"读取失败",reputation:0,avator:"读取失败",address:"读取失败"}]
   }
-  // await axios
-  // .get(`/api/getMyinfo`)  
-  // .then(response => {
-  //   if (response.status === 200) {
-  //     infos.value = response.data
-  //     loading.value=(false)
-  //   }
-  // })
-  // .catch(function (error) {
-  //   console.log(error)
-  //   loading.value=(false)
-  //   infos.value=[{id:"读取失败",name:"读取失败",level:0,sex:"读取失败",reputation:0,avator:"读取失败",address:"读取失败"}]
-
-  // });
 }
-onBeforeMount(()=>
+onBeforeMount(async ()=>
 {
-  getMyinfo()   
+  refreshInfo()
 })
 </script>
 

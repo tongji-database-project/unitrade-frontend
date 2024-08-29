@@ -96,3 +96,36 @@ export const getUserInfo = async () => {
       })
     })
 }
+export const getMyOrder=async()=>{
+  return await httpInstance({
+    url: '/getMyOrder',
+    method: 'GET'
+  })
+  .then((response) => {
+    if (response.status === 200) {
+      return response.data
+    } else {
+      ElMessage({
+        type: 'warning',
+        message: `无法获取用户信息，状态码：${response.status}`
+      })
+    }
+  })
+  .catch((error) => {
+    ElMessage({
+      type: 'warning',
+      message: `无法获取用户信息，错误信息：${error}`
+    })
+  })
+}
+export const EditMyinfo = async (username: string,usersex:string,useraddress:string) => {
+  return await httpInstance({
+    url: '/editMyinfo',
+    method: 'POST',
+    data: {
+      name: username,
+      sex: usersex,
+      address:useraddress,
+    }
+  })
+}

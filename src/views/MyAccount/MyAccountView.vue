@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import{ref} from 'vue'
+import {onBeforeMount, ref,computed}from 'vue'
+import { useTokenStore } from '@/stores/token'
+import { useRouter } from 'vue-router';
 import ImfoLayout from "./components/ImfoLayout.vue"
 import myorderLayout from "./components/myorderLayout.vue";
-
+const logged_in = computed(() => useTokenStore().logged_in)
+let hint_login=ref(true);
 const categories = [ 
   {
     name: '首页',
@@ -33,6 +36,16 @@ const categories = [
     path:"/Editinfo",
   }
 ]
+const router = useRouter();
+
+function Tologin() {
+  router.push('/login');
+}
+onBeforeMount(()=>{
+  if(logged_in.value){
+    hint_login.value=false;
+  }
+})
 </script>
 
 <template>
@@ -45,6 +58,16 @@ const categories = [
     <div class="my-info">
       <ImfoLayout/>
       <myorderLayout/>
+    </div>
+    <div v-if="hint_login=true">
+      <transition name="fade">
+      <div class="modal-overlay">
+        <div class="modal-content" @click="Tologin">
+          <p>当前未登录，请先进行登录</p>
+          <p>点击弹窗跳转到登录页面</p>
+        </div>
+      </div>
+    </transition>
     </div>
   </div>
 </template>
@@ -65,5 +88,23 @@ const categories = [
 .my-info {
   width:100%;
   padding:20px;
+}
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

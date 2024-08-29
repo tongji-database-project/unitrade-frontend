@@ -1,44 +1,41 @@
 <script setup lang="ts">
 import axios from "axios"
-import contentclass from '../MyAccountView.vue'
-import {onBeforeMount, ref}from 'vue'
+import { useTokenStore } from '@/stores/token'
+import {  getMyOrder } from '@/apis/user'
+import {onBeforeMount, ref,computed}from 'vue'
 interface MyOrder{
       received:number;
       transit:number;
       uncommand:number;
 }
 let loading=ref(true)
-const orders=ref<[MyOrder]>();
-let id=""      /*等完成登录后再修改 */
-const getMyOrder = async () => {
-  try{
-    const response=await axios.post('/api/getMyOrder',{user:id})
-    if (response.status === 200) {
-      orders.value = response.data
-      loading.value=(false)
-    }
-  }catch(error){
-    console.log(error)
+const orders=ref<[MyOrder]>()
+//追踪登录状态
+const logged_in = computed(() => useTokenStore().logged_in)
+const refreshOrder = async () => {
+  if(logged_in.value){
+    const info=await getMyOrder()
+    orders.value=[{received:info.received,transit:info.transit,uncommand:info.uncommand}]
+    loading.value=(false)
+  }else{
     loading.value=(false)
     orders.value=[{received:0,transit:0,uncommand:0}]
   }
-  // await axios;
-  // .get(`/api/getMyOrder`)    //暂时为test，等后端代码部署再修改为`/api/getMyinfo`
-  // .then(response => {
+  // try{
+  //   const response=await axios.post('/api/getMyOrder',{user:id})
   //   if (response.status === 200) {
   //     orders.value = response.data
   //     loading.value=(false)
   //   }
-  // })
-  // .catch(function (error) {
+  // }catch(error){
   //   console.log(error)
   //   loading.value=(false)
   //   orders.value=[{received:0,transit:0,uncommand:0}]
-  // });
+  // }
 }
 onBeforeMount(()=>
 {
-  getMyOrder()   
+  refreshOrder()  
 })
 </script>
 

@@ -1,16 +1,9 @@
 
 <script setup lang="ts">
-import axios from "axios";
-
-import {onBeforeMount, ref}from 'vue'
-
-interface Newinfos
-{
-    name:string;
-    sex:string;
-    address:string;
-}
-
+import { useTokenStore } from '@/stores/token'
+import {onBeforeMount, ref,computed}from 'vue'
+import { EditMyinfo} from '@/apis/user'
+const logged_in = computed(() => useTokenStore().logged_in)
 let newName = ref("")
 let newSex = ref("")
 let newAddress = ref("")
@@ -21,18 +14,33 @@ function close(){
     submit.value=false;
 }
 const submitForm = async()=>{
-    try{
-        submit.value=true;
-        const response= await axios.post('/api/editInfo',{userName:newName,userSex:newSex,userAddress:newAddress});
-        if(response.status===200){
-            transit.value=false;
-            result.value="成功"
-        }
-    }catch(error){
-        console.log(error)
+    submit.value=true;
+    if(logged_in.value){
+    const response=await EditMyinfo(newName.value,newSex.value,newAddress.value)
+    if(response.status===200){
+        transit.value=false;
+        result.value="成功"
+    }
+    else{
         transit.value=false;
         result.value="失败"
     }
+  }else{
+    transit.value=false;
+    result.value="未登录"
+  }
+    // try{
+    //     submit.value=true;
+    //     const response= await axios.post('/api/editInfo',{userName:newName,userSex:newSex,userAddress:newAddress});
+    //     if(response.status===200){
+    //         transit.value=false;
+    //         result.value="成功"
+    //     }
+    // }catch(error){
+    //     console.log(error)
+    //     transit.value=false;
+    //     result.value="失败"
+    // }
 }
 </script>
 
@@ -64,6 +72,10 @@ const submitForm = async()=>{
                 </div>
                 <div v-else-if="result=='失败'">
                     <p>修改失败，请稍后重试</p>
+                    <button @click="close">关闭</button>
+                </div>
+                <div v-else-if="result=='未登录'">
+                    <p>当前未登录，请登录用户后再修改</p>
                     <button @click="close">关闭</button>
                 </div>
             </div>
