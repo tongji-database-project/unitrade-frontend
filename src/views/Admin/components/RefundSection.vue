@@ -1,7 +1,9 @@
 <!-- 退款 -->
 <script lang="ts" setup>
-  import { ref } from 'vue';  
+  import { ref, onMounted } from 'vue';  
   import OneRefund from './OneRefund.vue';
+
+  let isloading = ref(true);
 
   export type refundinformation={
     seller:string;
@@ -19,19 +21,31 @@
   const deleteconfirm = (index:number) => {
     refundinformations.value.splice(index,1);
   }
+
+  onMounted(async() =>{
+    
+    isloading.value = false;
+  })
+
 </script>
 
 <template>
   <div class="main">
-    <div v-for="(item, index) in refundinformations" :key="index" class="table">
-      <OneRefund :onerefundinformation="item" :num="index" @delete="deleteconfirm"/>
+    <div class="spinner" v-if="isloading"></div>
+    <div class="list" v-else>
+      <div v-for="(item, index) in refundinformations" :key="index" class="table">
+        <OneRefund :onerefundinformation="item" :num="index" @delete="deleteconfirm"/>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
   .main{
-    max-height: 650px; 
+    position: relative;
+  }
+  .list{
+    max-height: 650px;
     overflow-y: auto;
   }
   .table{
@@ -40,5 +54,17 @@
     padding: 10px; /* 可选：添加填充以让表格内容与边界有些距离 */
     border: 1px solid #ddd; /* 可选：为表格添加边框 */
     border-radius: 5px; /* 可选：为表格添加圆角 */
+  }
+  .spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top: 4px solid #3498db;
+    width: 80px;
+    height: 80px;
+    animation: spin 1s linear infinite;
+    position: absolute;
+    top: 100px; /* 调整spinner与父元素顶部的距离 */  
+    left: 50%; /* 水平居中的一部分 */  
+    transform: translateX(-50%); /* 向左偏移自身宽度的50%，实现水平居中 */
   }
 </style> 
