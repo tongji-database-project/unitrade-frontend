@@ -20,6 +20,9 @@ import ChatView from '@/views/Chat/ChatView.vue'
 
 import TestView from '@/views/TestView.vue'
 import EditInfoView from '@/views/Editinfo/EditInfoView.vue';
+import ReceivedView from '@/views/Received/ReceivedView.vue';
+import TransitView from '@/views/Transit/TransitView.vue';
+import UncommandView from '@/views/Uncommand/UncommandView.vue';
 
 
 // TODO: 页面路由配置，可能会频繁调整
@@ -110,6 +113,21 @@ const router = createRouter({
           name:'Editinfo',
           component:EditInfoView,
         },
+        {
+          path:"received",
+          name:"received",
+          component:ReceivedView,
+        },
+        {
+          path:"transit",
+          name:"transit",
+          component:TransitView,
+        },
+        {
+          path:"uncommand",
+          name:"uncommand",
+          component:UncommandView,
+        }
       ]
     },
     {

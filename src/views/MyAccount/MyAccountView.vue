@@ -42,9 +42,9 @@ function Tologin() {
   router.push('/login');
 }
 onBeforeMount(()=>{
-  if(logged_in.value){
+  // if(logged_in.value){
     hint_login.value=false;
-  }
+  // }
 })
 </script>
 
@@ -59,7 +59,7 @@ onBeforeMount(()=>{
       <ImfoLayout/>
       <myorderLayout/>
     </div>
-    <div v-if="hint_login=true">
+    <div v-if="hint_login==true">
       <transition name="fade">
       <div class="modal-overlay">
         <div class="modal-content" @click="Tologin">
