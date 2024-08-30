@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import axios from "axios"
 import { useTokenStore } from '@/stores/token'
+import { useRouter } from 'vue-router'
 import {  getMyOrder } from '@/apis/user'
 import {onBeforeMount, ref,computed}from 'vue'
 interface MyOrder{
       received:number;
       transit:number;
       uncommand:number;
+      all:number;
 }
 let loading=ref(true)
 const orders=ref<[MyOrder]>()
@@ -15,11 +17,11 @@ const logged_in = computed(() => useTokenStore().logged_in)
 const refreshOrder = async () => {
   if(logged_in.value){
     const info=await getMyOrder()
-    orders.value=[{received:info.received,transit:info.transit,uncommand:info.uncommand}]
+    orders.value=[{received:info.received,transit:info.transit,uncommand:info.uncommand,all:info.all}]
     loading.value=(false)
   }else{
     loading.value=(false)
-    orders.value=[{received:0,transit:0,uncommand:0}]
+    orders.value=[{received:0,transit:0,uncommand:0,all:0}]
   }
   // try{
   //   const response=await axios.post('/api/getMyOrder',{user:id})
@@ -33,6 +35,19 @@ const refreshOrder = async () => {
   //   orders.value=[{received:0,transit:0,uncommand:0}]
   // }
 }
+const router = useRouter();
+function toOrder(){
+  router.push('order')
+}
+function toReceived(){
+  router.push('received')
+}
+function toTransit(){
+  router.push('transit')
+}
+function toUncommand(){
+  router.push('uncommand')
+}
 onBeforeMount(()=>
 {
   refreshOrder()  
@@ -45,16 +60,28 @@ onBeforeMount(()=>
       </div>
       <div v-else class="my-orders">  
         <!-- 显示订单的信息 -->
-         <div v-for="(order, index) in orders" :key="index"class="have-received">
-          <h>已收货</h>
+        <div v-for="(order, index) in orders" :key="index"class="order">
+          <div class="title">
+            <h @click="toOrder">所有订单</h>
+          </div>
+          <p>{{ order.all }}</p>
+         </div>
+         <div v-for="(order, index) in orders" :key="index"class="order">
+          <div class="title">
+            <h @click="toReceived">已收货</h>
+          </div>
           <p>{{ order.received }}</p>
          </div>
-         <div v-for="(order, index) in orders" :key="index"class="have-received">
-          <h>运输中</h>
+         <div v-for="(order, index) in orders" :key="index"class="order">
+          <div class="title">
+            <h @click="toTransit">运输中</h>
+          </div>
           <p>{{ order.transit }}</p>
          </div>
-         <div v-for="(order, index) in orders" :key="index"class="have-received">
-          <h>未评价</h>
+         <div v-for="(order, index) in orders" :key="index"class="order">
+          <div class="title">
+            <h @click="toUncommand">未评价</h>
+          </div>
           <p>{{ order.uncommand }}</p>
          </div>
       </div>
@@ -69,6 +96,18 @@ onBeforeMount(()=>
   justify-content: space-between;
   padding:20px;
 }
+.order{
+  display: grid;
+  place-items: center; /* 同时水平和垂直居中 */
+}
+.title{
+  color: hsla(160, 100%, 37%, 1);
+}
+.title:hover{
+  cursor: pointer; 
+  background-color: hsla(160, 100%, 37%, 0.2);
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
