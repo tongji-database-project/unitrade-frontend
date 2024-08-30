@@ -51,6 +51,18 @@ export const adminJudgeAPI = async () => {
     })
 }
 
+export const AdminEnroll = async (adminname: string,password:string,adminlevel:string) => {
+  return await httpInstance({
+    url: '/adminenroll',
+    method: 'POST',
+    data: {
+      name: adminname,
+      password: password,
+      level:adminlevel,
+    }
+  })
+}
+
 export const getAdminInfo = async () => {
   return await httpInstance({
     url: '/admininfo',

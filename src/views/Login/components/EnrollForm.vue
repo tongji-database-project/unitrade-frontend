@@ -17,7 +17,7 @@ const submitForm = async () => {
     }
   } catch (error) {
     console.log(error)
-    alert('登录失败，请稍后重试')
+    alert('注册失败，请稍后重试')
   }
 }
 </script>

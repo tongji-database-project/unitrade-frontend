@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import axios from "axios";
-import { useRouter } from 'vue-router'; 
+import { useRouter } from 'vue-router';
+import { AdminEnroll } from '@/apis/user' 
 
 const router = useRouter();
 
@@ -21,19 +21,16 @@ const submitForm = async () => {
       return;
   }
   try {
-      const response = await axios.post('/api/adminenroll', {
-          adminname: adminname.value,
-          password: password.value,
-          adminlevel: adminlevel.value
-      });
-      if(response.status === 200){
-          alert('注册成功');
-          router.push('/adminlogin'); // 跳转到管理员登录页面
-      }
-  } catch (error) {
-      // 处理错误响应
-      console.error('注册失败:', error);
+    const response = await AdminEnroll(adminname.value, password.value, adminlevel.value);
+    if (response.status === 200) {
+      alert('注册成功');
+      // 进行页面跳转或其他操作
+    } else {
       alert('注册失败，请重试');
+    }
+  } catch (error) {
+    console.error('注册失败:', error);
+    alert('注册失败，请重试');
   }
 }
 </script>
@@ -60,9 +57,8 @@ const submitForm = async () => {
     </div>
     <div>
       <select v-model="adminlevel" id="adminlevel">
-            <option value="1">等级1</option>
-            <option value="2">等级2</option>
-            <option value="3">等级3</option>
+            <option value="1">等级0</option>
+            <option value="2">等级1</option>
       </select>
     </div>
     <div>
