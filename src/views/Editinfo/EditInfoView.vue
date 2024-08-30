@@ -2,6 +2,7 @@
 import{ref}from 'vue'
 import EditAvatorLayout from './components/EditAvatorLayout.vue';
 import EditInfoLayout from './components/EditInfoLayout.vue';
+import EditPasswordLayout from './components/EditPasswordLayout.vue';
 const categories = [ 
   {
     name: '首页',
@@ -39,6 +40,9 @@ function chooseInfo(){
 function chooseAvator(){
     contentclass.value="EditAvator";
 }
+function choosePassword(){
+    contentclass.value="EditPassword";
+}
 </script>
 <template>
 <div class="container">
@@ -49,22 +53,29 @@ function chooseAvator(){
     </div>
     <div class="editform">
         <div class="mode">
-            <div v-if="contentclass=='Editinfo'" class="chooseInfo">
+            <div v-if="contentclass=='Editinfo'" class="choose">
                 <p @click="chooseInfo"> 基本信息</p>
             </div>
-            <div v-else class="chooseInfo_not_choose">
+            <div v-else class="not_choose">
                 <p @click="chooseInfo"> 基本信息</p>
             </div>
-            <div v-if="contentclass=='EditAvator'"class="chooseAvator">
+            <div v-if="contentclass=='EditAvator'"class="choose">
                 <p @click="chooseAvator">头像修改</p>
             </div>
-            <div v-else class="chooseAvator_not_choose">
+            <div v-else class="not_choose">
                 <p @click="chooseAvator">头像修改</p>
-            </div>            
+            </div>
+            <div v-if="contentclass=='EditPassword'"class="choose">
+                <p @click="choosePassword">密码修改</p>
+            </div>
+            <div v-else class="not_choose">
+                <p @click="choosePassword">密码修改</p>
+            </div>              
         </div>
         <div class="content">
             <EditInfoLayout v-if="contentclass=='Editinfo'"/>
             <EditAvatorLayout v-else-if="contentclass=='EditAvator'"/>
+            <EditPasswordLayout v-else-if="contentclass=='EditPassword'"/>
         </div>
     </div>
   </div>
@@ -95,30 +106,18 @@ function chooseAvator(){
     display: flex;
     flex-direction: row; 
 }
-.chooseInfo{
-    color:red;
-    text-decoration: underline;
+.choose{
+  color:red;
+  text-decoration: underline;
 }
-.chooseInfo_not_choose{
-    color:black;
+.not_choose{
+  color:black;
 }
-.chooseInfo:hover{
-    cursor: pointer; 
+.choose:hover{
+  cursor: pointer; 
 }
-.chooseInfo_not_choose{
-    cursor: pointer; 
+.not_choose:hover{
+  cursor: pointer; 
 }
-.chooseAvator{
-    color:red;
-    text-decoration: underline;
-}
-.chooseAvator_not_choose{
-    color:black;
-}
-.chooseAvator_not_choose:hover{
-    cursor: pointer; 
-}
-.chooseAvator:hover{
-    cursor: pointer; 
-}
+
 </style>

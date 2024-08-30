@@ -129,3 +129,14 @@ export const EditMyinfo = async (username: string,usersex:string,useraddress:str
     }
   })
 }
+export const EditPassword = async (OrientPassword:string,NewPassword:string,ConfirmPassword:string) => {
+  return await httpInstance({
+    url: '/editPassword',
+    method: 'POST',
+    data: {
+      originPassword:OrientPassword,
+      newPassword: NewPassword,
+      confirmPassword: ConfirmPassword,
+    }
+  })
+}
