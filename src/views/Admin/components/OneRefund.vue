@@ -1,6 +1,7 @@
 <!-- 退款 -->
 <script lang="ts" setup>
     import type { refundinformation } from './RefundSection.vue';
+    import axios from 'axios';
 
     const props=defineProps({
     onerefundinformation:{
@@ -13,35 +14,54 @@
     }
     })
 
+    const refund_id=props.onerefundinformation.refund_id;
+
     const emit = defineEmits(['delete'])
     const deleteconfirm = () => {
         emit('delete', props.num);
     }
 
-    function refundjudge(isagree:boolean){
-        deleteconfirm();
+    const auditrefund = async (isagree:boolean)=>{
+    try{
+      await axios.post('/api/refund/audit', {refund_id:refund_id,is_agreed:isagree});
+    } catch (error) {
+      console.log(error)
     }
+    deleteconfirm();
+  }
 
 </script>
 
 <template>
     <div calss="main">
         <div class="introduce">
-            商家：{{ onerefundinformation.seller }}
+            退款编号：{{ onerefundinformation.refund_id }}
         </div>
         <div class="introduce">
-            买家：{{ onerefundinformation.buyer }}
+            商家：{{ onerefundinformation.seller_name }}
+        </div>
+        <div class="introduce">
+            商家ID：{{ onerefundinformation.seller_id }}
+        </div>
+        <div class="introduce">
+            买家：{{ onerefundinformation.buyer_name }}
+        </div>
+        <div class="introduce">
+            买家ID：{{ onerefundinformation.buyer_id }}
         </div>
         <div class="introduce">
             商品名：{{ onerefundinformation.commodity }}
         </div>
         <div class="introduce">
+            退款原因：{{ onerefundinformation.reason }}
+        </div>
+        <div class="introduce">
             申请时间：{{ onerefundinformation.time }}
         </div>
-        <div @click="refundjudge(true)" class="button">
+        <div @click="auditrefund(true)" class="button">
             同意退款
         </div>
-        <div @click="refundjudge(false)" class="button">
+        <div @click="auditrefund(false)" class="button">
             拒绝退款
         </div>
     </div>

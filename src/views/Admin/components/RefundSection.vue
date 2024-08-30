@@ -2,31 +2,52 @@
 <script lang="ts" setup>
   import { ref, onMounted } from 'vue';  
   import OneRefund from './OneRefund.vue';
+  import axios from 'axios';
 
   let isloading = ref(true);
 
   export type refundinformation={
-    seller:string;
-    buyer:string;
+    refund_id:string;
+    seller_name:string;
+    seller_id:string;
+    buyer_name:string;
+    buyer_id:string;
     commodity:string;
+    reason:string;
     time:Date;
   }
 
   let refundinformations = ref<refundinformation[]>([]);
-  refundinformations.value.push({seller:"商家1",buyer:"买家1",commodity:"商品1",time:new Date('2023-03-21T14:30:00')});
-  refundinformations.value.push({seller:"商家2",buyer:"买家2",commodity:"商品2",time:new Date('2024-03-21T14:30:00')});
-  refundinformations.value.push({seller:"商家3",buyer:"买家3",commodity:"商品3",time:new Date('2025-03-21T14:30:00')});
-  refundinformations.value.push({seller:"商家4",buyer:"买家4",commodity:"商品4",time:new Date('2026-03-21T14:30:00')});
-
+  refundinformations.value.push({refund_id:"1",seller_name:"商家1",seller_id:"1",buyer_name:"买家1",buyer_id:"1",commodity:"商品1",reason:"1",time:new Date('2023-03-21T14:30:00')});
+  refundinformations.value.push({refund_id:"2",seller_name:"商家2",seller_id:"2",buyer_name:"买家2",buyer_id:"2",commodity:"商品2",reason:"2",time:new Date('2023-03-21T14:30:00')});
+  refundinformations.value.push({refund_id:"3",seller_name:"商家3",seller_id:"3",buyer_name:"买家3",buyer_id:"3",commodity:"商品3",reason:"3",time:new Date('2023-03-21T14:30:00')});
+  refundinformations.value.push({refund_id:"4",seller_name:"商家4",seller_id:"4",buyer_name:"买家4",buyer_id:"4",commodity:"商品4",reason:"4",time:new Date('2023-03-21T14:30:00')});
+  
   const deleteconfirm = (index:number) => {
     refundinformations.value.splice(index,1);
   }
 
   onMounted(async() =>{
-    
+    try{
+      const refundInfo = await axios.get('/api/refund/query');
+      refundInfo.data.forEach((oneInfo:any) => {
+        let one:refundinformation={
+          refund_id:oneInfo.refund_id,
+          seller_name:oneInfo.seller_name,
+          seller_id:oneInfo.seller_id,
+          buyer_name:oneInfo.buyer_name,
+          buyer_id:oneInfo.buyer_id,
+          commodity:oneInfo.commodity,
+          reason:oneInfo.reason,
+          time:new Date(oneInfo.time)
+        };
+        refundinformations.value.push(one);
+      });
+    } catch (error) {
+      console.log(error)
+    }
     isloading.value = false;
   })
-
 </script>
 
 <template>
