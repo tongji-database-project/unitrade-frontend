@@ -56,7 +56,7 @@ onBeforeMount(async ()=>
   </div>
   <div v-else>
     <div class="layout">
-       <div v-for="(info, index) in infos" :key="index"class="picture">
+       <div v-for="(info, index) in infos" :key="index"class="avator">
         <el-avatar :size="60" :src="info.avator"></el-avatar>
        </div>
       <div class="informations">
@@ -89,7 +89,7 @@ onBeforeMount(async ()=>
   justify-content: space-between; /* 让子元素在容器内水平分布 */
 }
 
-.picture{
+.avator{
   display: flex;
   justify-content: center;
   align-items: center;
