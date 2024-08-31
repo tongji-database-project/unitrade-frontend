@@ -71,10 +71,10 @@
   }
   .table{
     background-color: rgb(255, 255, 255);
-    margin-bottom: 15px; /* 调整这个数值来增加或减少间距 */
+    margin-bottom: 10px; /* 调整这个数值来增加或减少间距 */
     padding: 10px; /* 可选：添加填充以让表格内容与边界有些距离 */
-    border: 1px solid #ddd; /* 可选：为表格添加边框 */
-    border-radius: 5px; /* 可选：为表格添加圆角 */
+    border: 2px solid #a4a4a4b7;
+    border-radius: 15px; /* 可选：为表格添加圆角 */
   }
   .spinner {
     border: 4px solid rgba(0, 0, 0, 0.1);

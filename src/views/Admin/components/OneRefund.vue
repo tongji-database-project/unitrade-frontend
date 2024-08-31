@@ -23,11 +23,13 @@
 
     const auditrefund = async (isagree:boolean)=>{
     try{
-      await axios.post('/api/refund/audit', {refund_id:refund_id,is_agreed:isagree});
+      const response = await axios.post('/api/refund/audit', {refund_id:refund_id,is_agreed:isagree})
+      if(response.status === 200){
+        deleteconfirm();
+      }
     } catch (error) {
       console.log(error)
     }
-    deleteconfirm();
   }
 
 </script>
@@ -44,10 +46,10 @@
             商家ID：{{ onerefundinformation.seller_id }}
         </div>
         <div class="introduce">
-            买家：{{ onerefundinformation.buyer_name }}
+            退款人：{{ onerefundinformation.buyer_name }}
         </div>
         <div class="introduce">
-            买家ID：{{ onerefundinformation.buyer_id }}
+            退款人ID：{{ onerefundinformation.buyer_id }}
         </div>
         <div class="introduce">
             商品名：{{ onerefundinformation.commodity }}
@@ -68,21 +70,21 @@
 </template>
 
 <style scoped>
- .main{
-    height: 250px; 
-    background-color:rgb(246, 246, 246);
-    margin-bottom: 10px;
-    border: 2px solid #a4a4a4b7;
-    border-radius: 15px;
-  }
+  .main{
+      height: auto; 
+      background-color:rgb(246, 246, 246);
+      margin-bottom: 10px;
+      border: 2px solid #a4a4a4b7;
+      border-radius: 15px;
+    }
 
-  .introduce{
-    font-weight: bold;  
-    font-size: 15px; 
-    margin-left: 5%;
-    margin-top: 1.5%;
-  }
-
+    .introduce{
+      font-weight: bold;  
+      font-size: 15px; 
+      margin-left: 5%;
+      margin-top: 1.5%;
+    }
+    
   .button{
     width: 100px;
     height: 30px;
