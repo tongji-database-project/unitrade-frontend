@@ -9,8 +9,9 @@
     </div>
     <div class="actions">
       <ActionButton :userId="userId" buttonText="联系卖家" action="chat" />
-      <ActionButton :userId="userId" buttonText="投诉卖家" action="complaint" />
+      <ActionButton :userId="userId" buttonText="投诉卖家" action="complaint" @click="toggleComplaintForm" />
     </div>
+    <ComplaintForm v-if="showComplaintForm" :userId="userId" />
   </div>
 </template>
 
@@ -18,6 +19,7 @@
 import UserInfo from './components/UserInfo.vue'
 import ItemsForSale from './components/ItemsForSale.vue'
 import ActionButton from './components/ActionButton.vue'
+import ComplaintForm from './components/ComplaintForm.vue'
 import { getImageUrl } from '@/utils/utils'
 
 export default {
@@ -25,7 +27,8 @@ export default {
   components: {
     UserInfo,
     ItemsForSale,
-    ActionButton
+    ActionButton,
+    ComplaintForm
   },
   data() {
     return {
@@ -44,37 +47,18 @@ export default {
         { id: 6, name: '商品6', price: '¥600', image: getImageUrl('/cola.jpg') },
         { id: 7, name: '商品7', price: '¥700', image: getImageUrl('/cola.jpg') },
         { id: 8, name: '商品8', price: '¥800', image: getImageUrl('/cola.jpg') }
-      ]
+      ],
+      showComplaintForm: false
+    }
+  },
+  methods: {
+    toggleComplaintForm() {
+      this.showComplaintForm = !this.showComplaintForm;
     }
   }
 }
 </script>
 
 <style scoped>
-.profile-view {
-  background-color: white;
-  padding: 20px;
-}
-
-.header {
-  background-color: lightblue;
-  padding: 10px;
-  margin-bottom: 20px;
-}
-
-.header h1 {
-  margin: 0;
-  font-weight: bold;
-}
-
-.items-container {
-  border: 2px solid green;
-  padding: 10px;
-  margin-bottom: 20px;
-}
-
-.actions {
-  display: flex;
-  gap: 10px;
-}
+/* 这里省略了之前已有的样式代码 */
 </style>

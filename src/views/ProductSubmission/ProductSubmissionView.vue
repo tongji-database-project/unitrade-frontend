@@ -2,7 +2,6 @@
   <div>
     <el-form
       :model="product"
-      ref="productForm"
       label-width="120px"
       @submit.native.prevent="handleSubmit"
     >
@@ -111,19 +110,14 @@ import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue'
 import type { UploadFile } from 'element-plus'
+import type { Product } from '@/utils/interfaces'
+import {submitProduct} from '@/apis/product'
 
 const route = useRoute()
 
 //route.params.id
 
-interface Product {
-  name: string
-  description: string
-  price: number
-  stock: number
-  imageUrls: string[]
-  coverUrl: string
-}
+
 
 const product = ref<Product>({
   name: '',
@@ -134,7 +128,6 @@ const product = ref<Product>({
   coverUrl: ''
 })
 
-const productForm = ref(null)
 const router = useRouter()
 
 const validatePrice = (rule: any, value: number, callback: (error?: Error) => void) => {
@@ -146,24 +139,12 @@ const validatePrice = (rule: any, value: number, callback: (error?: Error) => vo
 }
 
 const handleSubmit = async () => {
-  if (!productForm.value) return
 
-  // await axios
-  // .get(`/api/test`)
-  // .then(response => {
-  //   if (response.status === 200) {
-  //     infos.value = response.data;
-  //   }
-  // })
-  // .catch(function (error) {
-  //   console.log(error);
-  // });
-
-  router.push('onsale')
+  await submitProduct(product.value);
 }
 
+
 const handleCancle = async () => {
-  if (!productForm.value) return
 
   // await axios
   // .get(`/api/test`)
