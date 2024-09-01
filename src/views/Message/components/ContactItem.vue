@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { getImageUrl } from '@/utils/utils'
+import { getLatestMessage } from '@/apis/message';
 
 defineProps({
   user_id: { type: String, required: true },
@@ -35,7 +36,9 @@ const avatar_path = ref<string>()
 avatar_path.value = getImageUrl('avatar2.jpg')
 
 // TODO: 需要改为从后端调取数据
-const getCurrentContactInfo = (user_id: string) => {
+// 获取最新消息：/api/message/get_latest_message
+const getCurrentContactInfo = async (user_id: string) => {
+  // TODO: const message = await getLatestMessage(user_id);
   const item = contactItems.find((item) => item.user_id === user_id)
   if (item === undefined) {
     console.log(user_id)

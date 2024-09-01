@@ -8,6 +8,10 @@ const getImageUrl = (path: string) => {
   return `http://47.97.215.255/img/${path}`
 }
 
+const isBlank = (str: string) => {
+  return !str || /^\s*$/.test(str)
+}
+
 const httpInstance = axios.create({
   baseURL: '/api',
   timeout: 5000
@@ -41,4 +45,4 @@ httpInstance.interceptors.response.use(
   }
 )
 
-export { getImageUrl, httpInstance }
+export { getImageUrl, isBlank, httpInstance }

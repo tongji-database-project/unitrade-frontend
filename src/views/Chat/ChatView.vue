@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import dayjs from 'dayjs'
 import type { FormInstance } from 'element-plus'
 import NormalMessage from './components/NormalMessage.vue'
 import type { Message } from '@/utils/interfaces'
+import { isBlank } from '@/utils/utils'
 
 defineProps({
   user_id: { type: String, required: true }
@@ -12,8 +14,10 @@ const emit = defineEmits(['newUserId'])
 
 const route = useRoute()
 
+// TODO: 进入后停在最下侧
+
 // TODO: 需要检查当前用户与 user_id 对应用户是否已有私聊记录
-// 如果没有则需要在个人主页进入私聊界面前新建一个私聊记录
+// 如果没有则需要在个人主页进入私聊界面前新建一个空私聊记录
 
 const user_info = ref<string | undefined>('in')
 const inputFormRef = ref<FormInstance>()
@@ -80,6 +84,7 @@ watch(
     console.log(`Chat with ${user_id}`)
 
     // TODO: 消息按时间排序还未完成
+    // 消息按时间排序在后端查询数据库时完成
     relative_messages.value = []
     messages.forEach((message) => {
       if (
@@ -91,13 +96,24 @@ watch(
     })
 
     // TODO: 获取当前对话的聊天记录
+    // get_messages
   },
   { immediate: true }
 )
 
 // TODO: 提交逻辑未完全完成
+// /api/message/send_message
 const sendMessage = async () => {
+  if (isBlank(new_msg.content)) {
+    ElMessage({
+      type: 'warning',
+      message: "请勿发送空信息"
+    })
+    resetMessage(inputFormRef.value)
+    return
+  }
   new_msg.receiver = route.params.user_id as string
+  new_msg.time = dayjs().format()
   console.log(new_msg)
 
   resetMessage(inputFormRef.value)
