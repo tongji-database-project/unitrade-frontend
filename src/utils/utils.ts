@@ -46,3 +46,4 @@ httpInstance.interceptors.response.use(
 )
 
 export { getImageUrl, isBlank, httpInstance }
+export default httpInstance
