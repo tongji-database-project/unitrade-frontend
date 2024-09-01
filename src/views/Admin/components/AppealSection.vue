@@ -71,6 +71,7 @@
   }
   .table{
     background-color: rgb(255, 255, 255);
+    width: 100%;
   }
   .spinner {
     border: 4px solid rgba(0, 0, 0, 0.1);

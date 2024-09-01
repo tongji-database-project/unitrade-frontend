@@ -70,6 +70,7 @@
     overflow-y: auto;
   }
   .table{
+    width: 100%;
     background-color: rgb(255, 255, 255);
     margin-bottom: 10px; /* 调整这个数值来增加或减少间距 */
     padding: 10px; /* 可选：添加填充以让表格内容与边界有些距离 */

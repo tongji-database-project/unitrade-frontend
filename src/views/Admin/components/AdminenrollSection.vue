@@ -43,7 +43,7 @@ const submitForm = async () => {
   </div>
   <header class="head">
         <!-- TODO: logo 待替换 -->
-        <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="50" height="50" />
+        <img alt="Vue logo" src="@/assets/logo.svg" width="50" height="50" />
   </header>
   <div class="input-container">
     <div>
@@ -72,6 +72,7 @@ const submitForm = async () => {
 <style scoped>
  .main{
     height: 110px;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center; 

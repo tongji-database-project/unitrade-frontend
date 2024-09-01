@@ -50,15 +50,18 @@
   .main{
     width: 70%;
     margin: auto;
+    margin-top: 50px;
   }
 
   .list{
     width: 15%;
+    margin-top: 10%;
     float: left;
   }
 
   .list p{
     display: block;
+    width: 100%;
     height: 80px;
     background-color: #3064bb;
     color: white;

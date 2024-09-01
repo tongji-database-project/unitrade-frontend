@@ -70,6 +70,7 @@
 
   .table{
     background-color: rgb(255, 255, 255);
+    width: 100%;
   }
 
   .spinner {

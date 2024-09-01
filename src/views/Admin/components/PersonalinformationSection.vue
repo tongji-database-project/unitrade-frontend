@@ -56,6 +56,7 @@
 <style scoped>
   .main{
     position: relative;
+    width: 100%;
   }
 
   .content{
