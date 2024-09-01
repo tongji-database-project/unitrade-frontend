@@ -37,7 +37,7 @@
           seller_id:oneInfo.seller_id,
           buyer_name:oneInfo.buyer_name,
           buyer_id:oneInfo.buyer_id,
-          commodity:oneInfo.commodity,
+          commodity:oneInfo.merchandise_name,
           reason:oneInfo.reason,
           time:new Date(oneInfo.time)
         };
