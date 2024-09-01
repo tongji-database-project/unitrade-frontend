@@ -5,10 +5,10 @@ import { useRouter } from 'vue-router'
 import {  getMyOrder } from '@/apis/user'
 import {onBeforeMount, ref,computed}from 'vue'
 interface MyOrder{
+      all:number;
       received:number;
       transit:number;
       uncommand:number;
-      all:number;
 }
 let loading=ref(true)
 const orders=ref<[MyOrder]>()

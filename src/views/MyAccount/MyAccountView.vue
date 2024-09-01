@@ -41,6 +41,7 @@ const router = useRouter();
 function Tologin() {
   router.push('/login');
 }
+
 onBeforeMount(()=>{
   // if(logged_in.value){
     hint_login.value=false;
