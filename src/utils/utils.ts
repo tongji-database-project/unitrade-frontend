@@ -42,3 +42,4 @@ httpInstance.interceptors.response.use(
 )
 
 export { getImageUrl, httpInstance }
+export default httpInstance
