@@ -88,7 +88,7 @@ export const getAdminInfo = async () => {
 
 export const getUserInfo = async () => {
   return await httpInstance({
-    url: '/info',
+    url: '/getMyinfo',
     method: 'GET'
   })
     .then((response) => {

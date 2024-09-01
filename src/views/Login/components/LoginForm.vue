@@ -39,7 +39,7 @@ const submitForm = async () => {
     try {
       const response = await loginAPI(username.value, password.value)
       if (response.status === 200) {
-        TokenStore.updatetoken(response.data)
+        TokenStore.updatetoken(response.data.access_token)
         //跳转到用户页面
         router.replace('/')
       } else {

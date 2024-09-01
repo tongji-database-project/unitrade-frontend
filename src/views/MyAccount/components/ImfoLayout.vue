@@ -1,6 +1,7 @@
 
 <script setup lang="ts">
 import { useTokenStore } from '@/stores/token'
+import { getImageUrl } from '@/utils/utils'
 import {  getUserInfo} from '@/apis/user'
 import {onBeforeMount, ref,computed}from 'vue'
 
@@ -8,7 +9,6 @@ interface Myinfos
 {
   id:string;
   name:string;
-  level:number;
   address:string;
   avator:string;
   reputation:number;
@@ -37,11 +37,11 @@ const logged_in = computed(() => useTokenStore().logged_in)
 const refreshInfo=async()=>{
   if(logged_in.value){
     const info=await getUserInfo()
-    infos.value=[{id:info.id,name:info.name,level:info.level,sex:info.sex,reputation:info.reputation,avator:info.avator,address:info.address,phone:info.phone,email:info.email}]
+    infos.value=[{id:info.id,name:info.name,sex:info.sex,reputation:info.reputation,avator:getImageUrl(info.avatar),address:info.address,phone:info.phone,email:info.email}]
     loading.value=(false)
   }else{
     loading.value=(false)
-    infos.value=[{id:"读取失败",name:"读取失败",level:0,sex:"读取失败",reputation:0,avator:"读取失败",address:"读取失败",phone:"读取失败",email:"读取失败"}]
+    infos.value=[{id:"读取失败",name:"读取失败",sex:"读取失败",reputation:0,avator:"读取失败",address:"读取失败",phone:"读取失败",email:"读取失败"}]
   }
 }
 onBeforeMount(async ()=>
@@ -64,7 +64,6 @@ onBeforeMount(async ()=>
         <div v-for="(info, index) in infos" :key="index">
           <p>账号 ID：{{ info.id }}</p>
           <p>账号名字：{{ info.name }}</p>
-          <p>权限等级：{{ info.level }}</p>
           <P>信誉值:{{ info.reputation }}</P>
           <p>性别：{{ info.sex }}</p>
           <p>电话：{{ info.phone }}</p>
