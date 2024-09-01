@@ -3,6 +3,7 @@
   import { useRouter } from 'vue-router'; 
   import { useTokenStore } from '@/stores/token'
   import { getAdminInfo } from '@/apis/user'
+  import { ElMessageBox } from 'element-plus'
 
   const router = useRouter();
   const TokenStore = useTokenStore()
@@ -20,6 +21,8 @@
         name.value=admininfo.data.admin_name;
         level.value=admininfo.data.admin_level?1:0;
         // isloading.value=false;
+      }else{admininfo.status !==500}{
+        ElMessageBox.alert('成功')
       }
     } catch (error) {
       console.log(error)

@@ -25,8 +25,9 @@ const submitForm = async () => {
     try {
       const response = await adminLoginAPI(username.value, password.value)
       if (response.status === 200) {
-        TokenStore.updatetoken(response.data)
+        TokenStore.updatetoken(response.data.token);
         // TODO: 跳转到管理员页面
+        router.push('/admin/:'+String(response.data.id))
       } else {
         ElMessageBox.alert('用户名或密码错误')
       }

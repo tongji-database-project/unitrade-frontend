@@ -3,6 +3,7 @@
   import { ref, onMounted } from 'vue';  
   import axios from 'axios';
   import OneComplation from './OneComplation.vue';
+  import { ElMessageBox } from 'element-plus'
 
   let isloading=ref(true);
 
@@ -28,7 +29,7 @@
   onMounted(async () => {  
     //加载数据过程
     try{
-      const complationInfo = await axios.get('/api/complationAudit/audit');
+      const complationInfo = await axios.get('/api/complationAudit/getInfo');
       complationInfo.data.forEach((oneInfo:any) => {
         let one:complationinformation={
           complation_id:oneInfo.complation_id,
@@ -40,8 +41,10 @@
         };
         complationinformations.value.push(one);
       });
+      ElMessageBox.alert('成功')
     } catch (error) {
-      console.log(error)
+      console.log(error);
+      ElMessageBox.alert('失败')
     }
     isloading.value=false;
   });
