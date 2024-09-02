@@ -3,7 +3,6 @@
   import { useRouter } from 'vue-router'; 
   import { useTokenStore } from '@/stores/token'
   import { getAdminInfo } from '@/apis/user'
-  import { ElMessageBox } from 'element-plus'
 
   const router = useRouter();
   const TokenStore = useTokenStore()
@@ -15,9 +14,9 @@
 
   onMounted(async () => {  
     const admininfo = await getAdminInfo();
-    id.value=admininfo.data.admin_id;
-    name.value=admininfo.data.admin_name;
-    level.value=admininfo.data.admin_level?1:0;
+    id.value=admininfo.admin_id;
+    name.value=admininfo.admin_name;
+    level.value=admininfo.admin_level?1:0;
     isloading.value=false;
   });
 
