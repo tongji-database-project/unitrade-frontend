@@ -57,8 +57,8 @@ const submitForm = async () => {
     </div>
     <div>
       <select v-model="adminlevel" id="adminlevel">
-            <option value="1">等级0</option>
-            <option value="2">等级1</option>
+            <option value="0">等级0</option>
+            <option value="1">等级1</option>
       </select>
     </div>
     <div>

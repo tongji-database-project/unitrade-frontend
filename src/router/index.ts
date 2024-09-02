@@ -154,17 +154,11 @@ const router = createRouter({
     {
       path: '/admin/:id',
       name: 'admin',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/Admin/AdminView.vue'),
-      //在完成后取消注释，恢复token验证
       beforeEnter: async (to, from, next) => {   
         const isadmin=await adminJudgeAPI();
         if (!isadmin) {  
-          //在完成后取消注释，删除next()，恢复token验证
-          next();
-          // next('/adminlogin');  
+          next('/adminlogin');  
         }else{
           next();
         }

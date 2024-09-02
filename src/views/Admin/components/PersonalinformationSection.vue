@@ -3,7 +3,6 @@
   import { useRouter } from 'vue-router'; 
   import { useTokenStore } from '@/stores/token'
   import { getAdminInfo } from '@/apis/user'
-  import { ElMessageBox } from 'element-plus'
 
   const router = useRouter();
   const TokenStore = useTokenStore()
@@ -14,19 +13,10 @@
   let isloading=ref(true);
 
   onMounted(async () => {  
-    try{
-      const admininfo = await getAdminInfo();
-      if(admininfo.status === 200){
-        id.value=admininfo.data.admin_id;
-        name.value=admininfo.data.admin_name;
-        level.value=admininfo.data.admin_level?1:0;
-        // isloading.value=false;
-      }else{admininfo.status !==500}{
-        ElMessageBox.alert('成功')
-      }
-    } catch (error) {
-      console.log(error)
-    }
+    const admininfo = await getAdminInfo();
+    id.value=admininfo.admin_id;
+    name.value=admininfo.admin_name;
+    level.value=admininfo.admin_level?1:0;
     isloading.value=false;
   });
 
