@@ -71,13 +71,7 @@ const sendVerifyCodeLogin = async () => {
   try {
     if (loginType.value == "2") {
       // 发送邮箱验证码
-      await axios.post('/api/Email', null, {
-  params: {
-    address: phoneOrEmail.value,
-    type: 'login'
-  }
-});
-
+      await axios.post(`/api/Email?address=${phoneOrEmail.value}&type=login`);
     } else {
       // 发送手机验证码
       await axios.post(`/api/CellphoneCode?phone=86${phoneOrEmail.value}&type=login`);

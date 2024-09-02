@@ -17,7 +17,7 @@ export const loginAPI = async (isPasswordLogin:boolean, username: string, passwo
 }
 
 export const userEnrollAPI = async (username: string, password:string, phone:string, email:string, verificationCode:string) => {
-  return await httpInstance({
+  return httpInstance({
     url: '/oauth/register',
     method: 'POST',
     data: {
