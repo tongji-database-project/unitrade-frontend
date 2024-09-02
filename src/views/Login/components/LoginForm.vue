@@ -5,7 +5,7 @@ import { defineProps } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import { useTokenStore } from '@/stores/token'
-import { loginAPI, adminLoginAPI } from '@/apis/user'
+import { loginAPI, adminLoginAPI, resetPasswordAPI} from '@/apis/user'
 
 const TokenStore = useTokenStore()
 const router = useRouter()
@@ -16,8 +16,9 @@ const password = ref('')
 const phoneOrEmail = ref('')
 const verificationCode = ref('')
 const loginType = ref('1'); // '1' 表示手机号, '2' 表示邮箱
+const forgetVisible = ref(false)
 const param = ref({
-  userid: '',
+  username: '',
   password: '',
   checkPassword: ''
 })
@@ -34,7 +35,7 @@ const toggleLoginType = () => {
 };
 
 const forgetPassword = () => {
-
+  forgetVisible.value = true;
 }
 
 const resetPassword = async () => {
@@ -42,16 +43,27 @@ const resetPassword = async () => {
     ElMessageBox.alert("两次输入的密码不一致");
     return;
   }
-  
+
   try {
-    await axios.patch(`/api/users/${param.value.userid}`, {
-      password: param.value.password
-    });
-    ElMessageBox.alert("密码重置成功！");
+    let response
+    if (loginType.value == "1") {
+      response = await resetPasswordAPI(param.value.username, param.value.password, phoneOrEmail.value, " ", verificationCode.value);
+    }
+    else {
+      response = await resetPasswordAPI(param.value.username, param.value.password, " ", phoneOrEmail.value, verificationCode.value);
+    }
+    if (response.status === 200) {
+      //router.push('/login');
+      window.location.reload(); 
+      alert('密码重置成功')
+      } else {
+        ElMessageBox.alert('密码重置失败')
+      }
   } catch (error) {
     ElMessageBox.alert("重置密码失败，请稍后重试");
   }
 };
+
 
 const sendVerifyCodeFind = async () => {
   try {
@@ -60,7 +72,6 @@ const sendVerifyCodeFind = async () => {
     } else {
       await axios.post(`/api/CellphoneCode/86${phoneOrEmail.value}&type=findpwd`);
     }
-    ElMessageBox.alert('验证码已发送');
   } catch (error) {
     ElMessageBox.alert('验证码发送失败，请稍后重试');
     console.error(error);
@@ -76,7 +87,6 @@ const sendVerifyCodeLogin = async () => {
       // 发送手机验证码
       await axios.post(`/api/CellphoneCode?phone=86${phoneOrEmail.value}&type=login`);
     }
-    ElMessageBox.alert('验证码已发送');
   } catch (error) {
     ElMessageBox.alert('验证码发送失败，请稍后重试');
     console.error(error);
@@ -126,14 +136,7 @@ const submitForm = async () => {
 
 <template>
   <form @submit.prevent="submitForm" class="form-container">
-    <div v-if="isPasswordLogin" class="input-container">
-      <input type="text" v-model="username" id="username" placeholder="请输入用户名" required />
-    </div>
-    <div v-if="isPasswordLogin" class="input-container">
-      <input type="password" v-model="password" id="password" placeholder="请输入密码" required />
-    </div>
-
-    <div v-if="!isPasswordLogin">
+    <div v-if="forgetVisible" class="reset-password-container">
       <div class="input-container">
         <select v-model="loginType" id="loginType">
           <option value="1">手机号</option>
@@ -145,20 +148,57 @@ const submitForm = async () => {
       </div>
       <div class="input-group">
         <input type="text" v-model="verificationCode" id="verificationCode" placeholder="请输入验证码" required />
-        <button type="button" @click="sendVerifyCodeLogin">获取验证码</button>
+        <button type="button" @click="sendVerifyCodeFind">获取验证码</button>
       </div>
+      <div class="input-container">
+        <input type="text" v-model="param.username" id="username" placeholder="请输入用户名" required />
+      </div>
+      <div class="input-container">
+        <input type="password" v-model="param.password" id="newPassword" placeholder="请输入新密码" required />
+      </div>
+      <div class="input-container">
+        <input type="password" v-model="param.checkPassword" id="checkPassword" placeholder="确认新密码" required />
+      </div>
+      <button type="submit" @click="resetPassword">重置密码</button>
     </div>
 
-    <div class="action-buttons">
-      <button type="button" @click="toggleLoginType">{{ isPasswordLogin ? '验证码登录' : '账号密码登录' }}</button>
-      <button type="button" @click="forgetPassword">忘记密码？</button>
-    </div>
+    <div v-else>
+      <!-- Original Login Form -->
+      <div v-if="isPasswordLogin" class="input-container">
+        <input type="text" v-model="username" id="username" placeholder="请输入用户名" required />
+      </div>
+      <div v-if="isPasswordLogin" class="input-container">
+        <input type="password" v-model="password" id="password" placeholder="请输入密码" required />
+      </div>
 
-    <div>
-      <button type="submit">登录</button>
+      <div v-if="!isPasswordLogin">
+        <div class="input-container">
+          <select v-model="loginType" id="loginType">
+            <option value="1">手机号</option>
+            <option value="2">邮箱</option>
+          </select>
+        </div>
+        <div class="input-container">
+          <input type="text" v-model="phoneOrEmail" id="phoneOrEmail" :placeholder="loginType === '1' ? '请输入手机号' : '请输入邮箱'" required />
+        </div>
+        <div class="input-group">
+          <input type="text" v-model="verificationCode" id="verificationCode" placeholder="请输入验证码" required />
+          <button type="button" @click="sendVerifyCodeLogin">获取验证码</button>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button type="button" @click="toggleLoginType">{{ isPasswordLogin ? '验证码登录' : '账号密码登录' }}</button>
+        <button type="button" @click="forgetPassword">忘记密码？</button>
+      </div>
+
+      <div>
+        <button type="submit">登录</button>
+      </div>
     </div>
   </form>
 </template>
+
 
 
 <style scoped>
@@ -223,6 +263,21 @@ const submitForm = async () => {
 
 .action-buttons button:hover {
   text-decoration: underline;
+}
+
+.reset-password-container button {
+  width: 200px;
+  height: 30px;
+  cursor: pointer;
+  border: none;
+  background-color: #409eff;
+  color: white;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.reset-password-container button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 button[type='submit'] {
