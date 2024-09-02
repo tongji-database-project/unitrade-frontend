@@ -17,13 +17,27 @@ export const loginAPI = async (isPasswordLogin:boolean, username: string, passwo
 }
 
 export const userEnrollAPI = async (username: string, password:string, phone:string, email:string, verificationCode:string) => {
-  return httpInstance({
+  return await httpInstance({
     url: '/oauth/register',
     method: 'POST',
     data: {
       name: username,
       password: password,
       //registerType: registerType,
+      PhoneNumber: phone,
+      Email: email,
+      VerificationCode: verificationCode
+    }
+  })
+}
+
+export const resetPasswordAPI = async (username: string, password:string, phone:string, email:string, verificationCode:string) => {
+  return await httpInstance({
+    url: '/ResetPwd',
+    method: 'PATCH',
+    data: {
+      name: username,
+      newPassword: password,
       PhoneNumber: phone,
       Email: email,
       VerificationCode: verificationCode
