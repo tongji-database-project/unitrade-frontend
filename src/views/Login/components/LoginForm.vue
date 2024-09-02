@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import axios from "axios";
 import { defineProps } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
@@ -9,8 +10,17 @@ import { loginAPI, adminLoginAPI } from '@/apis/user'
 const TokenStore = useTokenStore()
 const router = useRouter()
 
+const isPasswordLogin = ref(true)
 const username = ref('')
 const password = ref('')
+const phoneOrEmail = ref('')
+const verificationCode = ref('')
+const loginType = ref('1'); // '1' 表示手机号, '2' 表示邮箱
+const param = ref({
+  userid: '',
+  password: '',
+  checkPassword: ''
+})
 
 const props = defineProps({
   isadmin: {
@@ -18,6 +28,66 @@ const props = defineProps({
     default: false
   }
 })
+
+const toggleLoginType = () => {
+  isPasswordLogin.value = !isPasswordLogin.value;
+};
+
+const forgetPassword = () => {
+
+}
+
+const resetPassword = async () => {
+  if (param.value.password !== param.value.checkPassword) {
+    ElMessageBox.alert("两次输入的密码不一致");
+    return;
+  }
+  
+  try {
+    await axios.patch(`/api/users/${param.value.userid}`, {
+      password: param.value.password
+    });
+    ElMessageBox.alert("密码重置成功！");
+  } catch (error) {
+    ElMessageBox.alert("重置密码失败，请稍后重试");
+  }
+};
+
+const sendVerifyCodeFind = async () => {
+  try {
+    if (loginType.value == "2") {
+      await axios.post(`/api/Email?address=${phoneOrEmail.value}&type=findpwd`);
+    } else {
+      await axios.post(`/api/CellphoneCode/86${phoneOrEmail.value}&type=findpwd`);
+    }
+    ElMessageBox.alert('验证码已发送');
+  } catch (error) {
+    ElMessageBox.alert('验证码发送失败，请稍后重试');
+    console.error(error);
+  }
+};
+
+const sendVerifyCodeLogin = async () => {
+  try {
+    if (loginType.value == "2") {
+      // 发送邮箱验证码
+      await axios.post('/api/Email', null, {
+  params: {
+    address: phoneOrEmail.value,
+    type: 'login'
+  }
+});
+
+    } else {
+      // 发送手机验证码
+      await axios.post(`/api/CellphoneCode?phone=86${phoneOrEmail.value}&type=login`);
+    }
+    ElMessageBox.alert('验证码已发送');
+  } catch (error) {
+    ElMessageBox.alert('验证码发送失败，请稍后重试');
+    console.error(error);
+  }
+};
 
 const submitForm = async () => {
   if (props.isadmin == true) {
@@ -38,13 +108,19 @@ const submitForm = async () => {
   } else {
     //用户登录
     try {
-      const response = await loginAPI(username.value, password.value)
+      let response;
+      if (isPasswordLogin.value) {
+        response = await loginAPI(isPasswordLogin.value, username.value, password.value);
+      } else {
+        response = await loginAPI(isPasswordLogin.value, phoneOrEmail.value, verificationCode.value);
+      }
+
       if (response.status === 200) {
         TokenStore.updatetoken(response.data.access_token)
         //跳转到用户页面
         router.replace('/')
       } else {
-        ElMessageBox.alert(`用户名或密码错误\n${response.status}`)
+        ElMessageBox.alert(`登录失败：用户名或密码错误\n${response.status}`)
       }
     } catch (error) {
       console.log(error)
@@ -55,19 +131,41 @@ const submitForm = async () => {
 </script>
 
 <template>
-  <!-- TODO: 参考 ElementPlus 组件用法，美化登录界面，增加输入提示 -->
   <form @submit.prevent="submitForm" class="form-container">
-    <div class="input-container">
+    <div v-if="isPasswordLogin" class="input-container">
       <input type="text" v-model="username" id="username" placeholder="请输入用户名" required />
     </div>
-    <div class="input-container">
+    <div v-if="isPasswordLogin" class="input-container">
       <input type="password" v-model="password" id="password" placeholder="请输入密码" required />
     </div>
+
+    <div v-if="!isPasswordLogin">
+      <div class="input-container">
+        <select v-model="loginType" id="loginType">
+          <option value="1">手机号</option>
+          <option value="2">邮箱</option>
+        </select>
+      </div>
+      <div class="input-container">
+        <input type="text" v-model="phoneOrEmail" id="phoneOrEmail" :placeholder="loginType === '1' ? '请输入手机号' : '请输入邮箱'" required />
+      </div>
+      <div class="input-group">
+        <input type="text" v-model="verificationCode" id="verificationCode" placeholder="请输入验证码" required />
+        <button type="button" @click="sendVerifyCodeLogin">获取验证码</button>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button type="button" @click="toggleLoginType">{{ isPasswordLogin ? '验证码登录' : '账号密码登录' }}</button>
+      <button type="button" @click="forgetPassword">忘记密码？</button>
+    </div>
+
     <div>
       <button type="submit">登录</button>
     </div>
   </form>
 </template>
+
 
 <style scoped>
 .form-container {
@@ -75,21 +173,74 @@ const submitForm = async () => {
   flex-direction: column;
   align-items: center;
 }
-.form-container div {
+
+.input-container {
   margin-bottom: 20px;
 }
-.input-container input {
+
+.input-container input,
+.input-group input {
   width: 300px;
   height: 30px;
 }
+
+.input-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.input-group input {
+  flex: 1;
+}
+
+.input-group button {
+  margin-left: 10px;
+  height: 34px;
+  cursor: pointer;
+  border: none;
+  background-color: #409eff;
+  color: white;
+  padding: 0 10px;
+  font-size: 14px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-group button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 20px;
+}
+
+.action-buttons button {
+  font-size: 12px;
+  border: none;
+  background: none;
+  color: #409eff;
+  cursor: pointer;
+}
+
+.action-buttons button:hover {
+  text-decoration: underline;
+}
+
 button[type='submit'] {
   width: 200px;
   height: 30px;
   cursor: pointer;
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
+  border: none;
+  background-color: #409eff;
+  color: white;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
 button[type='submit']:hover {
   transform: scale(1.1);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);

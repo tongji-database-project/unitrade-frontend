@@ -3,14 +3,30 @@ import { httpInstance } from '@/utils/utils'
 
 // 对于用户登录 API 的二次封装
 
-export const loginAPI = async (username: string, password: string) => {
+export const loginAPI = async (isPasswordLogin:boolean, username: string, password: string) => {
   return await httpInstance({
     url: '/oauth/login',
     method: 'POST',
     // data 的字段名与后端接收数据的实体字段名保持一致（这里与后端中的 LoginRequest 实体字段一致），下同
     data: {
+      UseVerificationCode: !isPasswordLogin,
       name: username,
       password: password
+    }
+  })
+}
+
+export const userEnrollAPI = async (username: string, password:string, phone:string, email:string, verificationCode:string) => {
+  return await httpInstance({
+    url: '/oauth/register',
+    method: 'POST',
+    data: {
+      name: username,
+      password: password,
+      //registerType: registerType,
+      PhoneNumber: phone,
+      Email: email,
+      VerificationCode: verificationCode
     }
   })
 }
