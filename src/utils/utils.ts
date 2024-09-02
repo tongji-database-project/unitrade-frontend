@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { useTokenStore } from '@/stores/token'
+import { ElMessage } from 'element-plus'
 
 const getImageUrl = (path: string) => {
   // 开头有根目录 / 则去掉这个 /

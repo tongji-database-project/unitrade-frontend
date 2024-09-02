@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { defineProps } from 'vue'
 import { useRouter } from 'vue-router'
+import { ElMessageBox } from 'element-plus'
 import { useTokenStore } from '@/stores/token'
 import { loginAPI, adminLoginAPI } from '@/apis/user'
 

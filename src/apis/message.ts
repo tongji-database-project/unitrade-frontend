@@ -1,5 +1,6 @@
 import { httpInstance } from '@/utils/utils'
 import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import type { Message } from '@/utils/interfaces'
 
 const router = useRouter()
