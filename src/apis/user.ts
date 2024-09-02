@@ -135,10 +135,26 @@ export const EditMyinfo = async (username: string,usersex:string,useraddress:str
     url: '/editMyinfo',
     method: 'POST',
     data: {
-      name: username,
-      sex: usersex,
-      address:useraddress,
+      new_name: username,
+      new_sex: usersex,
+      new_address:useraddress,
     }
+  })
+  .then((response) => {
+    if (response.status === 200) {
+      return response.data
+    } else {
+      ElMessage({
+        type: 'warning',
+        message: `无法获取用户信息，状态码：${response.status}`
+      })
+    }
+  })
+  .catch((error) => {
+    ElMessage({
+      type: 'warning',
+      message: `无法获取用户信息，错误信息：${error}`
+    })
   })
 }
 export const EditPassword = async (OrientPassword:string,NewPassword:string,ConfirmPassword:string) => {
@@ -146,9 +162,9 @@ export const EditPassword = async (OrientPassword:string,NewPassword:string,Conf
     url: '/editPassword',
     method: 'POST',
     data: {
-      originPassword:OrientPassword,
-      newPassword: NewPassword,
-      confirmPassword: ConfirmPassword,
+      ORIGIN_PASSWORD:OrientPassword,
+      NEW_PASSWORD: NewPassword,
+      CONFIRM_PASSWORD: ConfirmPassword,
     }
   })
 }

@@ -4,9 +4,14 @@ import { useTokenStore } from '@/stores/token'
 import {onBeforeMount, ref,computed}from 'vue'
 import { EditMyinfo} from '@/apis/user'
 const logged_in = computed(() => useTokenStore().logged_in)
+
+
 let newName = ref("")
 let newSex = ref("")
 let newAddress = ref("")
+
+let is_edit=ref("")
+
 let submit=ref(false)
 let transit=ref(true)
 let result=ref("")
@@ -15,32 +20,22 @@ function close(){
 }
 const submitForm = async()=>{
     submit.value=true;
+    console.log(newName.value,newSex.value,newAddress.value)
     if(logged_in.value){
-    const response=await EditMyinfo(newName.value,newSex.value,newAddress.value)
-    if(response.status===200){
+
+      if(newName.value==""&&newSex.value==""&&newAddress.value==""){
+        transit.value=false;
+        result.value="无输入"
+      }
+      else{
+        const response=await EditMyinfo(newName.value,newSex.value,newAddress.value)
         transit.value=false;
         result.value="成功"
-    }
-    else{
-        transit.value=false;
-        result.value="失败"
-    }
+      }
   }else{
     transit.value=false;
     result.value="未登录"
   }
-    // try{
-    //     submit.value=true;
-    //     const response= await axios.post('/api/editInfo',{userName:newName,userSex:newSex,userAddress:newAddress});
-    //     if(response.status===200){
-    //         transit.value=false;
-    //         result.value="成功"
-    //     }
-    // }catch(error){
-    //     console.log(error)
-    //     transit.value=false;
-    //     result.value="失败"
-    // }
 }
 </script>
 
@@ -70,8 +65,8 @@ const submitForm = async()=>{
                     <p>修改成功</p>
                     <button @click="close">关闭</button>
                 </div>
-                <div v-else-if="result=='失败'">
-                    <p>修改失败，请稍后重试</p>
+                <div v-else-if="result=='无输入'">
+                    <p>请输入数据</p>
                     <button @click="close">关闭</button>
                 </div>
                 <div v-else-if="result=='未登录'">

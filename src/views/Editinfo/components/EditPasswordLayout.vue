@@ -20,7 +20,7 @@ const submitForm = async () => {
         const response = await EditPassword(Originpassword.value,Newpassword.value,Confirmpassword.value)
         if(response.status===200){
             transit.value=false;
-            result.value="成功";
+            result.value="修改成功";
         }
         else{
             transit.value=false;
@@ -54,7 +54,7 @@ const submitForm = async () => {
       />
     </div>
     <div>
-      <button type="submitForm">修改密码</button>
+      <button @click="submitForm">修改密码</button>
     </div>
   </form>
   <transition name="fade">
