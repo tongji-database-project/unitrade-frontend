@@ -199,12 +199,12 @@ const handleRemove = (file: UploadFile) => {
 const beforeUpload = (file: any) => {
   const isJPG = file.type === 'image/jpeg'
   const isPNG = file.type === 'image/png'
-  const isLt500KB = file.size / 1024 < 500
+  const isLt10MB = file.size / 1024 /1024 < 10
   if (!isJPG && !isPNG) {
     ElMessage.error('只能上传 JPG/PNG 格式的图片')
     return false
   }
-  if (!isLt500KB) {
+  if (!isLt10MB) {
     ElMessage.error('图片大小不能超过 500KB')
     return false
   }
@@ -238,13 +238,13 @@ const beforeCoverUpload = (file: any) => {
   console.log('文件上传检查开始') // 在函数开始时记录日志
   const isJPG = file.type === 'image/jpeg'
   const isPNG = file.type === 'image/png'
-  const isLt500KB = file.size / 1024 < 500
+  const isLt10MB = file.size / 1024 /1024 < 10
 
   if (!isJPG && !isPNG) {
     ElMessage.error('只能上传 JPG/PNG 格式的图片')
     return false
   }
-  if (!isLt500KB) {
+  if (!isLt10MB) {
     ElMessage.error('图片大小不能超过 500KB')
     return false
   }
