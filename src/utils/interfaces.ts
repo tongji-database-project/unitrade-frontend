@@ -13,6 +13,7 @@ export interface Product {
   description: string
   price: number
   stock: number
+  productType: string
   images: string[]
   cover: string
 }

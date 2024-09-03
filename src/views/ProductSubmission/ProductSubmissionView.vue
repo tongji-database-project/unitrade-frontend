@@ -26,6 +26,14 @@
       </el-form-item>
 
       <el-form-item
+        label="商品类型"
+        prop="productType"
+        :rules="[{ required: true, message: '请输入商品类型', trigger: 'blur' }]"
+      >
+        <el-input v-model="product.productType"></el-input>
+      </el-form-item>
+
+      <el-form-item
         label="商品描述"
         prop="description"
         :rules="[{ required: true, message: '请输入商品描述', trigger: 'blur' }]"
@@ -36,7 +44,7 @@
       <el-form-item label="上传封面图片">
         <el-upload
           :file-list="coverFileList"
-          action="/api/seller/sendPicture"
+          action="/api/seller/sendCover"
           list-type="picture-card"
           :on-remove="handleCoverRemove"
           :before-upload="beforeCoverUpload"
@@ -63,9 +71,8 @@
 
       <el-form-item label="上传商品图片">
         <el-upload
-          action="#"
+          action="/api/seller/sendDetails"
           list-type="picture-card"
-          :auto-upload="false"
           :on-remove="handleRemove"
           :before-upload="beforeUpload"
           :on-success="handleUploadSuccess"
@@ -119,8 +126,9 @@ const product = ref<Product>({
   description: '',
   price: 0,
   stock: 0,
-  imageUrls: [],
-  coverUrl: ''
+  productType:'',
+  images: [],
+  cover: ''
 })
 
 const router = useRouter()
@@ -156,25 +164,24 @@ const fileList = ref<UploadFile[]>([])
 const coverFileList = ref<UploadFile[]>([])
 const disabled = ref(false)
 
-//删除照片
+// 删除商品图片
 const handleRemove = (file: UploadFile) => {
   const index = fileList.value.findIndex((f) => f.uid === file.uid)
   if (index > -1) {
     fileList.value.splice(index, 1)
-    const urlIndex = product.value.imageUrls.indexOf(file.url as string)
+    const urlIndex = product.value.images.indexOf(file.url as string)
     console.log('删除成功')
     if (urlIndex > -1) {
-      product.value.imageUrls.splice(urlIndex, 1)
+      product.value.images.splice(urlIndex, 1)
     }
   }
 }
 
-//上传照片前进行检查
+/// 上传商品图片前进行检查
 const beforeUpload = (file: any) => {
   const isJPG = file.type === 'image/jpeg'
   const isPNG = file.type === 'image/png'
   const isLt500KB = file.size / 1024 < 500
-  console.log('检查成功')
   if (!isJPG && !isPNG) {
     ElMessage.error('只能上传 JPG/PNG 格式的图片')
     return false
@@ -183,25 +190,28 @@ const beforeUpload = (file: any) => {
     ElMessage.error('图片大小不能超过 500KB')
     return false
   }
+  console.log('检查成功')
   return true
 }
 
-//上传照片成功后的回调函数
+// 上传商品图片成功后的回调函数
 const handleUploadSuccess = (response: any, file: UploadFile) => {
-  if (response && response.status === 200 && response.data.url) {
-    product.value.imageUrls.push(response.data.url) // 将返回的图片链接保存到商品对象中
-    file.url = response.data.url // 设置文件的url
-    console.log('上传成功')
-    // ElMessage.success('图片上传成功')
+  if (response && response.url) {
+    product.value.images.push(response.url) // 将返回的图片链接保存到商品对象中
+    file.url = getImageUrl(response.url) // 设置文件的url
+    fileList.value.push(file) // 将文件添加到文件列表中
+    console.log('商品图片上传成功')
+    ElMessage.success('商品图片上传成功')
   } else {
-    // ElMessage.error('图片上传失败')
+    console.log('商品图片上传失败')
+    ElMessage.error('商品图片上传失败')
   }
 }
 
 //删除封面图片
 const handleCoverRemove = (file: UploadFile) => {
   coverFileList.value = []
-  product.value.coverUrl = ''
+  product.value.cover = ''
   console.log('封面图片删除成功')
 }
 

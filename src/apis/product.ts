@@ -12,8 +12,10 @@ export const submitProduct = async (product: Product) => {
       name: product.name,
       price: product.price,
       inventory: product.stock,
-      type: product.description,
-      Picture: product.coverUrl
+      type: product.productType,
+      cover_image_url: product.cover,
+      product_image_urls: product.images,
+      product_details:product.description,
     }
   })
     .then((response) => {
