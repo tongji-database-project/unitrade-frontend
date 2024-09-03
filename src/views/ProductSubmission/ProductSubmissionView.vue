@@ -1,10 +1,6 @@
 <template>
   <div>
-    <el-form
-      :model="product"
-      label-width="120px"
-      @submit.native.prevent="handleSubmit"
-    >
+    <el-form :model="product" label-width="120px" @submit.native.prevent="handleSubmit">
       <el-form-item
         label="商品名称"
         prop="name"
@@ -37,15 +33,37 @@
         <el-input type="textarea" v-model="product.description"></el-input>
       </el-form-item>
 
-      <el-form-item label="上传封面图片">
+      <!-- <el-form-item label="上传封面图片">
         <el-upload
+          :file-list="coverFileList"
           action="#"
           list-type="picture-card"
-          :auto-upload="false"
           :on-remove="handleCoverRemove"
           :before-upload="beforeCoverUpload"
           :on-success="handleCoverUploadSuccess"
+        >
+          <el-icon><Plus /></el-icon>
+          <template #file="{ file }">
+            <div>
+              <img class="el-upload-list__item-thumbnail" :src="file.url" alt="" />
+              <span class="el-upload-list__item-actions">
+                <span
+                  v-if="!disabled"
+                  class="el-upload-list__item-delete"
+                  @click="handleCoverRemove(file)"
+                >
+                  <el-icon><Delete /></el-icon>
+                </span>
+              </span>
+            </div>
+          </template>
+        </el-upload>
+      </el-form-item> -->
+      <el-form-item label="上传封面图片">
+        <el-upload
           :file-list="coverFileList"
+          action="/api/seller/sendPicture"
+          list-type="picture-card"
         >
           <el-icon><Plus /></el-icon>
           <template #file="{ file }">
@@ -64,6 +82,7 @@
           </template>
         </el-upload>
       </el-form-item>
+      
 
       <el-form-item label="上传商品图片">
         <el-upload
@@ -111,13 +130,11 @@ import { ElMessage } from 'element-plus'
 import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue'
 import type { UploadFile } from 'element-plus'
 import type { Product } from '@/utils/interfaces'
-import {submitProduct} from '@/apis/product'
+import { submitProduct } from '@/apis/product'
 
 const route = useRoute()
 
 //route.params.id
-
-
 
 const product = ref<Product>({
   name: '',
@@ -139,13 +156,10 @@ const validatePrice = (rule: any, value: number, callback: (error?: Error) => vo
 }
 
 const handleSubmit = async () => {
-
-  await submitProduct(product.value);
+  await submitProduct(product.value)
 }
 
-
 const handleCancle = async () => {
-
   // await axios
   // .get(`/api/test`)
   // .then(response => {
@@ -213,12 +227,29 @@ const handleCoverRemove = (file: UploadFile) => {
   console.log('封面图片删除成功')
 }
 
-//上传封面图片前进行检查
+// //上传封面图片前进行检查
+// const beforeCoverUpload = (file: any) => {
+//   const isJPG = file.type === 'image/jpeg'
+//   const isPNG = file.type === 'image/png'
+//   const isLt500KB = file.size / 1024 < 500
+//   console.log('封面图片检查成功')
+//   if (!isJPG && !isPNG) {
+//     ElMessage.error('只能上传 JPG/PNG 格式的图片')
+//     return false
+//   }
+//   if (!isLt500KB) {
+//     ElMessage.error('图片大小不能超过 500KB')
+//     return false
+//   }
+//   return true
+// }
+
 const beforeCoverUpload = (file: any) => {
+  console.log('文件上传检查开始') // 在函数开始时记录日志
   const isJPG = file.type === 'image/jpeg'
   const isPNG = file.type === 'image/png'
   const isLt500KB = file.size / 1024 < 500
-  console.log('封面图片检查成功')
+
   if (!isJPG && !isPNG) {
     ElMessage.error('只能上传 JPG/PNG 格式的图片')
     return false
@@ -227,19 +258,22 @@ const beforeCoverUpload = (file: any) => {
     ElMessage.error('图片大小不能超过 500KB')
     return false
   }
+
+  console.log('封面图片检查成功') // 确认检查是否通过
   return true
 }
 
 //上传封面图片成功后的回调函数
 const handleCoverUploadSuccess = (response: any, file: UploadFile) => {
   if (response && response.status === 200 && response.data.url) {
-    product.value.coverUrl = response.data.url // 将返回的封面图片链接保存到商品对象中
+    product.value.cover = response.data.url // 将返回的封面图片链接保存到商品对象中
     file.url = response.data.url // 设置文件的url
     coverFileList.value = [file] // 确保只有一个封面图片
     console.log('封面图片上传成功')
-    // ElMessage.success('封面图片上传成功')
+    ElMessage.success('封面图片上传成功')
   } else {
-    // ElMessage.error('封面图片上传失败')
+    console.log('封面图片上传失败')
+    ElMessage.error('封面图片上传失败')
   }
 }
 </script>
