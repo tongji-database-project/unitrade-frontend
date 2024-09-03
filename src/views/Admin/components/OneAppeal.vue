@@ -72,10 +72,10 @@
       信誉分：{{ oneappealinformation.credibility }}
     </div>
     <div @click="auditappeal(true)" class="button">
-      同意投诉
+      同意申诉
     </div>
     <div @click="auditappeal(false)" class="button">
-      拒绝投诉
+      拒绝申诉
     </div>
   </div>
 </template>
