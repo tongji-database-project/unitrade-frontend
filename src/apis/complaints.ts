@@ -1,5 +1,7 @@
+import { ElMessage } from 'element-plus'
 import { httpInstance } from '@/utils/utils'
 import { useRouter } from 'vue-router'
+import 'element-plus/dist/index.css'; //添加el组件的动画效果
 
 const router = useRouter()
 
