@@ -45,7 +45,7 @@ export default {
       alert('跳转到在售商品页面')
     },
     goToChat() {
-      alert('跳转到联系卖家页面')
+      this.$router.push({ name: 'chat', params: { user_id: this.userId } })
     },
     goToComplaint() {
       this.$router.push({ name: 'complaintsubmission', params: { seller_id: this.userId } })
