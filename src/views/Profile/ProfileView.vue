@@ -40,7 +40,7 @@ export default {
       alert('跳转到联系卖家页面');
     },
     goToComplaint() {
-      alert('跳转到投诉卖家页面');
+      this.$router.push({ name: 'complaintsubmission', params: { seller_id: this.userId } });
     },
     goToOther() {
       alert('跳转到其他页面');

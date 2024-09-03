@@ -26,7 +26,7 @@ export default {
       }
 
       try {
-        const response = await axios.post('https://服务器地址:端口号/api/sellercomplaints/submit', {
+        const response = await axios.post('http://localhost:5173/api/sellercomplaints/submit', {
           sellerId: this.$route.params.userId,
           complaintReason: this.complaintReason
         });

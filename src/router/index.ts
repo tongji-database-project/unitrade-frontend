@@ -54,6 +54,11 @@ const router = createRouter({
           name: 'profile',
           component: ProfileView
         },
+        {
+          path: 'complaintsubmission/:seller_id',
+          name: 'complaintsubmission',
+          component:ComplaintSubmissionView
+        },
         // 以下几个 URL 均结合当前的 token 来确定返回哪一个用户的信息
         {
           path: 'cart',
@@ -64,11 +69,6 @@ const router = createRouter({
           path: 'checkout',
           name: 'checkout',
           component: CheckoutView
-        },
-        {
-          path: 'complaintsubmission',
-          name: 'complaintsubmission',
-          component:ComplaintSubmissionView
         },
         {
           path: 'payment',
