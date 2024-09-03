@@ -11,6 +11,9 @@
         @change="selectChange"
         class="select-sort"
       />
+      <el-button type="primary" @click="router.push('product-sub')" class="search-button"
+        >发布商品</el-button
+      >
     </div>
     <div class="product-table-header">
       <div class="product-cover">封面</div>
@@ -94,8 +97,8 @@ const sortOrder = [
     label: '降序'
   },
   {
-    value:'asc',
-    label:'升序'
+    value: 'asc',
+    label: '升序'
   }
 ]
 
@@ -119,7 +122,7 @@ const selectOptions = [
     value: 'price',
     label: '按价格排序',
     children: sortOrder
-  },
+  }
 ]
 
 const selectChange = (value: any[]) => {

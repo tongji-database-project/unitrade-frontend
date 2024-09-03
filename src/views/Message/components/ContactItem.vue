@@ -1,66 +1,44 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { getImageUrl } from '@/utils/utils'
+import { getLatestMessage } from '@/apis/message'
+import { getOtherUserInfo } from '@/apis/user'
 
-defineProps({
+const props = defineProps({
   user_id: { type: String, required: true },
-  is_active: { type: Boolean, required: true },
+  is_active: { type: Boolean, required: true }
 })
 
-const contactItems = [
-  {
-    user_id: '2536',
-    username: 'mony',
-    last_message: 'Hello'
-  },
-  {
-    user_id: '2548',
-    username: 'zephyrin',
-    last_message: 'Bye'
-  },
-  {
-    user_id: '2357',
-    username: 'doe',
-    last_message: 'Hi'
-  },
-  {
-    user_id: '3568',
-    username: 'meoowny',
-    last_message: 'Wow'
-  },
-]
-
 const avatar_path = ref<string>()
+const user_name = ref<string>()
+const content = ref<string>()
 
-avatar_path.value = getImageUrl('avatar2.jpg')
-
-// TODO: 需要改为从后端调取数据
-const getCurrentContactInfo = (user_id: string) => {
-  const item = contactItems.find((item) => item.user_id === user_id);
-  if (item === undefined) {
-    console.log(user_id);
-    return {
-      username: 'Error',
-      last_message: 'Unknown',
-    };
-  }
-  else {
-    return item;
+const getCurrentContactInfo = async (user_id: string) => {
+  const latest_message = await getLatestMessage(user_id)
+  const user_info = await getOtherUserInfo(user_id)
+  avatar_path.value = getImageUrl(user_info.avatar)
+  console.log(latest_message)
+  if (latest_message === undefined) {
+    user_name.value = 'Error'
+    content.value = 'Unknown'
+  } else {
+    user_name.value = latest_message.username
+    content.value = latest_message.content
   }
 }
+
+onMounted(() => {
+  getCurrentContactInfo(props.user_id)
+})
 </script>
 
 <template>
   <div class="contact-card" :class="{ 'is-active': is_active }">
-    <el-avatar
-      class="contact-avatar"
-      :size="40"
-      :src="avatar_path"
-    ></el-avatar>
+    <el-avatar class="contact-avatar" :size="40" :src="avatar_path"></el-avatar>
 
     <div class="contact-info">
-      <div class="contact-user">{{ getCurrentContactInfo(user_id).username }}</div>
-      <div class="contact-msg">{{ getCurrentContactInfo(user_id).last_message }}</div>
+      <div class="contact-user">{{ user_name }}</div>
+      <div class="contact-msg">{{ content }}</div>
     </div>
   </div>
 </template>
@@ -72,10 +50,10 @@ const getCurrentContactInfo = (user_id: string) => {
   border-radius: 0.7rem;
   display: flex;
   align-items: center;
+}
 
-  &.is-active {
-    background-color: #ddd;
-  }
+.contact-card.is-active {
+  background-color: #ddd;
 }
 
 .contact-avatar {

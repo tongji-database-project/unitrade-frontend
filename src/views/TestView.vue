@@ -1,29 +1,29 @@
 <script setup lang="ts">
 // import { RouterLink, RouterView } from 'vue-router'
 // import HelloWorld from './components/HelloWorld.vue'
-import { ref } from "vue";
-import axios from "axios";
+import { ref } from 'vue'
+import axios from 'axios'
 
 interface AdminInfo {
-  id: string,
-  name: string,
-  password: string,
-  level: number,
+  id: string
+  name: string
+  password: string
+  level: number
 }
 
-const infos = ref<[AdminInfo]>();
+const infos = ref<[AdminInfo]>()
 
 const update = async () => {
   await axios
-  .get(`/api/test`)
-  .then(response => {
-    if (response.status === 200) {
-      infos.value = response.data;
-    }
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
+    .get(`/api/test`)
+    .then((response) => {
+      if (response.status === 200) {
+        infos.value = response.data
+      }
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
 }
 </script>
 
@@ -54,8 +54,7 @@ const update = async () => {
   </header>
 
   <RouterView />
--->
-</template>
+--></template>
 
 <style scoped>
 header {

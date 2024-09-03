@@ -1,25 +1,18 @@
 <script setup lang="ts">
-import { getImageUrl } from '@/utils/utils';
-
 const props = defineProps({
+  my_id: { type: String, required: true },
   user_id: { type: String, required: true },
+  avatar: { typs: String, required: true },
   content: { type: String, required: true },
-  time: { type: String, required: true },
+  time: { type: String, required: true }
 })
 
-// TODO: 状态管理器中除了保存 token 外还需要保存用户 ID 方便调用
-
-// 假定当前登录用户的 ID 为 1234
-const is_self = props.user_id === '1234'
-const avatar = is_self
-  ? getImageUrl('avatar.jpg')
-  : getImageUrl('avatar2.jpg')
-console.log(props.user_id, props.content)
+const is_self = props.user_id === props.my_id
 </script>
 
 <template>
   <div class="single-message" :class="{ 'self-message': is_self }">
-    <el-avatar :size="45" :src="avatar"></el-avatar>
+    <el-avatar :size="45" :src="props.avatar"></el-avatar>
     <div class="bubble-triangle" :class="{ 'self-message': is_self }"></div>
     <div class="message-box" :class="{ 'self-message': is_self }">
       {{ content }}
@@ -37,10 +30,10 @@ console.log(props.user_id, props.content)
 
   display: flex;
   flex-wrap: wrap;
+}
 
-  &.self-message {
-    flex-direction: row-reverse;
-  }
+.single-message.self-message {
+  flex-direction: row-reverse;
 }
 
 .bubble-triangle {
@@ -51,32 +44,32 @@ console.log(props.user_id, props.content)
   margin-left: var(--bubble-offset);
   position: relative;
   top: 1rem;
-  border-width: .5rem;
+  border-width: 0.5rem;
   border-style: solid;
   border-color: transparent var(--receiver-background) transparent transparent;
+}
 
-  &.self-message {
-    margin-left: 0;
-    margin-right: var(--bubble-offset);
-    border-color: transparent transparent transparent var(--sender-background);
-  }
+.bubble-triangle.self-message {
+  margin-left: 0;
+  margin-right: var(--bubble-offset);
+  border-color: transparent transparent transparent var(--sender-background);
 }
 
 .message-box {
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   background-color: var(--receiver-background);
-  padding: .7rem 1rem;
+  padding: 0.7rem 1rem;
   /*margin-top: .3rem;
   margin-left: .6rem;*/
   min-width: 30%;
   /* 消息框最大不能超过对话窗口减去两个头像和其他间距的宽度 */
   max-width: calc(100% - 110px);
   font-size: large;
+}
 
-  &.self-message {
-    background-color: var(--sender-background);
-    /*margin-right: .6rem;*/
-  }
+.message-box.self-message {
+  background-color: var(--sender-background);
+  /*margin-right: .6rem;*/
 }
 
 .message-time {
@@ -86,10 +79,10 @@ console.log(props.user_id, props.content)
   margin-left: var(--time-offset);
   display: flex;
   justify-content: left;
+}
 
-  &.self-message {
-    margin-right: var(--time-offset);
-    justify-content: right;
-  }
+.message-time.self-message {
+  margin-right: var(--time-offset);
+  justify-content: right;
 }
 </style>

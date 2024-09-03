@@ -1,89 +1,78 @@
 <script setup lang="ts">
-const categories = [ 
+import { onBeforeMount, ref, computed } from 'vue'
+import { useTokenStore } from '@/stores/token'
+import { useRouter } from 'vue-router'
+import ImfoLayout from './components/ImfoLayout.vue'
+import myorderLayout from './components/myorderLayout.vue'
+const logged_in = computed(() => useTokenStore().logged_in)
+let hint_login = ref(true)
+const categories = [
   {
-    name: "首页",
-    path: "/",
+    name: '首页',
+    path: '/'
   },
   {
-    name: "我的购物车",
-    path: "/cart",
+    name: '我的购物车',
+    path: '/cart'
   },
   {
-    name: "我的订单",
-    path: "/",        /*未设置 */
+    name: '我的订单',
+    path: '/order'
   },
   {
-    name: "我的收藏",
-    path: "/",      /*未设置 */
+    name: '我的收藏',
+    path: '/' /*未设置 */
   },
   {
-    name:"我的主页",
-    path:"/",       /*未设置 */
+    name: '我的主页',
+    path: '/' /*未设置 */
   },
   {
-    name:"个人设置(进行密码修改等)",
-    path:"/",       /*未设置 */
+    name: '我的消息',
+    path: '/message'
+  },
+  {
+    name: '我的申诉',
+    path: '/myappeal'
+  },
+  {
+    name: '个人信息修改',
+    path: '/Editinfo'
   }
 ]
-const infos=[
-  {
-    id: "未读取",
-    name: "未读取",
-    level: "未读取",
-  }
-]
-const address="未读取"
-const received="未读取"
-const transit="未读取"
-const uncommand="未读取"
+const router = useRouter()
+
+function Tologin() {
+  router.push('/login')
+}
+
+onBeforeMount(() => {
+  // if(logged_in.value){
+  hint_login.value = false
+  // }
+})
 </script>
-
-
 
 <template>
   <div class="container">
     <div class="my-navigator">
-      <div
-        class="header-category"
-        v-for="({name, path}, index) in categories"
-        :key="index"
-      >
+      <div class="header-category" v-for="({ name, path }, index) in categories" :key="index">
         <RouterLink :to="path">{{ name }}</RouterLink>
       </div>
     </div>
-    <div class="my-informations">
-      <div class="informations">
-        <div class="picture">
-          <el-avatar :size="60" src="https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png"></el-avatar>
+    <div class="my-info">
+      <ImfoLayout />
+      <myorderLayout />
+    </div>
+    <div v-if="hint_login == true">
+      <transition name="fade">
+        <div class="modal-overlay">
+          <div class="modal-content" @click="Tologin">
+            <p>当前未登录，请先进行登录</p>
+            <p>点击弹窗跳转到登录页面</p>
+          </div>
         </div>
-        <div class="basic-informations">
-          <div v-for="(info, index) in infos" :key="index">
-          <p>账号 ID：{{ info.id }}</p>
-          <p>账号名字：{{ info.name }}</p>
-          <p>权限等级：{{ info.level }}</p>
-        </div>
-
-        </div>
-        <div class="address">
-          <p>地址：{{ address }}</p>
-        </div>
-      
-      </div>
-      <div class="my-orders">  
-        <!-- 显示订单的信息 -->
-         <div class="have-received">
-          <h>已收货</h>
-          <p>{{ received }}</p>
-         </div>
-         <div class="transit">
-          <h>运输中</h>
-          <p>{{ transit }}</p>
-         </div>
-         <div class="uncommand">
-          <h>未评价</h>
-          <p>{{ uncommand }}</p>
-         </div>
-      </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -92,7 +81,6 @@ const uncommand="未读取"
 .container {
   display: flex; /* 使用弹性布局 */
   justify-content: space-between; /* 让子元素在容器内水平分布 */
-
 }
 .my-navigator {
   width: 25%;
@@ -102,33 +90,26 @@ const uncommand="未读取"
   border-radius: 10px; /* 设置所有四个角的圆角半径为 10px */
   padding: 30px;
 }
-
-.my-informations {
-  width: 70%;
-  height: 200px;
-  border: 2px solid #ccc;
-  border-radius: 10px; /* 设置所有四个角的圆角半径为 10px */
+.my-info {
+  width: 100%;
+  padding: 20px;
 }
-.informations{
-  width:100%;
-  height:60%;
-  display:flex;
-  margin-right:20px;
-  padding: 30px;
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
 }
-.picture{
-  width:10%;
-  height:100%;
-}
-.basic-informations{
-  width:50%;
-  height:100%;
-}
-.my-orders{
-  width:100%;
-  height: 40%;
-  display:flex;
-  justify-content: space-between;
-  padding:20px;
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

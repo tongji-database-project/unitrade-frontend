@@ -1,37 +1,109 @@
 <script setup lang="ts">
-import { getImageUrl } from '@/utils/utils';
+import MerchandiseCard from '@/components/MerchandiseCard.vue'
+import Banner from './components/Banner.vue'
+import Category from './components/Category.vue'
+import { getMerchandiseIdAPI } from '@/apis/home'
+import { onMounted, ref } from 'vue'
+import type { Ref } from 'vue'
 
-const List = [
-  { id:1, name: '杯子', price: '99.00' },
-  { id:2, name: '衣服', price: 'Description for Image 2' },
-  { id:3, name: 'Image 1', price: 'Description for Image 1' },
-  { id:4, name: 'Image 1', price: 'Description for Image 1' },
-  { id:5, name: 'Image 1', price: 'Description for Image 1' },
-  { id:6, name: 'Image 1', price: 'Description for Image 1' },
-  { id:7, name: 'Image 1', price: 'Description for Image 1' },
-  { id:8, name: 'Image 1', price: 'Description for Image 1' },
-  // Add more images as needed
-];
+const merchandise_id_list: Ref<string[]> = ref([])
+
+const LoadMerchandiseId = async () => {
+  merchandise_id_list.value = await getMerchandiseIdAPI()
+  console.log(merchandise_id_list.value)
+}
+
+onMounted(() => {
+  LoadMerchandiseId()
+})
+// const merchandise_id_list = [
+//   '1',
+//   '2',
+//   '3',
+//   '4',
+//   '5',
+//   '6',
+//   '7',
+//   '8',
+//   '1'
+//   // Add more images as needed
+// ]
+
+const input = ref('')
 </script>
 
 <template>
-  <HomePanel title="新鲜好物" sub-title="新鲜出炉 品质靠谱">
-    <el-row :gutter="20">
-      <el-col :span="6" v-for="item in List" :key="item.id">
-      <div class="goods-list">
-          <RouterLink to="/merchandise/idtest">
-            <img :src="getImageUrl('avatar.jpg')">
-            <p class="name">{{ item.name }}</p>
-            <p class="price">&yen;{{ item.price }}</p>
-          </RouterLink>
-        </div>
-      </el-col>
-    </el-row>   
-  </HomePanel>
+  <div class="home-page">
+    <div class="home-header">
+      <div class="logo">
+        <el-image class="logo-image" src="http://47.97.215.255/img/avatar.jpg" fit="cover" />
+      </div>
+      <div class="input-box">
+        <el-input v-model="input" placeholder="请输入商品">
+          <template #append>搜素</template>ss
+        </el-input>
+      </div>
+      <div class="shoppingCart">
+        <!-- <el-icon :size="20" :color="#f0f9f4">
+          <ShoppingCart />
+        </el-icon> -->
+      </div>
+    </div>
+    <div class="container">
+      <Category />
+      <Banner />
+    </div>
+    <div class="home-body">
+      <div class="merchandise-card" v-for="id in merchandise_id_list" :key="id">
+        <MerchandiseCard :merchandise_id="id" />
+      </div>
+    </div>
+  </div>
 </template>
 
-
 <style scoped>
+.home-page {
+  display: flex;
+  padding: 0 3rem;
+  flex-direction: column;
+}
+
+.home-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.home-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  padding: 10px;
+  box-sizing: border-box;
+
+  /* display:flex;
+  align-items:center; */
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+}
+
+.input-box {
+  width: 500px;
+  margin: 0 auto; /* 水平居中 */
+}
 
 .goods-list {
   display: flex;
@@ -39,12 +111,12 @@ const List = [
   width: 130px;
   height: 200px;
 
-  li {
+  /* li {
     width: 500px;
     height: 406px;
 
     background: #f0f9f4;
-    transition: all .5s;
+    transition: all 0.5s;
 
     &:hover {
       transform: translate3d(0, -3px, 0);
@@ -68,72 +140,6 @@ const List = [
     .price {
       color: #d12121;
     }
-  }
+  } */
 }
 </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- <template>
-  <h1>主页面（WIP）</h1>
-
-  <div class="waterfall-container">
-    <div class="waterfall">
-    <el-row :gutter="20">
-      <el-col
-        :span="6"
-        v-for="(item, index) in images"
-        :key="index"
-      >
-        <el-card class="card">
-          <img :src="getImageUrl()" class="card-img" alt="Image">
-          <div class="text">
-            <span>{{ item.title }}</span>
-            <p>{{ item.description }}</p>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-    </div>
-  </div>
-</template>
-
-<style scoped>
-.waterfall-container {
-  padding: 20px;
-}
-
-.card-item {
-  margin-bottom: 20px;
-}
-
-.card-image {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-}
-
-.card-title {
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.card-description {
-  font-size: 14px;
-  color: #666;
-}
-</style> -->
