@@ -36,8 +36,10 @@ export const getUserInfo = async () => {
       if (response.status === 200) {
         return response.data
       } else {
-        // 验证失败后置空 token
-        useTokenStore().updatetoken('')
+        if (response.status === 401) {
+          // 验证失败后置空 token
+          useTokenStore().updatetoken('')
+        }
         ElMessage({
           type: 'warning',
           message: `无法获取用户信息，状态码：${response.status}`
@@ -45,8 +47,33 @@ export const getUserInfo = async () => {
       }
     })
     .catch((error) => {
-      // 验证失败后置空 token
-      useTokenStore().updatetoken('')
+      ElMessage({
+        type: 'warning',
+        message: `无法获取用户信息，错误信息：${error}`
+      })
+    })
+}
+
+export const getOtherUserInfo = async (user_id: string) => {
+  return await httpInstance({
+    url: `/info/others/${user_id}`,
+    method: 'GET'
+  })
+    .then((response) => {
+      if (response.status === 200) {
+        return response.data
+      } else {
+        if (response.status === 401) {
+          // 验证失败后置空 token
+          useTokenStore().updatetoken('')
+        }
+        ElMessage({
+          type: 'warning',
+          message: `无法获取用户信息，状态码：${response.status}`
+        })
+      }
+    })
+    .catch((error) => {
       ElMessage({
         type: 'warning',
         message: `无法获取用户信息，错误信息：${error}`

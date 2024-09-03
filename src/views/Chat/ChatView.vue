@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { ref, reactive, computed, watch, onMounted } from 'vue'
+import { ref, reactive, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import dayjs from 'dayjs'
 import { ElMessage } from 'element-plus'
 import type { FormInstance } from 'element-plus'
 import NormalMessage from './components/NormalMessage.vue'
 import type { Message } from '@/utils/interfaces'
-import { isBlank } from '@/utils/utils'
+import { isBlank, getImageUrl } from '@/utils/utils'
 import { getMessages, sendMessage } from '@/apis/message'
-import { getUserInfo } from '@/apis/user'
+import { getOtherUserInfo, getUserInfo } from '@/apis/user'
 import {useTokenStore} from '@/stores/token'
+import type { ElScrollbar } from "element-plus"
 
 defineProps({
   user_id: { type: String, required: true }
@@ -25,7 +26,9 @@ const route = useRoute()
 
 const logged_in = computed(() => useTokenStore().logged_in)
 const my_id = ref('')
+const my_avatar = ref('')
 const user_name = ref('') // 对方用户名
+const user_avatar = ref('')
 const inputFormRef = ref<FormInstance>()
 const new_msg = reactive<Message>({
   sender: '',
@@ -33,6 +36,8 @@ const new_msg = reactive<Message>({
   content: '',
   time: ''
 })
+const scrollbarRef = ref<InstanceType<typeof ElScrollbar>>()
+const innerRef = ref<HTMLDivElement>()
 
 const relative_messages = ref<Message[]>([])
 
@@ -45,18 +50,24 @@ watch(
     emit('newUserId', user_id)
     console.log(`Chat with ${user_id}`)
 
-    console.log(await getMessages(user_id))
-    console.log('over')
-    const _messages = await getMessages(user_id)
-    user_name.value = _messages.username
+    const info = await getUserInfo()
+    my_id.value = info.id
+    my_avatar.value = getImageUrl(info.avatar)
+
+    const messages = await getMessages(user_id)
+    console.log(messages)
+    user_name.value = messages.username
     relative_messages.value = []
-    relative_messages.value = _messages.contents
+    relative_messages.value = messages.contents
+
+    const user_info = await getOtherUserInfo(user_id)
+    user_avatar.value = getImageUrl(user_info.avatar)
+
+    scrollbarRef.value!.setScrollTop(innerRef.value!.clientHeight)
   },
   { immediate: true }
 )
 
-// TODO: 提交逻辑未完全完成
-// /api/message/send_message
 const sendNewMessage = async () => {
   if (isBlank(new_msg.content)) {
     ElMessage({
@@ -69,34 +80,27 @@ const sendNewMessage = async () => {
   new_msg.sender = my_id.value;
   new_msg.time = dayjs().format()
   sendMessage(new_msg)
-  // TODO: 发送后调用界面刷新
+
+  relative_messages.value.push({...new_msg})
 
   resetMessage(inputFormRef.value)
+
+  scrollbarRef.value!.setScrollTop(innerRef.value!.clientHeight)
 }
 
-// 要完成清除功能记得在 el-form-item 标签上加 prop 属性，含义见官网文档
 const resetMessage = (form: FormInstance | undefined) => {
   console.log('reset')
   if (!form) return
   form.resetFields()
 }
-
-const load_user_info = async () => {
-  const info = await getUserInfo()
-  my_id.value = info.id
-}
-
-onMounted(() => {
-  load_user_info()
-})
 </script>
 
 <template>
   <div v-if="user_id" class="conversation-box">
     <div class="chat-header">{{ user_name }}</div>
     <el-divider />
-    <el-scrollbar class="chat-body">
-      <div v-if="logged_in">
+    <el-scrollbar class="chat-body" ref="scrollbarRef">
+      <div v-if="logged_in" ref="innerRef">
         <div
           class="message-item"
           v-for="(message, index) in relative_messages"
@@ -105,8 +109,9 @@ onMounted(() => {
           <NormalMessage
             :my_id
             :user_id="message.sender"
+            :avatar="my_id === message.sender ? my_avatar : user_avatar"
             :content="message.content"
-            :time="message.time"
+            :time="dayjs(message.time).format('MM/DD HH:mm:ss')"
           />
           <!-- TODO: 计划完成一个特殊消息的推送 -->
         </div>

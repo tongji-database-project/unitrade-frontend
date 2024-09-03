@@ -9,19 +9,17 @@ const relative_contact = ref<string[]>()
 const current_contact = ref<string | undefined>()
 
 const changeSession = (user_id: string) => {
-  // current_contact.value = user_id
   router.push(`/message/${user_id}`)
 }
 
 onMounted(async () => {
-  // relative_contact.value = ['2536', '2548', '2357', '3568']
   relative_contact.value = await getContactingUser();
   console.log('relative_contact:', relative_contact.value)
 })
 </script>
 
 <template>
-  <h1>用户消息页面（WIP）</h1>
+  <h1>用户消息页面</h1>
   <div class="container">
     <div class="message-interface">
       <div class="user-list-panel">
