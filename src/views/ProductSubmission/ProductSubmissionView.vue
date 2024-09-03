@@ -33,37 +33,14 @@
         <el-input type="textarea" v-model="product.description"></el-input>
       </el-form-item>
 
-      <!-- <el-form-item label="上传封面图片">
-        <el-upload
-          :file-list="coverFileList"
-          action="#"
-          list-type="picture-card"
-          :on-remove="handleCoverRemove"
-          :before-upload="beforeCoverUpload"
-          :on-success="handleCoverUploadSuccess"
-        >
-          <el-icon><Plus /></el-icon>
-          <template #file="{ file }">
-            <div>
-              <img class="el-upload-list__item-thumbnail" :src="file.url" alt="" />
-              <span class="el-upload-list__item-actions">
-                <span
-                  v-if="!disabled"
-                  class="el-upload-list__item-delete"
-                  @click="handleCoverRemove(file)"
-                >
-                  <el-icon><Delete /></el-icon>
-                </span>
-              </span>
-            </div>
-          </template>
-        </el-upload>
-      </el-form-item> -->
       <el-form-item label="上传封面图片">
         <el-upload
           :file-list="coverFileList"
           action="/api/seller/sendPicture"
           list-type="picture-card"
+          :on-remove="handleCoverRemove"
+          :before-upload="beforeCoverUpload"
+          :on-success="handleCoverUploadSuccess"
         >
           <el-icon><Plus /></el-icon>
           <template #file="{ file }">
@@ -227,22 +204,6 @@ const handleCoverRemove = (file: UploadFile) => {
   console.log('封面图片删除成功')
 }
 
-// //上传封面图片前进行检查
-// const beforeCoverUpload = (file: any) => {
-//   const isJPG = file.type === 'image/jpeg'
-//   const isPNG = file.type === 'image/png'
-//   const isLt500KB = file.size / 1024 < 500
-//   console.log('封面图片检查成功')
-//   if (!isJPG && !isPNG) {
-//     ElMessage.error('只能上传 JPG/PNG 格式的图片')
-//     return false
-//   }
-//   if (!isLt500KB) {
-//     ElMessage.error('图片大小不能超过 500KB')
-//     return false
-//   }
-//   return true
-// }
 
 const beforeCoverUpload = (file: any) => {
   console.log('文件上传检查开始') // 在函数开始时记录日志
@@ -269,6 +230,7 @@ const handleCoverUploadSuccess = (response: any, file: UploadFile) => {
     product.value.cover = response.data.url // 将返回的封面图片链接保存到商品对象中
     file.url = response.data.url // 设置文件的url
     coverFileList.value = [file] // 确保只有一个封面图片
+    console.log(response.data.url)
     console.log('封面图片上传成功')
     ElMessage.success('封面图片上传成功')
   } else {
