@@ -23,17 +23,6 @@ const refreshOrder = async () => {
     loading.value=(false)
     orders.value=[{received:0,transit:0,uncommand:0,all:0}]
   }
-  // try{
-  //   const response=await axios.post('/api/getMyOrder',{user:id})
-  //   if (response.status === 200) {
-  //     orders.value = response.data
-  //     loading.value=(false)
-  //   }
-  // }catch(error){
-  //   console.log(error)
-  //   loading.value=(false)
-  //   orders.value=[{received:0,transit:0,uncommand:0}]
-  // }
 }
 const router = useRouter();
 function toOrder(){

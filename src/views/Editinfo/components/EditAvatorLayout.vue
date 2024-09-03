@@ -1,40 +1,24 @@
 <script setup lang="ts">
 import {ref} from'vue'
-import axios from "axios";
-
+// import axios from "axios";
+// import { getImageUrl } from '@/utils/utils'
 
 let submit=ref(false);
 let transit=ref(false);
 let result=ref('');
 let file = ref<File | null>(null);
 let imageUrl = ref<string | null>(null);
-//   const imageUrl = ref<string | null>(null);
 
-// const handleFileChange = (event: Event) => {
-//   const input = event.target as HTMLInputElement;
-//   const file = input.files ? input.files[0] : null;
-
-//   if (file && file.type.startsWith('image/')) {
-//     const reader = new FileReader();
-//     reader.onload = (e) => {
-//       imageUrl.value = e.target?.result as string;
-//     };
-//     reader.readAsDataURL(file);
-//   } else {
-//     alert('Please select a valid image file.');
-//   }
-// };
 function handleFileChange(event:Event){
   const input = event.target as HTMLInputElement;
       if (input.files && input.files[0]) {
-        const selectedFile = input.files[0];
-        if (selectedFile.type.startsWith('image/')) {
+        file.value = input.files[0];
+        if (file.value.type.startsWith('image/')) {
           const reader=new FileReader();
           reader.onload=(e)=>{
             imageUrl.value=e.target?.result as string
-            console.log(imageUrl.value);
           }
-          reader.readAsDataURL(selectedFile);
+          reader.readAsDataURL(file.value);
         } else {
           alert('请选择一个有效的图片文件');
         }
@@ -44,19 +28,38 @@ function close(){
   submit.value=false;
 }
 const submitEdit =async()=>{
-  try{
-    submit.value=true;
-    const response= await axios.post('/api/editAvator',{NewAvator:imageUrl});
-        if(response.status===200){
-            transit.value=false;
-            result.value="成功";
-        }
-  }catch(error){
-    console.log(error);
+  submit.value=true; //启动提交动画
+  if (!file.value) {
+    result.value="无文件"
+    return;
+  }
+  const formData = new FormData();
+  formData.append('file', file.value);
+  try {
+    transit.value=true;  //开始传输动画
+    const response = await fetch('/api/setpicture', {
+    method: 'POST',
+    body: formData,
+    });
+
+    if (response.ok) {
+      transit.value=false;
+      result.value="成功"
+     } else {
+      transit.value=false;
+      result.value="失败"
+    }
+  } catch (error) {
     transit.value=false;
     result.value="失败";
+    console.error('Error uploading file:', error);
   }
 }
+
+
+
+
+
 </script>
 <template>
     <div>
@@ -94,8 +97,6 @@ const submitEdit =async()=>{
             </transition>
         </div>
      </div>
-
-     
     </div>
 </template>
   
@@ -142,4 +143,50 @@ const submitEdit =async()=>{
   height: 100%; /* 居中于视口 */
 }
  </style>
+  
+   <!-- <script setup lang="ts">
+   import { ref } from 'vue';
+   
+   const file = ref<File | null>(null);
+   const uploadStatus = ref("无反应aaaaaaaaaaaaa")
+   
+   const handleFileChange = (event: Event) => {
+         const input = event.target as HTMLInputElement;
+         if (input.files && input.files.length > 0) {
+           file.value = input.files[0];
+         }
+       };
+ 
+   const upload = async ()=>{
+         if (!file.value) {
+           uploadStatus.value = 'No file selected';
+           return;
+         }
+         console.log("asd")
+   
+         const formData = new FormData();
+         formData.append('file', file.value);
+         try {
+            const response = await fetch('/api/setpicture', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                console.log('File uploaded successfully');
+            } else {
+                console.error('Upload failed:', await response.text());
+            }
+        } catch (error) {
+            console.error('Error uploading file:', error);
+        }
+       };
+
+</script>
+<template>
+  <div>
+    <input type="file" @change="handleFileChange"/>
+    <button @click="upload">提交</button>
+  </div>
+</template> -->
   

@@ -1,7 +1,8 @@
 
 <script setup lang="ts">
 import { useTokenStore } from '@/stores/token'
-import {onBeforeMount, ref,computed}from 'vue'
+import { ref,computed}from 'vue'
+import { useRouter } from 'vue-router';
 import { EditMyinfo} from '@/apis/user'
 const logged_in = computed(() => useTokenStore().logged_in)
 
@@ -9,32 +10,18 @@ const logged_in = computed(() => useTokenStore().logged_in)
 let newName = ref("")
 let newSex = ref("")
 let newAddress = ref("")
-
-let is_edit=ref("")
-
-let submit=ref(false)
-let transit=ref(true)
-let result=ref("")
-function close(){
-    submit.value=false;
+const router = useRouter();
+const ToAccount = () => {
+  setTimeout(() => {
+    router.push('/account')
+  }, 2000); // 延迟时间为 2000 毫秒（2 秒）
 }
 const submitForm = async()=>{
-    submit.value=true;
-    console.log(newName.value,newSex.value,newAddress.value)
-    if(logged_in.value){
-
-      if(newName.value==""&&newSex.value==""&&newAddress.value==""){
-        transit.value=false;
-        result.value="无输入"
-      }
-      else{
-        const response=await EditMyinfo(newName.value,newSex.value,newAddress.value)
-        transit.value=false;
-        result.value="成功"
-      }
-  }else{
-    transit.value=false;
-    result.value="未登录"
+  if(logged_in){
+    const response=await EditMyinfo(newName.value,newSex.value,newAddress.value)
+    if(response===200){  //修改成功就延迟2s跳转到个人中心界面
+      ToAccount()
+    }
   }
 }
 </script>
@@ -51,33 +38,6 @@ const submitForm = async()=>{
      <p>地址：</p>
      <input v-model="newAddress" placeholder="地址：" />
      <button @click="submitForm">提交</button>
-     <transition name="fade">
-      <div v-if="submit" class="modal-overlay" >
-        <div class="modal-content" @click.stop>
-            <div v-if="transit">
-                <div class="centre">
-                    <div class="spinner"></div>
-                </div>
-                <p>正在提交修改，请勿关闭当前页面</p>
-            </div>
-            <div v-else>
-                <div v-if="result=='成功'">
-                    <p>修改成功</p>
-                    <button @click="close">关闭</button>
-                </div>
-                <div v-else-if="result=='无输入'">
-                    <p>请输入数据</p>
-                    <button @click="close">关闭</button>
-                </div>
-                <div v-else-if="result=='未登录'">
-                    <p>当前未登录，请登录用户后再修改</p>
-                    <button @click="close">关闭</button>
-                </div>
-            </div>
-        </div>
-      </div>
-    </transition>
-
     </div>
 
 </template>
