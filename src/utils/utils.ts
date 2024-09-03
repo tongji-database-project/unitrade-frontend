@@ -1,5 +1,7 @@
 import axios from 'axios'
+import { ElMessage } from 'element-plus'
 import { useTokenStore } from '@/stores/token'
+import 'element-plus/dist/index.css'; //添加el组件的动画效果
 
 const getImageUrl = (path: string) => {
   // 开头有根目录 / 则去掉这个 /
@@ -32,10 +34,6 @@ httpInstance.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       console.error('Unauthorized access')
-      ElMessage({
-        type: 'error',
-        message: '用户未登录，请先登录/注册'
-      })
     }
     return Promise.reject(error)
   }
