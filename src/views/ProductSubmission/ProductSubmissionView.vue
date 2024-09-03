@@ -143,6 +143,24 @@ const validatePrice = (rule: any, value: number, callback: (error?: Error) => vo
 
 const handleSubmit = async () => {
   await submitProduct(product.value)
+  .then((response) => {
+      if (response.status === 200) {
+        ElMessage.success(response.data.message || '商品发布成功')
+        router.push('/onsale') // 发布成功后跳转到其他页面
+        return response.data
+      } else if (response.status === 400) {
+        ElMessage({
+          type: 'warning',
+          message: `无法获取用户信息状态码：${response.status}`
+        })
+      }
+    })
+    .catch((error) => {
+      ElMessage({
+        type: 'warning',
+        message: `无法获取,错误信息：${error}`
+      })
+    })
 }
 
 const handleCancle = async () => {
