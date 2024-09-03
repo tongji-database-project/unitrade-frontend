@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { adminJudgeAPI } from '@/apis/user';
+import { roleJudgeAPI } from '@/apis/user';
 import LayoutView from '@/views/Layout/LayoutView.vue'
 import HomeView from '@/views/Home/HomeView.vue'
 import MerchandiseView from '@/views/Merchandise/MerchandiseView.vue'
@@ -158,8 +158,8 @@ const router = createRouter({
       name: 'admin',
       component: () => import('../views/Admin/AdminView.vue'),
       beforeEnter: async (to, from, next) => {   
-        const isadmin=await adminJudgeAPI();
-        if (!isadmin) {  
+        const role=await roleJudgeAPI();
+        if (role!=="Admin") {  
           next('/adminlogin');  
           ElMessage({
             type:"error",

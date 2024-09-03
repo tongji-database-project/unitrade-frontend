@@ -56,9 +56,9 @@ export const adminLoginAPI = async (username: string, password: string) => {
   })
 }
 
-export const adminJudgeAPI = async () => {
+export const roleJudgeAPI = async () => {
   return await httpInstance({
-    url: '/adminjudge',
+    url: '/rolejudge',
     method: 'GET'
   })
     .then((response) => {
@@ -71,7 +71,7 @@ export const adminJudgeAPI = async () => {
     .catch((error) => {
       ElMessage({
         type: 'warning',
-        message: `管理员验证失败，错误信息：${error}`
+        message: `身份验证失败，错误信息：${error}`
       })
       return false;
     })
