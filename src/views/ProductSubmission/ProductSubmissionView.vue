@@ -1,11 +1,6 @@
 <template>
   <div>
-    <el-form
-      :model="product"
-      ref="productForm"
-      label-width="120px"
-      @submit.native.prevent="handleSubmit"
-    >
+    <el-form :model="product" label-width="120px" @submit.native.prevent="handleSubmit">
       <el-form-item
         label="商品名称"
         prop="name"
@@ -31,6 +26,14 @@
       </el-form-item>
 
       <el-form-item
+        label="商品类型"
+        prop="productType"
+        :rules="[{ required: true, message: '请输入商品类型', trigger: 'blur' }]"
+      >
+        <el-input v-model="product.productType"></el-input>
+      </el-form-item>
+
+      <el-form-item
         label="商品描述"
         prop="description"
         :rules="[{ required: true, message: '请输入商品描述', trigger: 'blur' }]"
@@ -40,13 +43,12 @@
 
       <el-form-item label="上传封面图片">
         <el-upload
-          action="#"
+          :file-list="coverFileList"
+          action="/api/seller/sendCover"
           list-type="picture-card"
-          :auto-upload="false"
           :on-remove="handleCoverRemove"
           :before-upload="beforeCoverUpload"
           :on-success="handleCoverUploadSuccess"
-          :file-list="coverFileList"
         >
           <el-icon><Plus /></el-icon>
           <template #file="{ file }">
@@ -65,12 +67,12 @@
           </template>
         </el-upload>
       </el-form-item>
+      
 
       <el-form-item label="上传商品图片">
         <el-upload
-          action="#"
+          action="/api/seller/sendDetails"
           list-type="picture-card"
-          :auto-upload="false"
           :on-remove="handleRemove"
           :before-upload="beforeUpload"
           :on-success="handleUploadSuccess"
@@ -111,30 +113,24 @@ import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue'
 import type { UploadFile } from 'element-plus'
+import type { Product } from '@/utils/interfaces'
+import { submitProduct } from '@/apis/product'
+import { getImageUrl } from '@/utils/utils'
 
 const route = useRoute()
 
 //route.params.id
-
-interface Product {
-  name: string
-  description: string
-  price: number
-  stock: number
-  imageUrls: string[]
-  coverUrl: string
-}
 
 const product = ref<Product>({
   name: '',
   description: '',
   price: 0,
   stock: 0,
-  imageUrls: [],
-  coverUrl: ''
+  productType:'',
+  images: [],
+  cover: ''
 })
 
-const productForm = ref(null)
 const router = useRouter()
 
 const validatePrice = (rule: any, value: number, callback: (error?: Error) => void) => {
@@ -146,25 +142,28 @@ const validatePrice = (rule: any, value: number, callback: (error?: Error) => vo
 }
 
 const handleSubmit = async () => {
-  if (!productForm.value) return
-
-  // await axios
-  // .get(`/api/test`)
-  // .then(response => {
-  //   if (response.status === 200) {
-  //     infos.value = response.data;
-  //   }
-  // })
-  // .catch(function (error) {
-  //   console.log(error);
-  // });
-
-  router.push('onsale')
+  await submitProduct(product.value)
+  .then((response) => {
+      if (response.status === 200) {
+        ElMessage.success(response.data.message || '商品发布成功')
+        router.push('/onsale') // 发布成功后跳转到其他页面
+        return response.data
+      } else if (response.status === 400) {
+        ElMessage({
+          type: 'warning',
+          message: `无法获取用户信息状态码：${response.status}`
+        })
+      }
+    })
+    .catch((error) => {
+      ElMessage({
+        type: 'warning',
+        message: `无法获取,错误信息：${error}`
+      })
+    })
 }
 
 const handleCancle = async () => {
-  if (!productForm.value) return
-
   // await axios
   // .get(`/api/test`)
   // .then(response => {
@@ -183,82 +182,90 @@ const fileList = ref<UploadFile[]>([])
 const coverFileList = ref<UploadFile[]>([])
 const disabled = ref(false)
 
-//删除照片
+// 删除商品图片
 const handleRemove = (file: UploadFile) => {
   const index = fileList.value.findIndex((f) => f.uid === file.uid)
   if (index > -1) {
     fileList.value.splice(index, 1)
-    const urlIndex = product.value.imageUrls.indexOf(file.url as string)
+    const urlIndex = product.value.images.indexOf(file.url as string)
     console.log('删除成功')
     if (urlIndex > -1) {
-      product.value.imageUrls.splice(urlIndex, 1)
+      product.value.images.splice(urlIndex, 1)
     }
   }
 }
 
-//上传照片前进行检查
+/// 上传商品图片前进行检查
 const beforeUpload = (file: any) => {
   const isJPG = file.type === 'image/jpeg'
   const isPNG = file.type === 'image/png'
-  const isLt500KB = file.size / 1024 < 500
-  console.log('检查成功')
+  const isLt10MB = file.size / 1024 /1024 < 10
   if (!isJPG && !isPNG) {
     ElMessage.error('只能上传 JPG/PNG 格式的图片')
     return false
   }
-  if (!isLt500KB) {
+  if (!isLt10MB) {
     ElMessage.error('图片大小不能超过 500KB')
     return false
   }
+  console.log('检查成功')
   return true
 }
 
-//上传照片成功后的回调函数
+// 上传商品图片成功后的回调函数
 const handleUploadSuccess = (response: any, file: UploadFile) => {
-  if (response && response.status === 200 && response.data.url) {
-    product.value.imageUrls.push(response.data.url) // 将返回的图片链接保存到商品对象中
-    file.url = response.data.url // 设置文件的url
-    console.log('上传成功')
-    // ElMessage.success('图片上传成功')
+  if (response && response.url) {
+    product.value.images.push(response.url) // 将返回的图片链接保存到商品对象中
+    file.url = getImageUrl(response.url) // 设置文件的url
+    fileList.value.push(file) // 将文件添加到文件列表中
+    console.log('商品图片上传成功')
+    ElMessage.success('商品图片上传成功')
   } else {
-    // ElMessage.error('图片上传失败')
+    console.log('商品图片上传失败')
+    ElMessage.error('商品图片上传失败')
   }
 }
 
 //删除封面图片
 const handleCoverRemove = (file: UploadFile) => {
   coverFileList.value = []
-  product.value.coverUrl = ''
+  product.value.cover = ''
   console.log('封面图片删除成功')
 }
 
-//上传封面图片前进行检查
+
 const beforeCoverUpload = (file: any) => {
+  console.log('文件上传检查开始') // 在函数开始时记录日志
   const isJPG = file.type === 'image/jpeg'
   const isPNG = file.type === 'image/png'
-  const isLt500KB = file.size / 1024 < 500
-  console.log('封面图片检查成功')
+  const isLt10MB = file.size / 1024 /1024 < 10
+
   if (!isJPG && !isPNG) {
     ElMessage.error('只能上传 JPG/PNG 格式的图片')
     return false
   }
-  if (!isLt500KB) {
+  if (!isLt10MB) {
     ElMessage.error('图片大小不能超过 500KB')
     return false
   }
+
+  console.log('封面图片检查成功') // 确认检查是否通过
   return true
 }
 
 //上传封面图片成功后的回调函数
 const handleCoverUploadSuccess = (response: any, file: UploadFile) => {
-  if (response && response.status === 200 && response.data.url) {
-    product.value.coverUrl = response.data.url // 将返回的封面图片链接保存到商品对象中
-    file.url = response.data.url // 设置文件的url
+  console.log(response)
+  if (response && response.url) {
+    product.value.cover = response.url // 将返回的封面图片链接保存到商品对象中
+    file.url = getImageUrl(response.url) // 设置文件的url
     coverFileList.value = [file] // 确保只有一个封面图片
+    console.log(response.url)
     console.log('封面图片上传成功')
-    // ElMessage.success('封面图片上传成功')
+    ElMessage.success('封面图片上传成功')
   } else {
-    // ElMessage.error('封面图片上传失败')
+    console.log('封面图片上传失败')
+    ElMessage.error('封面图片上传失败')
   }
 }
 </script>

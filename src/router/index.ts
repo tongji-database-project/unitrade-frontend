@@ -62,6 +62,11 @@ const router = createRouter({
           name: 'profile',
           component: ProfileView
         },
+        {
+          path: 'complaintsubmission/:seller_id',
+          name: 'complaintsubmission',
+          component:ComplaintSubmissionView
+        },
         // 以下几个 URL 均结合当前的 token 来确定返回哪一个用户的信息
         {
           path: 'cart',
@@ -137,7 +142,7 @@ const router = createRouter({
           component: OnsaleListView
         },
         {
-          path: 'product-sub/:id',
+          path: 'product-sub',
           name: 'product-submission',
           component: ProductSubmissionView
         },
@@ -157,6 +162,16 @@ const router = createRouter({
               next();
             }
           },
+        },
+        {
+          path: '/order-detail/:id',
+          name: 'OrderDetail',
+          component: OrderView
+        },
+        {
+          path: '/refund/:id',
+          name: 'RefundRequest',
+          component: RefundRequestView
         },
         {
           path: 'message',

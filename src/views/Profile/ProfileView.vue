@@ -4,28 +4,23 @@
       <h1>个人主页</h1>
     </div>
     <UserInfo :user="user" :avatar="avatar" />
-    <div class="items-container">
-      <ItemsForSale :items="products" />
-    </div>
-    <div class="actions">
-      <ActionButton :userId="userId" buttonText="联系卖家" action="chat" />
-      <ActionButton :userId="userId" buttonText="投诉卖家" action="complaint" />
+    <div class="button-container">
+      <button class="action-button" style="background-color: #ffcccb;" @click="goToItemsForSale">在售商品</button>
+      <button class="action-button" style="background-color: #add8e6;" @click="goToChat">联系卖家</button>
+      <button class="action-button" style="background-color: #ffd9b3;" @click="goToComplaint">投诉卖家</button>
+      <button class="action-button" style="background-color: #e6e6fa;" @click="goToOther">其他</button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import UserInfo from './components/UserInfo.vue'
-import ItemsForSale from './components/ItemsForSale.vue'
-import ActionButton from './components/ActionButton.vue'
-import { getImageUrl } from '@/utils/utils'
+import UserInfo from './components/UserInfo.vue';
+import avatarImage from './images/gclt.jpg'; // 更新路径到 images 目录
 
 export default {
   name: 'ProfileView',
   components: {
     UserInfo,
-    ItemsForSale,
-    ActionButton
   },
   data() {
     return {
@@ -34,47 +29,58 @@ export default {
         name: '张颖',
         reputation: 10
       },
-      avatar: getImageUrl('/gclt.jpg'),
-      products: [
-        { id: 1, name: '商品1', price: '¥100', image: getImageUrl('/cola.jpg') },
-        { id: 2, name: '商品2', price: '¥200', image: getImageUrl('/cola.jpg') },
-        { id: 3, name: '商品3', price: '¥300', image: getImageUrl('/cola.jpg') },
-        { id: 4, name: '商品4', price: '¥400', image: getImageUrl('/cola.jpg') },
-        { id: 5, name: '商品5', price: '¥500', image: getImageUrl('/cola.jpg') },
-        { id: 6, name: '商品6', price: '¥600', image: getImageUrl('/cola.jpg') },
-        { id: 7, name: '商品7', price: '¥700', image: getImageUrl('/cola.jpg') },
-        { id: 8, name: '商品8', price: '¥800', image: getImageUrl('/cola.jpg') }
-      ]
+      avatar: avatarImage,
+    };
+  },
+  methods: {
+    goToItemsForSale() {
+      alert('跳转到在售商品页面');
+    },
+    goToChat() {
+      alert('跳转到联系卖家页面');
+    },
+    goToComplaint() {
+      this.$router.push({ name: 'complaintsubmission', params: { seller_id: this.userId } });
+    },
+    goToOther() {
+      alert('跳转到其他页面');
     }
   }
-}
+};
 </script>
 
 <style scoped>
 .profile-view {
-  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 20px;
 }
 
-.header {
-  background-color: lightblue;
-  padding: 10px;
-  margin-bottom: 20px;
+.button-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 20px;
+  width: 100%;
+  height: 400px; /* 调整高度以填满页面 */
+  margin-top: 20px;
 }
 
-.header h1 {
-  margin: 0;
-  font-weight: bold;
+.action-button {
+  border: none;
+  color: white;
+  padding: 20px;
+  font-size: 20px; /* 放大字体 */
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
 }
 
-.items-container {
-  border: 2px solid green;
-  padding: 10px;
-  margin-bottom: 20px;
-}
-
-.actions {
-  display: flex;
-  gap: 10px;
+.action-button:hover {
+  border: 2px solid grey; /* 鼠标悬停时边框颜色 */
 }
 </style>
