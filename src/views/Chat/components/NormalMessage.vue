@@ -2,15 +2,14 @@
 import { getImageUrl } from '@/utils/utils'
 
 const props = defineProps({
+  my_id: { type: String, required: true },
   user_id: { type: String, required: true },
   content: { type: String, required: true },
   time: { type: String, required: true }
 })
 
-// TODO: 状态管理器中除了保存 token 外还需要保存用户 ID 方便调用
-
-// 假定当前登录用户的 ID 为 1234
-const is_self = props.user_id === '1234'
+const is_self = props.user_id === props.my_id
+// TODO: 头像
 const avatar = is_self ? getImageUrl('avatar.jpg') : getImageUrl('avatar2.jpg')
 console.log(props.user_id, props.content)
 </script>

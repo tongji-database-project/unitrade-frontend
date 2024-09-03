@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import ContactItem from './components/ContactItem.vue'
-import { getUserInfo } from '@/apis/user'
+import { getContactingUser } from '@/apis/message'
 
 const router = useRouter()
 const relative_contact = ref<string[]>()
@@ -14,9 +14,9 @@ const changeSession = (user_id: string) => {
 }
 
 onMounted(async () => {
-  // TODO: 这个列表需要从后端获取
-  relative_contact.value = ['2536', '2548', '2357', '3568']
-  console.log(await getUserInfo())
+  // relative_contact.value = ['2536', '2548', '2357', '3568']
+  relative_contact.value = await getContactingUser();
+  console.log('relative_contact:', relative_contact.value)
 })
 </script>
 

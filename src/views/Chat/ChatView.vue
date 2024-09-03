@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import dayjs from 'dayjs'
+import { ElMessage } from 'element-plus'
 import type { FormInstance } from 'element-plus'
 import NormalMessage from './components/NormalMessage.vue'
 import type { Message } from '@/utils/interfaces'
+import { isBlank } from '@/utils/utils'
+import { getMessages, sendMessage } from '@/apis/message'
+import { getUserInfo } from '@/apis/user'
+import {useTokenStore} from '@/stores/token'
 
 defineProps({
   user_id: { type: String, required: true }
@@ -12,62 +18,21 @@ const emit = defineEmits(['newUserId'])
 
 const route = useRoute()
 
-// TODO: 需要检查当前用户与 user_id 对应用户是否已有私聊记录
-// 如果没有则需要在个人主页进入私聊界面前新建一个私聊记录
+// TODO: 进入后停在最下侧
 
-const user_info = ref<string | undefined>('in')
+// TODO: 需要检查当前用户与 user_id 对应用户是否已有私聊记录
+// 如果没有则需要在个人主页进入私聊界面前新建一个空私聊记录
+
+const logged_in = computed(() => useTokenStore().logged_in)
+const my_id = ref('')
+const user_name = ref('') // 对方用户名
 const inputFormRef = ref<FormInstance>()
 const new_msg = reactive<Message>({
-  sender: '1234',
-  receiver: '',
+  sender: '',
+  receiver: route.params.user_id as string,
   content: '',
   time: ''
 })
-
-// 假定当前登录用户的 ID 为 1234
-const messages: Message[] = [
-  {
-    sender: '1234',
-    receiver: '2536',
-    content:
-      'hi 原杂食笔在面，啊象还才演全章杨。身完具死乙县材致确变这，我看部洲宪饭适乙受士央。哪某靠命贵识密随益搞假，完艺怀胞会主半令等房小。\n名示叶青弱你以张大士解良头约。兴料别黄亮次母依则。训激妒利究语否煤仅於扬，刻老沙北他再。\n联住动且丰及。验联尔物紧派。雨级庆所陆。\n具销布备板矛。习句花足离苏。胶同很类美习科可振映黑危还。够务米半图垂倍紧南或助飞安。聚属答研确岁环拉赶书！定研沿包话修宁。',
-    time: '2024-07-17 15:23:33'
-  },
-  {
-    sender: '2536',
-    receiver: '1234',
-    content:
-      'hello Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-    time: '2024-07-17 15:24:29'
-  },
-  {
-    sender: '1234',
-    receiver: '2536',
-    content:
-      'wow Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam',
-    time: '2024-07-17 15:29:17'
-  },
-  {
-    sender: '2548',
-    receiver: '1234',
-    content:
-      'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam',
-    time: '2024-07-17'
-  },
-  {
-    sender: '1234',
-    receiver: '2548',
-    content: '一个信息无法正常显示，正在修复',
-    time: '2024-07-17'
-  },
-  {
-    sender: '2548',
-    receiver: '1234',
-    content:
-      'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et',
-    time: '2024-07-17'
-  }
-]
 
 const relative_messages = ref<Message[]>([])
 
@@ -75,30 +40,36 @@ const relative_messages = ref<Message[]>([])
 watch(
   () => route.params.user_id,
   async (user_id) => {
+    user_id = user_id as string
     // 触发 newUserId 事件以让 MessageView 中的相应用户高亮显示
     emit('newUserId', user_id)
     console.log(`Chat with ${user_id}`)
 
-    // TODO: 消息按时间排序还未完成
+    console.log(await getMessages(user_id))
+    console.log('over')
+    const _messages = await getMessages(user_id)
+    user_name.value = _messages.username
     relative_messages.value = []
-    messages.forEach((message) => {
-      if (
-        (message.sender === '1234' && message.receiver === user_id) ||
-        (message.receiver === '1234' && message.sender === user_id)
-      ) {
-        relative_messages.value.push(message)
-      }
-    })
-
-    // TODO: 获取当前对话的聊天记录
+    relative_messages.value = _messages.contents
   },
   { immediate: true }
 )
 
 // TODO: 提交逻辑未完全完成
-const sendMessage = async () => {
-  new_msg.receiver = route.params.user_id as string
-  console.log(new_msg)
+// /api/message/send_message
+const sendNewMessage = async () => {
+  if (isBlank(new_msg.content)) {
+    ElMessage({
+      type: 'warning',
+      message: "请勿发送空信息"
+    })
+    resetMessage(inputFormRef.value)
+    return
+  }
+  new_msg.sender = my_id.value;
+  new_msg.time = dayjs().format()
+  sendMessage(new_msg)
+  // TODO: 发送后调用界面刷新
 
   resetMessage(inputFormRef.value)
 }
@@ -109,20 +80,30 @@ const resetMessage = (form: FormInstance | undefined) => {
   if (!form) return
   form.resetFields()
 }
+
+const load_user_info = async () => {
+  const info = await getUserInfo()
+  my_id.value = info.id
+}
+
+onMounted(() => {
+  load_user_info()
+})
 </script>
 
 <template>
   <div v-if="user_id" class="conversation-box">
-    <div class="chat-header">用户 {{ user_id }}</div>
+    <div class="chat-header">{{ user_name }}</div>
     <el-divider />
     <el-scrollbar class="chat-body">
-      <div v-if="user_info">
+      <div v-if="logged_in">
         <div
           class="message-item"
           v-for="(message, index) in relative_messages"
           :key="`${index}${message.time}${message.sender}${message.receiver}`"
         >
           <NormalMessage
+            :my_id
             :user_id="message.sender"
             :content="message.content"
             :time="message.time"
@@ -141,12 +122,12 @@ const resetMessage = (form: FormInstance | undefined) => {
           resize="none"
           :rows="5"
           placeholder="请输入"
-          @keyup.ctrl.enter="sendMessage()"
+          @keyup.ctrl.enter="sendNewMessage()"
           @keyup.esc="resetMessage(inputFormRef)"
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="sendMessage()">发送</el-button>
+        <el-button type="primary" @click="sendNewMessage()">发送</el-button>
         <el-button @click="resetMessage(inputFormRef)">清空</el-button>
       </el-form-item>
     </el-form>

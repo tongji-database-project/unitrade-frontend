@@ -1,94 +1,218 @@
+<script setup>
+import { useCartStore } from '@/stores/cartStore'
+const cartStore = useCartStore()
+
+// 单选回调
+const singleCheck = (i, selected) => {
+  console.log(i, selected)
+  // store cartList 数组 无法知道要修改谁的选中状态？
+  // 除了selected补充一个用来筛选的参数 - skuId
+  cartStore.singleCheck(i.skuId, selected)
+}
+
+
+const allCheck = (selected) => {
+  cartStore.allCheck(selected)
+}
+</script>
+
 <template>
-  <div>
-    <h1>购物车</h1>
-    <el-table :data="cartItems" style="width: 100%" v-loading="loading">
-      <el-table-column label="商品图片">
-        <template #default="{ row }">
-          <el-image style="width: 50px; height: 50px" :src="row.picture" fit="cover"></el-image>
-        </template>
-      </el-table-column>
-      <el-table-column prop="merchandise_name" label="商品名称"></el-table-column>
-      <el-table-column prop="price" label="单价"></el-table-column>
-      <el-table-column label="数量">
-        <template #default="{ row }">
-          <el-input-number
-            v-model="row.quantity"
-            @change="() => updateQuantity(row)"
-            :min="1"
-          ></el-input-number>
-        </template>
-      </el-table-column>
-      <el-table-column label="小计">
-        <template #default="{ row }">
-          {{ (row.price * row.quantity).toFixed(2) }}
-        </template>
-      </el-table-column>
-      <el-table-column label="操作">
-        <template #default="{ row }">
-          <el-button size="mini" @click="removeItem(row)">移除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <div class="total-price">总价: {{ total.toFixed(2) }}</div>
-    <el-button type="primary" @click="goToCheckout">结算</el-button>
+  <div class="xtx-cart-page">
+    <div class="container m-top-20">
+      <div class="cart">
+        <table>
+          <thead>
+            <tr>
+              <th width="120">
+                <el-checkbox :model-value="cartStore.isAll" @change="allCheck" />
+              </th>
+              <th width="400">商品信息</th>
+              <th width="220">单价</th>
+              <th width="180">数量</th>
+              <th width="180">小计</th>
+              <th width="140">操作</th>
+            </tr>
+          </thead>
+          <!-- 商品列表 -->
+          <tbody>
+            <tr v-for="i in cartStore.cartList" :key="i.id">
+              <td>
+                <!-- 单选框 -->
+                <el-checkbox :model-value="i.selected" @change="(selected) => singleCheck(i, selected)" />
+              </td>
+              <td>
+                <div class="goods">
+                  <RouterLink to="/"><img :src="i.picture" alt="" /></RouterLink>
+                  <div>
+                    <p class="name ellipsis">
+                      {{ i.name }}
+                    </p>
+                  </div>
+                </div>
+              </td>
+              <td class="tc">
+                <p>&yen;{{ i.price }}</p>
+              </td>
+              <td class="tc">
+                <el-input-number v-model="i.count" />
+              </td>
+              <td class="tc">
+                <p class="f16 red">&yen;{{ (i.price * i.count).toFixed(2) }}</p>
+              </td>
+              <td class="tc">
+                <p>
+                  <el-popconfirm title="确认删除吗?" confirm-button-text="确认" cancel-button-text="取消" @confirm="delCart(i)">
+                    <template #reference>
+                      <a href="javascript:;">删除</a>
+                    </template>
+                  </el-popconfirm>
+                </p>
+              </td>
+            </tr>
+            <tr v-if="cartStore.cartList.length === 0">
+              <td colspan="6">
+                <div class="cart-none">
+                  <el-empty description="购物车列表为空">
+                    <el-button type="primary" @click="$router.push('/')">随便逛逛</el-button>
+                  </el-empty>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+      <!-- 操作栏 -->
+      <div class="action">
+        <div class="batch">
+          共 {{ cartStore.allCount }} 件商品，已选择 {{ cartStore.selectedCount }} 件，商品合计：
+          <span class="red">¥ {{ cartStore.selectedPrice.toFixed(2) }} </span>
+        </div>
+        <tr v-if="cartStore.cartList.length != 0">
+          <div class="total">
+            <el-button size="large" type="primary" @click="$router.push('/checkout')">下单结算</el-button>
+          </div>
+        </tr>
+      </div>
+    </div>
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import axios from 'axios'; // 直接导入axios
-import { ElTable, ElTableColumn, ElInputNumber, ElButton, ElImage } from 'element-plus';
+<style scoped>
+.xtx-cart-page {
+  margin-top: 20px;
 
-const cartItems = ref([]);
-const total = ref(0);
-const loading = ref(false);
+  .cart {
+    background: #fff;
+    color: #666;
 
-const fetchCartItems = async () => {
-  loading.value = true;
-  try {
-    const { data } = await axios.get('/api/cart');
-    cartItems.value = data;
-    calculateTotal();
-  } catch (error) {
-    console.error('Failed to fetch cart items:', error);
-  } finally {
-    loading.value = false;
-  }
-};
+    table {
+      border-spacing: 0;
+      border-collapse: collapse;
+      line-height: 24px;
 
-const updateQuantity = async (item) => {
-  try {
-    await axios.post(`/api/update-cart`, { merchandiseId: item.merchandise_id, quantity: item.quantity });
-    calculateTotal();
-  } catch (error) {
-    console.error('Failed to update item quantity:', error);
-  }
-};
+      th,
+      td {
+        padding: 10px;
+        border-bottom: 1px solid #f5f5f5;
 
-const removeItem = async (item) => {
-  try {
-    const index = cartItems.value.indexOf(item);
-    if (index !== -1) {
-      cartItems.value.splice(index, 1);
-      await axios.post(`/api/remove-item`, { merchandiseId: item.merchandise_id });
-      calculateTotal();
+        &:first-child {
+          text-align: left;
+          padding-left: 30px;
+          color: #999;
+        }
+      }
+
+      th {
+        font-size: 16px;
+        font-weight: normal;
+        line-height: 50px;
+      }
     }
-  } catch (error) {
-    console.error('Failed to remove item:', error);
   }
-};
 
-const calculateTotal = () => {
-  total.value = cartItems.value.reduce((acc, item) => acc + item.price * item.quantity, 0);
-};
+  .cart-none {
+    text-align: center;
+    padding: 120px 0;
+    background: #fff;
 
-const router = useRouter();
-const goToCheckout = () => {
-  router.push('/checkout').catch(err => {
-    console.error('Failed to navigate:', err);
-  });
-};
+    p {
+      color: #999;
+      padding: 20px 0;
+    }
+  }
 
-onMounted(fetchCartItems);
-</script>
+  .tc {
+    text-align: center;
+
+    .xtx-numbox {
+      margin: 0 auto;
+      width: 120px;
+    }
+  }
+
+  .red {
+    color: #e61818;
+  }
+
+  .f16 {
+    font-size: 16px;
+  }
+
+  .goods {
+    display: flex;
+    align-items: center;
+
+    img {
+      width: 100px;
+      height: 100px;
+    }
+
+    >div {
+      width: 280px;
+      font-size: 16px;
+      padding-left: 10px;
+
+      .attr {
+        font-size: 14px;
+        color: #999;
+      }
+    }
+  }
+
+  .action {
+    display: flex;
+    background: #fff;
+    margin-top: 20px;
+    height: 80px;
+    align-items: center;
+    font-size: 16px;
+    justify-content: space-between;
+    padding: 0 30px;
+
+    .xtx-checkbox {
+      color: #999;
+    }
+
+    .batch {
+      a {
+        margin-left: 20px;
+      }
+    }
+
+    .red {
+      font-size: 18px;
+      margin-right: 20px;
+      font-weight: bold;
+    }
+  }
+
+  .tit {
+    color: #666;
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 50px;
+  }
+
+}
+</style>
