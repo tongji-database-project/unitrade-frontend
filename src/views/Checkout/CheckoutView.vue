@@ -24,7 +24,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
@@ -42,7 +42,7 @@ const fetchOrderDetails = async () => {
   try {
     const response = await axios.get('/api/order-details');
     orderItems.value = response.data.items;
-    totalPrice.value = orderItems.value.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    totalPrice.value = orderItems.value.reduce((sum: number, item: { price: number, quantity: number }) => sum + item.price * item.quantity, 0);
 
     const customerDetails = await axios.get('/api/customer-details');
     form.value.address = customerDetails.data.address;

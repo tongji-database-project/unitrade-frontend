@@ -44,7 +44,7 @@ function toCommand(){
               <el-table-column prop="state" width="150" />
               <el-table-column prop="order_time" width="220" />
               <el-table-column prop="receiving_time" width="220" />
-              <el-table-column @click="tocommand"prop="button" />
+              <el-table-column @click="toCommand" prop="button" />
             </el-table>
           </el-scrollbar>
         </el-main>
