@@ -108,6 +108,7 @@ import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue'
 import type { UploadFile } from 'element-plus'
 import type { Product } from '@/utils/interfaces'
 import { submitProduct } from '@/apis/product'
+import { getImageUrl } from '@/utils/utils'
 
 const route = useRoute()
 
@@ -226,11 +227,12 @@ const beforeCoverUpload = (file: any) => {
 
 //上传封面图片成功后的回调函数
 const handleCoverUploadSuccess = (response: any, file: UploadFile) => {
-  if (response && response.status === 200 && response.data.url) {
-    product.value.cover = response.data.url // 将返回的封面图片链接保存到商品对象中
-    file.url = response.data.url // 设置文件的url
+  console.log(response)
+  if (response && response.url) {
+    product.value.cover = response.url // 将返回的封面图片链接保存到商品对象中
+    file.url = getImageUrl(response.url) // 设置文件的url
     coverFileList.value = [file] // 确保只有一个封面图片
-    console.log(response.data.url)
+    console.log(response.url)
     console.log('封面图片上传成功')
     ElMessage.success('封面图片上传成功')
   } else {
