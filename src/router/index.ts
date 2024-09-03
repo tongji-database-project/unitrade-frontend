@@ -18,7 +18,6 @@ import RefundRequestView from '@/views/RefundRequest/RefundRequestView.vue'
 import MessageView from '@/views/Message/MessageView.vue'
 import ChatView from '@/views/Chat/ChatView.vue'
 
-import TestView from '@/views/TestView.vue'
 import EditInfoView from '@/views/Editinfo/EditInfoView.vue'
 import ReceivedView from '@/views/Received/ReceivedView.vue'
 import TransitView from '@/views/Transit/TransitView.vue'
@@ -41,11 +40,6 @@ const router = createRouter({
           path: '',
           name: 'home',
           component: HomeView
-        },
-        {
-          path: 'test',
-          name: 'test',
-          component: TestView
         },
         {
           path: 'merchandise/:id',

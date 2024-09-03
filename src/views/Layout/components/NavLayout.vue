@@ -40,10 +40,6 @@ const categories = [
   {
     name: '分类 2',
     path: '/'
-  },
-  {
-    name: '路由测试',
-    path: '/test'
   }
 ]
 </script>
