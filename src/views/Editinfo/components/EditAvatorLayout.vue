@@ -1,14 +1,17 @@
 <script setup lang="ts">
+import { ElMessage, ElMessageBox } from 'element-plus';
 import {ref} from'vue'
-// import axios from "axios";
-// import { getImageUrl } from '@/utils/utils'
+import { useRouter } from 'vue-router';
+import 'element-plus/dist/index.css'; 
 
-let submit=ref(false);
-let transit=ref(false);
-let result=ref('');
 let file = ref<File | null>(null);
 let imageUrl = ref<string | null>(null);
-
+const router = useRouter();
+const ToAccount = () => {
+  setTimeout(() => {
+    router.push('/account')
+  }, 2000); // 延迟时间为 2000 毫秒（2 秒）
+}
 function handleFileChange(event:Event){
   const input = event.target as HTMLInputElement;
       if (input.files && input.files[0]) {
@@ -24,41 +27,32 @@ function handleFileChange(event:Event){
         }
       }
 }
-function close(){
-  submit.value=false;
-}
 const submitEdit =async()=>{
-  submit.value=true; //启动提交动画
   if (!file.value) {
-    result.value="无文件"
     return;
   }
   const formData = new FormData();
   formData.append('file', file.value);
   try {
-    transit.value=true;  //开始传输动画
     const response = await fetch('/api/setpicture', {
     method: 'POST',
     body: formData,
     });
-
-    if (response.ok) {
-      transit.value=false;
-      result.value="成功"
-     } else {
-      transit.value=false;
-      result.value="失败"
+    if(response.status===200){
+      ElMessageBox({
+        type:"success",
+        message:"头像修改成功，即将跳转个人中心"
+      })
+      ToAccount()
     }
   } catch (error) {
-    transit.value=false;
-    result.value="失败";
+    ElMessage({
+        type: 'warning',
+        message: `头像修改失败，错误信息：${error}`
+    })
     console.error('Error uploading file:', error);
   }
 }
-
-
-
-
 
 </script>
 <template>
@@ -73,28 +67,7 @@ const submitEdit =async()=>{
         <input type="file" @change="handleFileChange" />
         <div v-if="imageUrl">
             <button @click="submitEdit">提交</button>
-            <transition name="fade">
-              <div v-if="submit" class="modal-overlay">
-                <div class="modal-content" @click.stop>
-                  <div v-if="transit">
-                    <div class="centre">
-                      <div class="spinner"></div>
-                    </div>
-                    <p>正在提交修改，请勿关闭当前页面</p>
-                  </div>
-                  <div v-else>
-                    <div v-if="result=='成功'">
-                      <p>修改成功</p>
-                      <button @click="close">关闭</button>
-                  </div>
-                  <div v-else-if="result=='失败'">
-                      <p>修改失败，请稍后重试</p>
-                      <button @click="close">关闭</button>
-                  </div>
-                </div>
-              </div>
-           </div>
-            </transition>
+
         </div>
      </div>
     </div>
