@@ -12,8 +12,8 @@ export const submitProduct = async (product: Product) => {
       name: product.name,
       price: product.price,
       inventory: product.stock,
-      type: product.description, // 将 'description' 改为 'type'
-      picturePath: product.coverUrl // 确保 'picturePath' 与后端一致
+      type: product.description,
+      Picture: product.coverUrl
     }
   })
     .then((response) => {
