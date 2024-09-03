@@ -66,6 +66,11 @@ const router = createRouter({
           component: CheckoutView
         },
         {
+          path: 'complaintsubmission',
+          name: 'complaintsubmission',
+          component:ComplaintSubmissionView
+        },
+        {
           path: 'payment',
           name: 'payment',
           component: PaymentView
