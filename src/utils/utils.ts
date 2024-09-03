@@ -34,10 +34,6 @@ httpInstance.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       console.error('Unauthorized access')
-      ElMessage({
-        type: 'error',
-        message: '用户未登录，请先登录/注册'
-      })
     }
     return Promise.reject(error)
   }

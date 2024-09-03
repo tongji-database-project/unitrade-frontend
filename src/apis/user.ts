@@ -65,7 +65,7 @@ export const roleJudgeAPI = async () => {
       if (response.status === 200) {
         return response.data
       } else {
-        return false;
+        return "";
       }
     })
     .catch((error) => {
@@ -73,7 +73,7 @@ export const roleJudgeAPI = async () => {
         type: 'warning',
         message: `身份验证失败，错误信息：${error}`
       })
-      return false;
+      return "";
     })
 }
 
