@@ -29,6 +29,10 @@ const categories = [
     path:"/message",
   },
   {
+    name:"我的申诉",
+    path:"/myappeal",
+  },
+  {
     name:"个人中心",
     path:"/account",
   }

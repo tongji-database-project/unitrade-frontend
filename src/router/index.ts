@@ -26,6 +26,7 @@ import UncommandView from '@/views/Uncommand/UncommandView.vue';
 
 import { ElMessage,ElMessageBox } from 'element-plus'
 import 'element-plus/dist/index.css';
+import MyappealView from '@/views/Myappeal/MyappealView.vue';
 
 // TODO: 页面路由配置，可能会频繁调整
 const router = createRouter({
@@ -109,6 +110,11 @@ const router = createRouter({
               props: true
             }
           ]
+        },
+        {
+          path:"myappeal",
+          name:"myappeal",
+          component:MyappealView,
         },
         {
           path:'Editinfo',
