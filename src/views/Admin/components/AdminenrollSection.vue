@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useRouter } from 'vue-router';
 import { AdminEnroll } from '@/apis/user' 
-
-const router = useRouter();
+import { ElMessage,ElMessageBox } from 'element-plus'
+import 'element-plus/dist/index.css';
 
 const adminname = ref("")
 const password = ref("")
@@ -23,14 +22,22 @@ const submitForm = async () => {
   try {
     const response = await AdminEnroll(adminname.value, password.value, adminlevel.value);
     if (response.status === 200) {
-      alert('注册成功');
-      // 进行页面跳转或其他操作
+      ElMessage({
+        type:"success",
+        message: `注册成功`
+      })
     } else {
-      alert('注册失败，请重试');
+      ElMessageBox({
+        type:"error",
+        message: `注册失败，请重试`
+      })
     }
   } catch (error) {
     console.error('注册失败:', error);
-    alert('注册失败，请重试');
+    ElMessageBox({
+      type:"error",
+      message: `数据库连接失败`
+    })
   }
 }
 </script>

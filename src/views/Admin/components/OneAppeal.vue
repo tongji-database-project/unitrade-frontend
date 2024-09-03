@@ -2,6 +2,8 @@
 <script lang="ts" setup>
   import type { appealinformation } from './AppealSection.vue';
   import axios from 'axios';
+  import { ElMessage,ElMessageBox } from 'element-plus'
+  import 'element-plus/dist/index.css';
 
   const props=defineProps({
     oneappealinformation:{
@@ -27,8 +29,18 @@
       if(response.status === 200){
         deleteconfirm();
       }
+      else{
+        ElMessageBox({
+          type:"error",
+          message: `数据错误`
+        })
+      }
     } catch (error) {
       console.log(error)
+      ElMessageBox({
+        type:"error",
+        message: `数据库连接失败`
+      })
     }
   }
 </script>

@@ -3,6 +3,8 @@
   import { ref, onMounted } from 'vue';  
   import OneRefund from './OneRefund.vue';
   import axios from 'axios';
+  import { ElMessage,ElMessageBox } from 'element-plus'
+  import 'element-plus/dist/index.css';
 
   let isloading = ref(true);
 
@@ -30,23 +32,35 @@
   onMounted(async() =>{
     try{
       const refundInfo = await axios.get('/api/refund/query');
-      refundInfo.data.forEach((oneInfo:any) => {
-        let one:refundinformation={
-          refund_id:oneInfo.refund_id,
-          seller_name:oneInfo.seller_name,
-          seller_id:oneInfo.seller_id,
-          buyer_name:oneInfo.buyer_name,
-          buyer_id:oneInfo.buyer_id,
-          commodity:oneInfo.merchandise_name,
-          reason:oneInfo.reason,
-          time:new Date(oneInfo.time)
-        };
-        refundinformations.value.push(one);
-      });
+      if(refundInfo.status===200){
+        refundInfo.data.forEach((oneInfo:any) => {
+          let one:refundinformation={
+            refund_id:oneInfo.refund_id,
+            seller_name:oneInfo.seller_name,
+            seller_id:oneInfo.seller_id,
+            buyer_name:oneInfo.buyer_name,
+            buyer_id:oneInfo.buyer_id,
+            commodity:oneInfo.merchandise_name,
+            reason:oneInfo.reason,
+            time:new Date(oneInfo.time)
+          };
+          refundinformations.value.push(one);
+        });
+        isloading.value = false;
+      }
+      else{
+        ElMessage({
+        type:"error",
+        message: `数据获取失败`
+      })
+      }
     } catch (error) {
       console.log(error)
+      ElMessage({
+        type:"error",
+        message: `数据库连接失败`
+      })
     }
-    isloading.value = false;
   })
 </script>
 

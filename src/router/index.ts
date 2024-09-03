@@ -24,6 +24,8 @@ import ReceivedView from '@/views/Received/ReceivedView.vue';
 import TransitView from '@/views/Transit/TransitView.vue';
 import UncommandView from '@/views/Uncommand/UncommandView.vue';
 
+import { ElMessage,ElMessageBox } from 'element-plus'
+import 'element-plus/dist/index.css';
 
 // TODO: 页面路由配置，可能会频繁调整
 const router = createRouter({
@@ -159,6 +161,10 @@ const router = createRouter({
         const isadmin=await adminJudgeAPI();
         if (!isadmin) {  
           next('/adminlogin');  
+          ElMessage({
+            type:"error",
+            message: `请先登录管理员账户`
+          })
         }else{
           next();
         }

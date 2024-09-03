@@ -1,11 +1,11 @@
 <script lang="ts" setup>
   import { ref } from 'vue';
-  import axios from "axios";
   import PersonalinformationSection from './components/PersonalinformationSection.vue';
   import ComplationSection from './components/ComplationSection.vue';
   import RefundSection from './components/RefundSection.vue';
   import AppealSection from './components/AppealSection.vue';
   import AdminenrollSection from './components/AdminenrollSection.vue';
+  import 'element-plus/dist/index.css';
 
   let contentclass=ref("personalinformation");
 

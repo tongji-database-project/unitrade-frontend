@@ -3,6 +3,8 @@
   import { ref, onMounted } from 'vue';  
   import OneAppeal from './OneAppeal.vue';
   import axios from 'axios';
+  import { ElMessage,ElMessageBox } from 'element-plus'
+  import 'element-plus/dist/index.css';
 
   let isloading = ref(true);
 
@@ -30,23 +32,35 @@
   onMounted(async() =>{
     try{
       const appealInfo = await axios.get('/api/appeal/query');
-      appealInfo.data.forEach((oneInfo:any) => {
-        let one:appealinformation={
-          appeal_id:oneInfo.appeal_id,
-          seller_name:oneInfo.seller_name,
-          seller_id:oneInfo.seller_id,
-          complainant_name:oneInfo.complainant_name,
-          complainant_id:oneInfo.complainant_id,
-          credibility:oneInfo.credibility,
-          reason:oneInfo.reason,
-          time:new Date(oneInfo.time)
-        };
-        appealinformations.value.push(one);
-      });
+      if(appealInfo.status===200){
+        appealInfo.data.forEach((oneInfo:any) => {
+          let one:appealinformation={
+            appeal_id:oneInfo.appeal_id,
+            seller_name:oneInfo.seller_name,
+            seller_id:oneInfo.seller_id,
+            complainant_name:oneInfo.complainant_name,
+            complainant_id:oneInfo.complainant_id,
+            credibility:oneInfo.credibility,
+            reason:oneInfo.reason,
+            time:new Date(oneInfo.time)
+          };
+          appealinformations.value.push(one);
+        });
+        isloading.value = false;
+      }
+      else{
+        ElMessage({
+          type:"error",
+          message: `数据获取失败`
+        })
+      }
     } catch (error) {
       console.log(error)
+      ElMessage({
+        type:"error",
+        message: `数据库连接失败`
+      })
     }
-    isloading.value = false;
   })
 </script>
 

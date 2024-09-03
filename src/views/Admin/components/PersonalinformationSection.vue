@@ -3,13 +3,15 @@
   import { useRouter } from 'vue-router'; 
   import { useTokenStore } from '@/stores/token'
   import { getAdminInfo } from '@/apis/user'
+  import { ElMessage,ElMessageBox } from 'element-plus'
+  import 'element-plus/dist/index.css';
 
   const router = useRouter();
   const TokenStore = useTokenStore()
 
-  let id=ref("1");
-  let name=ref("管理员1");
-  let level=ref(1);
+  let id=ref("");
+  let name=ref("");
+  let level=ref();
   let isloading=ref(true);
 
   onMounted(async () => {  
@@ -17,7 +19,15 @@
     id.value=admininfo.admin_id;
     name.value=admininfo.admin_name;
     level.value=admininfo.admin_level?1:0;
-    isloading.value=false;
+    if(id.value!==""){
+      isloading.value=false;
+    }
+    else{
+      ElMessage({
+        type:"error",
+        message: `数据获取失败`
+      })
+    }
   });
 
   function quit(){

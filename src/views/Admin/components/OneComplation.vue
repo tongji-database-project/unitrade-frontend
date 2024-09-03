@@ -2,6 +2,8 @@
 <script lang="ts" setup>
   import type { complationinformation } from './ComplationSection.vue';
   import axios from 'axios';
+  import { ElMessage,ElMessageBox } from 'element-plus'
+  import 'element-plus/dist/index.css';
 
   const props=defineProps({
     onecomplationinformation:{
@@ -23,11 +25,23 @@
 
   const deductpoint = async (point:number)=>{
     try{
-      await axios.post('/api/complationAudit/audit', {complation_id:complation_id,is_passed:point>0?true:false});
+      const response =await axios.post('/api/complationAudit/audit', {complation_id:complation_id,is_passed:point>0?true:false});
+      if(response.status===200){
+        deleteconfirm();
+      }
+      else{
+        ElMessageBox({
+          type:"error",
+          message: `数据获取失败`
+        })
+      }
     } catch (error) {
       console.log(error)
+      ElMessageBox({
+        type:"error",
+        message: `数据库连接失败`
+      })
     }
-    deleteconfirm();
   }
 </script>
 

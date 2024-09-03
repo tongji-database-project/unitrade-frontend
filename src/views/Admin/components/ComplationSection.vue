@@ -3,7 +3,8 @@
   import { ref, onMounted } from 'vue';  
   import axios from 'axios';
   import OneComplation from './OneComplation.vue';
-  import { ElMessageBox } from 'element-plus'
+  import { ElMessage,ElMessageBox } from 'element-plus'
+  import 'element-plus/dist/index.css';
 
   let isloading=ref(true);
 
@@ -30,23 +31,33 @@
     //加载数据过程
     try{
       const complationInfo = await axios.get('/api/complationAudit/getInfo');
-      complationInfo.data.forEach((oneInfo:any) => {
-        let one:complationinformation={
-          complation_id:oneInfo.complation_id,
-          seller:oneInfo.seller_name,
-          credibility:oneInfo.reputation,
-          reason:oneInfo.compaltion_reason,
-          complainant:oneInfo.customer_name,
-          time:new Date(oneInfo.complation_time)
-        };
-        complationinformations.value.push(one);
-      });
-      ElMessageBox.alert('成功')
+      if(complationInfo.status===200){
+        complationInfo.data.forEach((oneInfo:any) => {
+          let one:complationinformation={
+            complation_id:oneInfo.complation_id,
+            seller:oneInfo.seller_name,
+            credibility:oneInfo.reputation,
+            reason:oneInfo.compaltion_reason,
+            complainant:oneInfo.customer_name,
+            time:new Date(oneInfo.complation_time)
+          };
+          complationinformations.value.push(one);
+        });
+        isloading.value=false;
+      }
+      else{
+        ElMessage({
+          type:"error",
+          message: `数据获取失败`
+        })
+      }
     } catch (error) {
       console.log(error);
-      ElMessageBox.alert('失败')
+      ElMessage({
+        type:"error",
+        message: `数据库连接失败`
+      })
     }
-    isloading.value=false;
   });
 </script>
 
