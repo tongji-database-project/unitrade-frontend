@@ -33,9 +33,6 @@
       <p>{{ refundStatus }}</p>
     </div>
   </div>
-=======
-  <div v-for="i in 30" :key="i" style="padding-top: 1rem">填充内容，用于拉长页面长度</div>
->>>>>>> fec9bc37a3a67969812a8d11a7b3b20029940903
 </template>
 
 <script lang="ts" setup>
