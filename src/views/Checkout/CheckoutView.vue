@@ -25,32 +25,35 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import axios from 'axios';
-import { ElTable, ElTableColumn, ElForm, ElFormItem, ElInput, ElButton } from 'element-plus';
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import axios from 'axios'
+import { ElTable, ElTableColumn, ElForm, ElFormItem, ElInput, ElButton } from 'element-plus'
 
-const orderItems = ref([]);
-const totalPrice = ref(0);
+const orderItems = ref([])
+const totalPrice = ref(0)
 const form = ref({
   address: '',
   phone: ''
-});
-const router = useRouter();
+})
+const router = useRouter()
 
 const fetchOrderDetails = async () => {
   try {
-    const response = await axios.get('/api/order-details');
-    orderItems.value = response.data.items;
-    totalPrice.value = orderItems.value.reduce((sum: number, item: { price: number, quantity: number }) => sum + item.price * item.quantity, 0);
+    const response = await axios.get('/api/order-details')
+    orderItems.value = response.data.items
+    totalPrice.value = orderItems.value.reduce(
+      (sum: number, item: { price: number; quantity: number }) => sum + item.price * item.quantity,
+      0
+    )
 
-    const customerDetails = await axios.get('/api/customer-details');
-    form.value.address = customerDetails.data.address;
-    form.value.phone = customerDetails.data.phone;
+    const customerDetails = await axios.get('/api/customer-details')
+    form.value.address = customerDetails.data.address
+    form.value.phone = customerDetails.data.phone
   } catch (error) {
-    console.error('Failed to fetch order details:', error);
+    console.error('Failed to fetch order details:', error)
   }
-};
+}
 
 const confirmOrder = async () => {
   try {
@@ -59,14 +62,14 @@ const confirmOrder = async () => {
       total: totalPrice.value,
       address: form.value.address,
       phone: form.value.phone
-    });
+    })
     if (orderConfirmation.status === 200) {
-      router.push('/payment');
+      router.push('/payment')
     }
   } catch (error) {
-    console.error('Failed to confirm order:', error);
+    console.error('Failed to confirm order:', error)
   }
-};
+}
 
-onMounted(fetchOrderDetails);
+onMounted(fetchOrderDetails)
 </script>

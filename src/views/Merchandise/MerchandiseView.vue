@@ -2,8 +2,8 @@
 import { useRouter } from 'vue-router'
 import { ref, reactive, onMounted } from 'vue'
 import { getImageUrl } from '@/utils/utils'
-import {getMerchandiseCardAPI} from '@/apis/home'
-import {getSellerInfoAPI} from '@/apis/merchandise'
+import { getMerchandiseCardAPI } from '@/apis/home'
+import { getSellerInfoAPI } from '@/apis/merchandise'
 import ImageView from '@/components/ImageView.vue'
 
 const props = defineProps({
@@ -24,17 +24,17 @@ const seller_reputation = ref<number>()
 const star_score = ref<number>()
 
 const loadInfo = async () => {
-  const info= await getMerchandiseCardAPI(props.merchandise_id)
+  const info = await getMerchandiseCardAPI(props.merchandise_id)
   meichandise_cover.value = getImageUrl(info.image)
   meichandise_name.value = info.name
-  meichandise_price.value = info.price/100
+  meichandise_price.value = info.price / 100
 
   const seller_info = await getSellerInfoAPI(props.merchandise_id)
   seller_cover.value = getImageUrl(seller_info.image)
   seller_id.value = seller_info.id
   seller_name.value = seller_info.name
   seller_reputation.value = seller_info.reputation
-  star_score.value = seller_info.reputation/20
+  star_score.value = seller_info.reputation / 20
 }
 
 // count
@@ -43,7 +43,6 @@ const countChange = (count: any) => {
   console.log(count)
 }
 
-
 // const info_list = [
 //   { id: '1', name: '杯子', price: 99.0 },
 //   // Add more images as needed
@@ -51,24 +50,24 @@ const countChange = (count: any) => {
 
 // 添加购物车
 const addCart = () => {
-//   if (skuObj.skuId) {
-//     console.log(skuObj, cartStore.addCart)
-//     // 规则已经选择  触发action
-//     cartStore.addCart({
-//       id: goods.value.id,
-//       name: goods.value.name,
-//       picture: goods.value.mainPictures[0],
-//       price: goods.value.price,
-//       count: count.value,
-//       skuId: skuObj.skuId,
-//       attrsText: skuObj.specsText,
-//       selected: true
-//     })
-//   } else {
-//     // 规格没有选择 提示用户
-//     ElMessage.warning('请选择规格')
-//   }
- }
+  //   if (skuObj.skuId) {
+  //     console.log(skuObj, cartStore.addCart)
+  //     // 规则已经选择  触发action
+  //     cartStore.addCart({
+  //       id: goods.value.id,
+  //       name: goods.value.name,
+  //       picture: goods.value.mainPictures[0],
+  //       price: goods.value.price,
+  //       count: count.value,
+  //       skuId: skuObj.skuId,
+  //       attrsText: skuObj.specsText,
+  //       selected: true
+  //     })
+  //   } else {
+  //     // 规格没有选择 提示用户
+  //     ElMessage.warning('请选择规格')
+  //   }
+}
 
 onMounted(() => {
   // 调取数据的代码
@@ -78,19 +77,15 @@ onMounted(() => {
 
 <template>
   <div class="xtx-goods-page">
-    <div class ="seller-info">
-      <div class ="avatar">
+    <div class="seller-info">
+      <div class="avatar">
         <el-avatar :size="40" :src="seller_cover"></el-avatar>
       </div>
-      <div class ="seller-name">
-        <p class="p-name"> {{ seller_name }} </p>
+      <div class="seller-name">
+        <p class="p-name">{{ seller_name }}</p>
       </div>
       <div class="reputation">
-        <el-rate
-          v-model="star_score"
-          disabled
-          text-color="#ff9900"
-        />
+        <el-rate v-model="star_score" disabled text-color="#ff9900" />
         <el-text class="re-value" size="small">信誉值:{{ seller_reputation }}/100</el-text>
       </div>
       <div class="seller-botton">
@@ -105,33 +100,31 @@ onMounted(() => {
           <!-- <el-image class="cover" :src="meichandise_cover" fit="cover" /> -->
         </div>
         <div class="spec">
-          <p class="g-name"> {{ meichandise_name }} </p>
+          <p class="g-name">{{ meichandise_name }}</p>
           <div class="g-price">
-            <p class="now-price"> ¥{{ meichandise_price?.toFixed(2) }} </p>
-            <p class="old-price"> ¥{{ meichandise_price?.toFixed(2) }} </p>
+            <p class="now-price">¥{{ meichandise_price?.toFixed(2) }}</p>
+            <p class="old-price">¥{{ meichandise_price?.toFixed(2) }}</p>
           </div>
           <div class="g-service">
-                <dl>
-                  <dt>配送</dt>
-                  <dd>快递: 免运费 现货，付款后48小时内发货</dd>
-                </dl>
-                <dl>
-                  <dt>服务</dt>
-                  <dd>
-                    <span>无忧退货</span>
-                    <span>快速退款</span>
-                    <span>免费包邮</span>
-                  </dd>
-                </dl>
-              </div>
+            <dl>
+              <dt>配送</dt>
+              <dd>快递: 免运费 现货，付款后48小时内发货</dd>
+            </dl>
+            <dl>
+              <dt>服务</dt>
+              <dd>
+                <span>无忧退货</span>
+                <span>快速退款</span>
+                <span>免费包邮</span>
+              </dd>
+            </dl>
+          </div>
 
           <!-- 数据组件 -->
-          <el-input-number class = "count" v-model="count" @change="countChange" />
+          <el-input-number class="count" v-model="count" @change="countChange" />
           <!-- 按钮组件 -->
           <div>
-            <el-button size="large" class="btn" @click="addCart">
-              加入购物车
-            </el-button>
+            <el-button size="large" class="btn" @click="addCart"> 加入购物车 </el-button>
           </div>
         </div>
       </div>
@@ -141,33 +134,32 @@ onMounted(() => {
 
 <style scoped>
 .xtx-goods-page {
-  .seller-info{
+  .seller-info {
     width: 100%;
     height: 80px;
     border: 2px solid #ccc;
     border-radius: 20px;
     display: flex;
-   flex-direction: row;
-   align-items: center;
-   padding-right: 50px;
+    flex-direction: row;
+    align-items: center;
+    padding-right: 50px;
 
-
-    .avatar{
+    .avatar {
       padding: 30px 60px;
     }
 
-    .p-name{
+    .p-name {
       font-size: 22px;
     }
 
-    .reputation{
-      padding:50px;
+    .reputation {
+      padding: 50px;
 
-      .re-value{
-        padding:20px;
+      .re-value {
+        padding: 20px;
       }
     }
-    .seller-botton{
+    .seller-botton {
       display: flex;
       flex-direction: row;
       margin-left: auto;
@@ -192,8 +184,8 @@ onMounted(() => {
       .g-name {
         font-size: 30px;
       }
-      
-      .g-price{
+
+      .g-price {
         display: flex;
         flex-direction: row;
 
@@ -204,7 +196,7 @@ onMounted(() => {
           font-size: 40px;
         }
 
-        .old-price{
+        .old-price {
           margin-top: 28px;
           color: #999;
           text-decoration: line-through;
@@ -213,43 +205,43 @@ onMounted(() => {
       }
 
       .g-service {
-    background: #f5f5f5;
-    width: 100%;
-    padding: 20px 10px 0 10px;
-    margin-top: 10px;
+        background: #f5f5f5;
+        width: 100%;
+        padding: 20px 10px 0 10px;
+        margin-top: 10px;
 
-    dl {
-      padding-bottom: 20px;
-      display: flex;
-      align-items: center;
+        dl {
+          padding-bottom: 20px;
+          display: flex;
+          align-items: center;
 
-      dt {
-        width: 50px;
-        color: #999;
-      }
+          dt {
+            width: 50px;
+            color: #999;
+          }
 
-      dd {
-        color: #666;
+          dd {
+            color: #666;
 
-        &:last-child {
-          span {
-            margin-right: 10px;
+            &:last-child {
+              span {
+                margin-right: 10px;
 
-            &::before {
-              content: "•";
-              margin-right: 2px;
+                &::before {
+                  content: '•';
+                  margin-right: 2px;
+                }
+              }
             }
           }
         }
       }
-    }
-  }
-      
-      .count{
+
+      .count {
         margin-top: 40px;
       }
 
-      .btn{
+      .btn {
         margin-top: 40px;
       }
     }
@@ -257,11 +249,9 @@ onMounted(() => {
 
   .goods-footer {
     display: flex;
-    margin-top: 20px;    
+    margin-top: 20px;
     width: 940px;
     margin-right: 20px;
   }
-
 }
-
 </style>

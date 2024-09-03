@@ -1,7 +1,7 @@
 import { ElMessage } from 'element-plus'
 import { httpInstance } from '@/utils/utils'
 import { useRouter } from 'vue-router'
-import 'element-plus/dist/index.css'; //添加el组件的动画效果
+import 'element-plus/dist/index.css' //添加el组件的动画效果
 
 const router = useRouter()
 
@@ -13,10 +13,10 @@ export const submitSellerComplaint = async (sellerId: string, complaintReason: s
       method: 'POST',
       data: {
         SellerId: sellerId,
-        ComplaintReason: complaintReason,
+        ComplaintReason: complaintReason
       }
     })
-    
+
     if (response.status === 200) {
       ElMessage.success('投诉提交成功')
       router.push(`/profile/${sellerId}`) // 投诉提交成功后跳转回个人主页
@@ -59,14 +59,18 @@ export const getComplaintsBySeller = async (sellerId: string) => {
 }
 
 // 更新投诉状态（仅管理员使用）
-export const updateComplaintStatus = async (complaintId: string, complaintState: string, complaintFeedback: string) => {
+export const updateComplaintStatus = async (
+  complaintId: string,
+  complaintState: string,
+  complaintFeedback: string
+) => {
   try {
     const response = await httpInstance({
       url: `/api/sellercomplaints/update/${complaintId}`,
       method: 'PUT',
       data: {
         ComplaintState: complaintState,
-        ComplaintFeedback: complaintFeedback,
+        ComplaintFeedback: complaintFeedback
       }
     })
 

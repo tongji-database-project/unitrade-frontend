@@ -5,7 +5,7 @@ import type { Good } from '@/stores/cartStore'
 // TODO: 待定
 
 // 加入购物车
-export const insertCartAPI = ({ skuId, count }: { skuId: number, count: number }) => {
+export const insertCartAPI = ({ skuId, count }: { skuId: number; count: number }) => {
   return request({
     url: '/member/cart',
     method: 'POST',
@@ -36,7 +36,7 @@ export const delCartAPI = (ids: (number | Good)[]) => {
 
 // 合并购物车
 
-export const mergeCartAPI = (data: { skuId: number, selected: boolean, count: number }[]) => {
+export const mergeCartAPI = (data: { skuId: number; selected: boolean; count: number }[]) => {
   return request({
     url: '/member/cart/merge',
     method: 'POST',

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import axios from "axios";
+import axios from 'axios'
 import { defineProps } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import { useTokenStore } from '@/stores/token'
-import { loginAPI, adminLoginAPI, resetPasswordAPI} from '@/apis/user'
+import { loginAPI, adminLoginAPI, resetPasswordAPI } from '@/apis/user'
 
 const TokenStore = useTokenStore()
 const router = useRouter()
@@ -15,7 +15,7 @@ const username = ref('')
 const password = ref('')
 const phoneOrEmail = ref('')
 const verificationCode = ref('')
-const loginType = ref('1'); // '1' 表示手机号, '2' 表示邮箱
+const loginType = ref('1') // '1' 表示手机号, '2' 表示邮箱
 const forgetVisible = ref(false)
 const param = ref({
   username: '',
@@ -31,67 +31,77 @@ const props = defineProps({
 })
 
 const toggleLoginType = () => {
-  isPasswordLogin.value = !isPasswordLogin.value;
-};
+  isPasswordLogin.value = !isPasswordLogin.value
+}
 
 const forgetPassword = () => {
-  forgetVisible.value = true;
+  forgetVisible.value = true
 }
 
 const resetPassword = async () => {
   if (param.value.password !== param.value.checkPassword) {
-    ElMessageBox.alert("两次输入的密码不一致");
-    return;
+    ElMessageBox.alert('两次输入的密码不一致')
+    return
   }
 
   try {
     let response
-    if (loginType.value == "1") {
-      response = await resetPasswordAPI(param.value.username, param.value.password, phoneOrEmail.value, " ", verificationCode.value);
-    }
-    else {
-      response = await resetPasswordAPI(param.value.username, param.value.password, " ", phoneOrEmail.value, verificationCode.value);
+    if (loginType.value == '1') {
+      response = await resetPasswordAPI(
+        param.value.username,
+        param.value.password,
+        phoneOrEmail.value,
+        ' ',
+        verificationCode.value
+      )
+    } else {
+      response = await resetPasswordAPI(
+        param.value.username,
+        param.value.password,
+        ' ',
+        phoneOrEmail.value,
+        verificationCode.value
+      )
     }
     if (response.status === 200) {
       //router.push('/login');
-      window.location.reload(); 
+      window.location.reload()
       alert('密码重置成功')
-      } else {
-        ElMessageBox.alert('密码重置失败')
-      }
+    } else {
+      ElMessageBox.alert('密码重置失败')
+    }
   } catch (error) {
-    ElMessageBox.alert("重置密码失败，请稍后重试");
+    ElMessageBox.alert('重置密码失败，请稍后重试')
   }
-};
-
+}
 
 const sendVerifyCodeFind = async () => {
   try {
-    if (loginType.value == "2") {
-      await axios.post(`/api/Email?address=${phoneOrEmail.value}&type=findpwd`);
+    if (loginType.value == '2') {
+      await axios.post(`/api/Email?address=${phoneOrEmail.value}&type=findpwd`)
     } else {
-      await axios.post(`/api/CellphoneCode/86${phoneOrEmail.value}&type=findpwd`);
+      await axios.post(`/api/CellphoneCode/86${phoneOrEmail.value}&type=findpwd`)
     }
   } catch (error) {
-    ElMessageBox.alert('验证码发送失败，请稍后重试');
-    console.error(error);
+    ElMessageBox.alert('验证码发送失败，请稍后重试')
+    console.error(error)
   }
-};
+}
 
 const sendVerifyCodeLogin = async () => {
   try {
-    if (loginType.value == "2") {
+    if (loginType.value == '2') {
       // 发送邮箱验证码
-      await axios.post(`/api/Email?address=${phoneOrEmail.value}&type=login`);
+      await axios.post(`/api/Email?address=${phoneOrEmail.value}&type=login`)
     } else {
       // 发送手机验证码
-      await axios.post(`/api/CellphoneCode?phone=86${phoneOrEmail.value}&type=login`);
+      await axios.post(`/api/CellphoneCode?phone=86${phoneOrEmail.value}&type=login`)
     }
   } catch (error) {
-    ElMessageBox.alert('验证码发送失败，请稍后重试');
-    console.error(error);
+    ElMessageBox.alert('验证码发送失败，请稍后重试')
+    console.error(error)
   }
-};
+}
 
 const submitForm = async () => {
   if (props.isadmin == true) {
@@ -99,9 +109,9 @@ const submitForm = async () => {
     try {
       const response = await adminLoginAPI(username.value, password.value)
       if (response.status === 200) {
-        TokenStore.updatetoken(response.data.token);
+        TokenStore.updatetoken(response.data.token)
         // TODO: 跳转到管理员页面
-        router.push('/admin/:'+String(response.data.id))
+        router.push('/admin/:' + String(response.data.id))
       } else {
         ElMessageBox.alert('用户名或密码错误')
       }
@@ -112,11 +122,11 @@ const submitForm = async () => {
   } else {
     //用户登录
     try {
-      let response;
+      let response
       if (isPasswordLogin.value) {
-        response = await loginAPI(isPasswordLogin.value, username.value, password.value);
+        response = await loginAPI(isPasswordLogin.value, username.value, password.value)
       } else {
-        response = await loginAPI(isPasswordLogin.value, phoneOrEmail.value, verificationCode.value);
+        response = await loginAPI(isPasswordLogin.value, phoneOrEmail.value, verificationCode.value)
       }
 
       if (response.status === 200) {
@@ -144,20 +154,50 @@ const submitForm = async () => {
         </select>
       </div>
       <div class="input-container">
-        <input type="text" v-model="phoneOrEmail" id="phoneOrEmail" :placeholder="loginType === '1' ? '请输入手机号' : '请输入邮箱'" required />
+        <input
+          type="text"
+          v-model="phoneOrEmail"
+          id="phoneOrEmail"
+          :placeholder="loginType === '1' ? '请输入手机号' : '请输入邮箱'"
+          required
+        />
       </div>
       <div class="input-group">
-        <input type="text" v-model="verificationCode" id="verificationCode" placeholder="请输入验证码" required />
+        <input
+          type="text"
+          v-model="verificationCode"
+          id="verificationCode"
+          placeholder="请输入验证码"
+          required
+        />
         <button type="button" @click="sendVerifyCodeFind">获取验证码</button>
       </div>
       <div class="input-container">
-        <input type="text" v-model="param.username" id="username" placeholder="请输入用户名" required />
+        <input
+          type="text"
+          v-model="param.username"
+          id="username"
+          placeholder="请输入用户名"
+          required
+        />
       </div>
       <div class="input-container">
-        <input type="password" v-model="param.password" id="newPassword" placeholder="请输入新密码" required />
+        <input
+          type="password"
+          v-model="param.password"
+          id="newPassword"
+          placeholder="请输入新密码"
+          required
+        />
       </div>
       <div class="input-container">
-        <input type="password" v-model="param.checkPassword" id="checkPassword" placeholder="确认新密码" required />
+        <input
+          type="password"
+          v-model="param.checkPassword"
+          id="checkPassword"
+          placeholder="确认新密码"
+          required
+        />
       </div>
       <button type="submit" @click="resetPassword">重置密码</button>
     </div>
@@ -179,16 +219,30 @@ const submitForm = async () => {
           </select>
         </div>
         <div class="input-container">
-          <input type="text" v-model="phoneOrEmail" id="phoneOrEmail" :placeholder="loginType === '1' ? '请输入手机号' : '请输入邮箱'" required />
+          <input
+            type="text"
+            v-model="phoneOrEmail"
+            id="phoneOrEmail"
+            :placeholder="loginType === '1' ? '请输入手机号' : '请输入邮箱'"
+            required
+          />
         </div>
         <div class="input-group">
-          <input type="text" v-model="verificationCode" id="verificationCode" placeholder="请输入验证码" required />
+          <input
+            type="text"
+            v-model="verificationCode"
+            id="verificationCode"
+            placeholder="请输入验证码"
+            required
+          />
           <button type="button" @click="sendVerifyCodeLogin">获取验证码</button>
         </div>
       </div>
 
       <div class="action-buttons">
-        <button type="button" @click="toggleLoginType">{{ isPasswordLogin ? '验证码登录' : '账号密码登录' }}</button>
+        <button type="button" @click="toggleLoginType">
+          {{ isPasswordLogin ? '验证码登录' : '账号密码登录' }}
+        </button>
         <button type="button" @click="forgetPassword">忘记密码？</button>
       </div>
 
@@ -198,8 +252,6 @@ const submitForm = async () => {
     </div>
   </form>
 </template>
-
-
 
 <style scoped>
 .form-container {
@@ -237,7 +289,9 @@ const submitForm = async () => {
   color: white;
   padding: 0 10px;
   font-size: 14px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .input-group button:hover {
@@ -272,7 +326,9 @@ const submitForm = async () => {
   border: none;
   background-color: #409eff;
   color: white;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .reset-password-container button:hover {
@@ -287,7 +343,9 @@ button[type='submit'] {
   border: none;
   background-color: #409eff;
   color: white;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 button[type='submit']:hover {
