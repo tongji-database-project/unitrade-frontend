@@ -66,22 +66,70 @@ const router = createRouter({
         {
           path: 'cart',
           name: 'cart',
-          component: CartView
+          component: CartView,
+          beforeEnter: async (to, from, next) => {   
+            const role=await roleJudgeAPI();
+            if (role!=="User") {  
+              next('/login');  
+              ElMessage({
+                type:"error",
+                message: `请先登录管理员账户`
+              })
+            }else{
+              next();
+            }
+          },
         },
         {
           path: 'checkout',
           name: 'checkout',
-          component: CheckoutView
+          component: CheckoutView,
+          beforeEnter: async (to, from, next) => {   
+            const role=await roleJudgeAPI();
+            if (role!=="User") {  
+              next('/login');  
+              ElMessage({
+                type:"error",
+                message: `请先登录管理员账户`
+              })
+            }else{
+              next();
+            }
+          },
         },
         {
           path: 'payment',
           name: 'payment',
-          component: PaymentView
+          component: PaymentView,
+          beforeEnter: async (to, from, next) => {   
+            const role=await roleJudgeAPI();
+            if (role!=="User") {  
+              next('/login');  
+              ElMessage({
+                type:"error",
+                message: `请先登录管理员账户`
+              })
+            }else{
+              next();
+            }
+          },
         },
         {
           path: 'account',
           name: 'my-account',
-          component: MyAccountView
+          component: MyAccountView,
+          beforeEnter: async (to, from, next) => {   
+            const role=await roleJudgeAPI();
+            if (role!=="User") {  
+              next('/login');  
+              ElMessage({
+                type:"error",
+                message: `请先登录账户`
+              })
+            }else{
+              next();
+            }
+          },
         },
         {
           path: 'onsale',
@@ -96,7 +144,19 @@ const router = createRouter({
         {
           path: 'order',
           name: 'order',
-          component: OrderListView
+          component: OrderListView,
+          beforeEnter: async (to, from, next) => {   
+            const role=await roleJudgeAPI();
+            if (role!=="User") {  
+              next('/login');  
+              ElMessage({
+                type:"error",
+                message: `请先登录账户`
+              })
+            }else{
+              next();
+            }
+          },
         },
         {
           path: 'message',
@@ -109,32 +169,104 @@ const router = createRouter({
               component: ChatView,
               props: true
             }
-          ]
+          ],
+          beforeEnter: async (to, from, next) => {   
+            const role=await roleJudgeAPI();
+            if (role!=="User") {  
+              next('/login');  
+              ElMessage({
+                type:"error",
+                message: `请先登录管理员账户`
+              })
+            }else{
+              next();
+            }
+          },
         },
         {
           path:"myappeal",
           name:"myappeal",
           component:MyappealView,
+          beforeEnter: async (to, from, next) => {   
+            const role=await roleJudgeAPI();
+            if (role!=="User") {  
+              next('/login');  
+              ElMessage({
+                type:"error",
+                message: `请先登录账户`
+              })
+            }else{
+              next();
+            }
+          },
         },
         {
           path:'Editinfo',
           name:'Editinfo',
           component:EditInfoView,
+          beforeEnter: async (to, from, next) => {   
+            const role=await roleJudgeAPI();
+            if (role!=="User") {  
+              next('/login');  
+              ElMessage({
+                type:"error",
+                message: `请先登录账户`
+              })
+            }else{
+              next();
+            }
+          },
         },
         {
           path:"received",
           name:"received",
           component:ReceivedView,
+          beforeEnter: async (to, from, next) => {   
+            const role=await roleJudgeAPI();
+            if (role!=="User") {  
+              next('/login');  
+              ElMessage({
+                type:"error",
+                message: `请先登录账户`
+              })
+            }else{
+              next();
+            }
+          },
         },
         {
           path:"transit",
           name:"transit",
           component:TransitView,
+          beforeEnter: async (to, from, next) => {   
+            const role=await roleJudgeAPI();
+            if (role!=="User") {  
+              next('/login');  
+              ElMessage({
+                type:"error",
+                message: `请先登录账户`
+              })
+            }else{
+              next();
+            }
+          },
         },
         {
           path:"uncommand",
           name:"uncommand",
           component:UncommandView,
+          beforeEnter: async (to, from, next) => {   
+            const role=await roleJudgeAPI();
+            if (role!=="User") {  
+              next('/login');  
+              ElMessage({
+                type:"error",
+                message: `请先登录账户`
+              })
+            }else{
+              next();
+            }
+          },
         }
       ]
     },
