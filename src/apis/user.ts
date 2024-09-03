@@ -1,6 +1,8 @@
-import { ElMessage, ElNotification,ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { httpInstance } from '@/utils/utils'
+import { useTokenStore } from '@/stores/token'
 import 'element-plus/dist/index.css'; //添加el组件的动画效果
+
 // 对于用户登录 API 的二次封装
 
 export const loginAPI = async (isPasswordLogin:boolean, username: string, password: string) => {
@@ -66,6 +68,34 @@ export const roleJudgeAPI = async () => {
         return response.data
       } else {
         return "";
+      }
+    })
+    .catch((error) => {
+      ElMessage({
+        type: 'warning',
+        message: `身份验证失败，错误信息：${error}`
+      })
+      return "";
+    })
+}
+
+export const getOtherUserInfo = async (user_id: string) => {
+  return await httpInstance({
+    url: `/info/others/${user_id}`,
+    method: 'GET'
+  })
+    .then((response) => {
+      if (response.status === 200) {
+        return response.data
+      } else {
+        if (response.status === 401) {
+          // 验证失败后置空 token
+          useTokenStore().updatetoken('')
+        }
+        ElMessage({
+          type: 'warning',
+          message: `无法获取用户信息，状态码：${response.status}`
+        })
       }
     })
     .catch((error) => {

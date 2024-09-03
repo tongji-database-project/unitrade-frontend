@@ -1,0 +1,202 @@
+<script setup lang="ts">
+import { getCategoryAPI } from '@/apis/home'
+import { onMounted, ref } from 'vue';
+import type {Ref} from 'vue';
+
+//const categoryStore = useCategoryStore()
+
+
+const list:Ref<string[]>=ref([])
+
+const loadCategory = async () => {
+   list.value = await getCategoryAPI() 
+   console.log(list.value)
+}
+
+onMounted(() => {
+  loadCategory()
+})
+
+
+</script>
+
+<!-- <template>
+  <div class="home-category">
+    <ul class="menu">
+      <li v-for="item in categoryStore.categoryList" :key="item.id">
+        <RouterLink to="/">{{ item.name }}</RouterLink>
+        <RouterLink v-for="i in item.children.slice(0, 2)" :key="i" to="/">{{ i.name }}</RouterLink>
+        <div class="layer">
+          <h4>分类推荐 <small>根据您的购买或浏览记录推荐</small></h4>
+          <ul>
+            <li v-for="i in item.goods" :key="i.id">
+              <RouterLink to="/">
+                <img :src="i.picture" alt="" />
+                <div class="info">
+                  <p class="name ellipsis-2">
+                    {{ i.name }}
+                  </p>
+                  <p class="desc ellipsis">{{ i.desc }}</p>
+                  <p class="price"><i>¥</i>{{ i.price }}</p>
+                </div>
+              </RouterLink>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+</template> -->
+
+<template>
+    <div class="home-category">
+      <ul class="menu">
+        <li v-for="item in 9" :key="item">
+          <RouterLink to="/">居家</RouterLink>
+          <!-- 弹层layer位置 -->
+          <div class="layer">
+            <h4>分类推荐 <small>根据您的购买或浏览记录推荐</small></h4>
+            <ul>
+              <li v-for="i in 5" :key="i">
+                <RouterLink to="/">
+                  <img alt="" />
+                  <div class="info">
+                    <p class="name ellipsis-2">
+                      那是外套
+                    </p>
+                    <p class="desc ellipsis">冬季必选</p>
+                    <p class="price"><i>¥</i>200.00</p>
+                  </div>
+                </RouterLink>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </template>
+
+
+<style scoped>
+.home-category {
+  width: 250px;
+  height: 500px;
+  background: rgba(0, 0, 0, 0.8);
+  /* position: relative; */
+  z-index: 99;
+
+  /* margin-left: -200px; */
+  position: relative;
+
+  
+
+  .menu {
+    li {
+      padding-left: 40px;
+      height: 55px;
+      line-height: 55px;
+
+      &:hover {
+        background: #4ba472;
+      }
+
+      a {
+        margin-right: 4px;
+        color: #fff;
+
+        &:first-child {
+          font-size: 16px;
+        }
+      }
+
+      .layer {
+        width: 990px;
+        height: 500px;
+        background: rgba(255, 255, 255, 0.8);
+        position: absolute;
+        left: 250px;
+        top: 0;
+        display: none;
+        padding: 0 15px;
+
+        h4 {
+          font-size: 20px;
+          font-weight: normal;
+          line-height: 80px;
+
+          small {
+            font-size: 16px;
+            color: #666;
+          }
+        }
+
+        ul {
+          display: flex;
+          flex-wrap: wrap;
+
+          li {
+            width: 310px;
+            height: 120px;
+            margin-right: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            background: #fff;
+
+            &:nth-child(3n) {
+              margin-right: 0;
+            }
+
+            a {
+              display: flex;
+              width: 100%;
+              height: 100%;
+              align-items: center;
+              padding: 10px;
+
+              &:hover {
+                background: #e3f9f4;
+              }
+
+              img {
+                width: 95px;
+                height: 95px;
+              }
+
+              .info {
+                padding-left: 10px;
+                line-height: 24px;
+                overflow: hidden;
+
+                .name {
+                  font-size: 16px;
+                  color: #666;
+                }
+
+                .desc {
+                  color: #999;
+                }
+
+                .price {
+                  font-size: 22px;
+                  color: #e91919;
+
+                  i {
+                    font-size: 16px;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      &:hover {
+        .layer {
+          display: block;
+        }
+      }
+    }
+  }
+}
+</style>
