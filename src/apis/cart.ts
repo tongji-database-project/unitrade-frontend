@@ -1,12 +1,12 @@
 // 封装购物车相关接口
-import request from '@/utils/utils'
+import httpInstance from '@/utils/utils'
 import type { Good } from '@/stores/cartStore'
 
 // TODO: 待定
 
 // 加入购物车
 export const insertCartAPI = ({ skuId, count }: { skuId: number, count: number }) => {
-  return request({
+  return httpInstance({
     url: '/member/cart',
     method: 'POST',
     data: {
@@ -14,7 +14,7 @@ export const insertCartAPI = ({ skuId, count }: { skuId: number, count: number }
       count
     }
   })
-import httpInstance from '@/utils/utils';
+}
 
 interface CartItem {
     customerId: string;
@@ -33,7 +33,7 @@ export const getCartItems = (customerId: string) => {
 
 // 删除购物车
 export const delCartAPI = (ids: (number | Good)[]) => {
-  return request({
+  return httpInstance({
     url: '/member/cart',
     method: 'DELETE',
     data: {
