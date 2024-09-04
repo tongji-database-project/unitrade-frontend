@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import {onBeforeMount, ref,computed}from 'vue'
+import { onBeforeMount, ref, computed } from 'vue'
 import { useTokenStore } from '@/stores/token'
-import { useRouter } from 'vue-router';
-import ImfoLayout from "./components/ImfoLayout.vue"
-import myorderLayout from "./components/myorderLayout.vue";
+import { useRouter } from 'vue-router'
+import ImfoLayout from './components/ImfoLayout.vue'
+import myorderLayout from './components/myorderLayout.vue'
 const logged_in = computed(() => useTokenStore().logged_in)
-let hint_login=ref(true);
-const categories = [ 
+let hint_login = ref(true)
+const categories = [
   {
     name: '首页',
     path: '/'
@@ -16,8 +16,8 @@ const categories = [
     path: '/cart'
   },
   {
-    name: "我的订单",
-    path: "/order",        
+    name: '我的订单',
+    path: '/order'
   },
   {
     name: '我的收藏',
@@ -28,27 +28,27 @@ const categories = [
     path: '/' /*未设置 */
   },
   {
-    name:"我的消息",
-    path:"/message",
+    name: '我的消息',
+    path: '/message'
   },
   {
-    name:"我的申诉",
-    path:"/myappeal",
+    name: '我的申诉',
+    path: '/myappeal'
   },
   {
-    name:"个人信息修改",
-    path:"/Editinfo",
+    name: '个人信息修改',
+    path: '/Editinfo'
   }
 ]
-const router = useRouter();
+const router = useRouter()
 
 function Tologin() {
-  router.push('/login');
+  router.push('/login')
 }
 
-onBeforeMount(()=>{
+onBeforeMount(() => {
   // if(logged_in.value){
-    hint_login.value=false;
+  hint_login.value = false
   // }
 })
 </script>
@@ -61,18 +61,18 @@ onBeforeMount(()=>{
       </div>
     </div>
     <div class="my-info">
-      <ImfoLayout/>
-      <myorderLayout/>
+      <ImfoLayout />
+      <myorderLayout />
     </div>
-    <div v-if="hint_login==true">
+    <div v-if="hint_login == true">
       <transition name="fade">
-      <div class="modal-overlay">
-        <div class="modal-content" @click="Tologin">
-          <p>当前未登录，请先进行登录</p>
-          <p>点击弹窗跳转到登录页面</p>
+        <div class="modal-overlay">
+          <div class="modal-content" @click="Tologin">
+            <p>当前未登录，请先进行登录</p>
+            <p>点击弹窗跳转到登录页面</p>
+          </div>
         </div>
-      </div>
-    </transition>
+      </transition>
     </div>
   </div>
 </template>
@@ -91,8 +91,8 @@ onBeforeMount(()=>{
   padding: 30px;
 }
 .my-info {
-  width:100%;
-  padding:20px;
+  width: 100%;
+  padding: 20px;
 }
 .modal-content {
   background: white;

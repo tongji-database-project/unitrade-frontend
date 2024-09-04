@@ -67,7 +67,6 @@
           </template>
         </el-upload>
       </el-form-item>
-      
 
       <el-form-item label="上传商品图片">
         <el-upload
@@ -143,7 +142,7 @@ const validatePrice = (rule: any, value: number, callback: (error?: Error) => vo
 
 const handleSubmit = async () => {
   await submitProduct(product.value)
-  .then((response) => {
+    .then((response) => {
       if (response.status === 200) {
         ElMessage.success(response.data.message || '商品发布成功')
         router.push('/onsale') // 发布成功后跳转到其他页面
@@ -199,7 +198,7 @@ const handleRemove = (file: UploadFile) => {
 const beforeUpload = (file: any) => {
   const isJPG = file.type === 'image/jpeg'
   const isPNG = file.type === 'image/png'
-  const isLt10MB = file.size / 1024 /1024 < 10
+  const isLt10MB = file.size / 1024 / 1024 < 10
   if (!isJPG && !isPNG) {
     ElMessage.error('只能上传 JPG/PNG 格式的图片')
     return false
@@ -233,12 +232,11 @@ const handleCoverRemove = (file: UploadFile) => {
   console.log('封面图片删除成功')
 }
 
-
 const beforeCoverUpload = (file: any) => {
   console.log('文件上传检查开始') // 在函数开始时记录日志
   const isJPG = file.type === 'image/jpeg'
   const isPNG = file.type === 'image/png'
-  const isLt10MB = file.size / 1024 /1024 < 10
+  const isLt10MB = file.size / 1024 / 1024 < 10
 
   if (!isJPG && !isPNG) {
     ElMessage.error('只能上传 JPG/PNG 格式的图片')

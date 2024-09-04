@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { getImageUrl } from '@/utils/utils'
-import { getLatestMessage } from '@/apis/message';
+import { getLatestMessage } from '@/apis/message'
 import { getOtherUserInfo } from '@/apis/user'
 
 const props = defineProps({
@@ -14,7 +14,7 @@ const user_name = ref<string>()
 const content = ref<string>()
 
 const getCurrentContactInfo = async (user_id: string) => {
-  const latest_message = await getLatestMessage(user_id);
+  const latest_message = await getLatestMessage(user_id)
   const user_info = await getOtherUserInfo(user_id)
   avatar_path.value = getImageUrl(user_info.avatar)
   console.log(latest_message)

@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>退款申请</h1>
-    
+
     <!-- 订单信息 -->
     <div>
       <p>订单 ID: {{ orderId }}</p>
@@ -36,48 +36,44 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed,onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
 // 订单数据接口
 interface OrderItem {
-  id: string;
-  name: string;
-  quantity: number;
-  price: number;
+  id: string
+  name: string
+  quantity: number
+  price: number
 }
 
 interface Order {
-  id: string;
-  merchandise_id: string;
-  name: string;
-  order_quantity: number;
-  state: string;
-  order_time: string;
-  receiving_time: string;
-  address: string;
-  items: OrderItem[];
+  id: string
+  merchandise_id: string
+  name: string
+  order_quantity: number
+  state: string
+  order_time: string
+  receiving_time: string
+  address: string
+  items: OrderItem[]
 }
 
 // 获取路由参数中的订单 ID
 const route = useRoute()
 const orderId = route.params.id as string
 // 从 query 中获取订单数据
-const orderData = route.query.order ? JSON.parse(decodeURIComponent(route.query.order as string)) : null;
+const orderData = route.query.order
+  ? JSON.parse(decodeURIComponent(route.query.order as string))
+  : null
 
 // 创建状态来存储订单信息
-const order = ref<Order | null>(orderData); // 使用传递的数据初始化订单
+const order = ref<Order | null>(orderData) // 使用传递的数据初始化订单
 
 //当前订单中包含的商品
 
-
 // 退款理由列表
-const refundReasons = ref<string[]>([
-  '商品质量问题',
-  '发错商品/少件',
-  '商品与描述不符',
-  '其他'
-])
+const refundReasons = ref<string[]>(['商品质量问题', '发错商品/少件', '商品与描述不符', '其他'])
 
 // 选择的退款理由
 const selectedReason = ref<string>('')
@@ -90,7 +86,10 @@ const refundStatus = ref<string>('')
 
 // 确定理由有效性
 const isReasonValid = computed(() => {
-  return selectedReason.value !== '' && (selectedReason.value !== '其他' || otherReason.value.trim() !== '')
+  return (
+    selectedReason.value !== '' &&
+    (selectedReason.value !== '其他' || otherReason.value.trim() !== '')
+  )
 })
 
 // 模拟申请退款函数
@@ -106,9 +105,9 @@ const applyRefund = () => {
 
 onMounted(() => {
   if (!order.value) {
-    console.error('订单数据未找到。');
+    console.error('订单数据未找到。')
   }
-});
+})
 </script>
 
 <style scoped>
@@ -128,7 +127,7 @@ onMounted(() => {
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
-h1{
+h1 {
   font-size: 36px;
   justify-content: center;
   padding-top: 20px;
@@ -139,7 +138,10 @@ h3 {
   margin-bottom: 16px;
 }
 
-p, label, select, input {
+p,
+label,
+select,
+input {
   font-size: 18px;
   margin-bottom: 12px;
 }
@@ -154,7 +156,7 @@ button {
   margin-top: 10px;
   padding: 10px 20px;
   font-size: 18px;
-  background-color: #409EFF;
+  background-color: #409eff;
   color: #fff;
   border: none;
   cursor: pointer;

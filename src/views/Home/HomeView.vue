@@ -3,13 +3,13 @@ import MerchandiseCard from '@/components/MerchandiseCard.vue'
 import Banner from './components/Banner.vue'
 import Category from './components/Category.vue'
 import { getMerchandiseIdAPI } from '@/apis/home'
-import { onMounted, ref } from 'vue';
-import type {Ref} from 'vue';
+import { onMounted, ref } from 'vue'
+import type { Ref } from 'vue'
 
-const merchandise_id_list:Ref<string[]>=ref([])
+const merchandise_id_list: Ref<string[]> = ref([])
 
 const LoadMerchandiseId = async () => {
-  merchandise_id_list.value = await getMerchandiseIdAPI() 
+  merchandise_id_list.value = await getMerchandiseIdAPI()
   console.log(merchandise_id_list.value)
 }
 
@@ -84,11 +84,11 @@ const input = ref('')
   align-items: center; /* 垂直居中 */
 }
 
-.container{
+.container {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  padding: 10px; 
+  padding: 10px;
   box-sizing: border-box;
 
   /* display:flex;

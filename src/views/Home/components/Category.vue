@@ -1,23 +1,20 @@
 <script setup lang="ts">
 import { getCategoryAPI } from '@/apis/home'
-import { onMounted, ref } from 'vue';
-import type {Ref} from 'vue';
+import { onMounted, ref } from 'vue'
+import type { Ref } from 'vue'
 
 //const categoryStore = useCategoryStore()
 
-
-const list:Ref<string[]>=ref([])
+const list: Ref<string[]> = ref([])
 
 const loadCategory = async () => {
-   list.value = await getCategoryAPI() 
-   console.log(list.value)
+  list.value = await getCategoryAPI()
+  console.log(list.value)
 }
 
 onMounted(() => {
   loadCategory()
 })
-
-
 </script>
 
 <!-- <template>
@@ -49,33 +46,30 @@ onMounted(() => {
 </template> -->
 
 <template>
-    <div class="home-category">
-      <ul class="menu">
-        <li v-for="item in 9" :key="item">
-          <RouterLink to="/">居家</RouterLink>
-          <!-- 弹层layer位置 -->
-          <div class="layer">
-            <h4>分类推荐 <small>根据您的购买或浏览记录推荐</small></h4>
-            <ul>
-              <li v-for="i in 5" :key="i">
-                <RouterLink to="/">
-                  <img alt="" />
-                  <div class="info">
-                    <p class="name ellipsis-2">
-                      那是外套
-                    </p>
-                    <p class="desc ellipsis">冬季必选</p>
-                    <p class="price"><i>¥</i>200.00</p>
-                  </div>
-                </RouterLink>
-              </li>
-            </ul>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </template>
-
+  <div class="home-category">
+    <ul class="menu">
+      <li v-for="item in 9" :key="item">
+        <RouterLink to="/">居家</RouterLink>
+        <!-- 弹层layer位置 -->
+        <div class="layer">
+          <h4>分类推荐 <small>根据您的购买或浏览记录推荐</small></h4>
+          <ul>
+            <li v-for="i in 5" :key="i">
+              <RouterLink to="/">
+                <img alt="" />
+                <div class="info">
+                  <p class="name ellipsis-2">那是外套</p>
+                  <p class="desc ellipsis">冬季必选</p>
+                  <p class="price"><i>¥</i>200.00</p>
+                </div>
+              </RouterLink>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+</template>
 
 <style scoped>
 .home-category {
@@ -87,8 +81,6 @@ onMounted(() => {
 
   /* margin-left: -200px; */
   position: relative;
-
-  
 
   .menu {
     li {

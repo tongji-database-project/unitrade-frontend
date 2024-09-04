@@ -14,10 +14,9 @@ export const submitProduct = (product: Product) => {
       type: product.productType,
       cover_image_url: product.cover,
       product_image_urls: product.images,
-      product_details:product.description,
+      product_details: product.description
     }
   })
-    
 }
 
 export const getUserProducts = () => {

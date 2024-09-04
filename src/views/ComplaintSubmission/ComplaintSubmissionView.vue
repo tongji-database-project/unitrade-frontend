@@ -9,32 +9,32 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios';
+import axios from 'axios'
 
 export default {
   name: 'ComplaintPage',
   data() {
     return {
       complaintReason: ''
-    };
+    }
   },
   methods: {
     async submitComplaint() {
       if (this.complaintReason.trim() === '') {
-        alert('投诉理由不能为空');
-        return;
+        alert('投诉理由不能为空')
+        return
       }
 
       try {
         const response = await axios.post('http://localhost:5173/api/sellercomplaints/submit', {
           sellerId: this.$route.params.userId,
           complaintReason: this.complaintReason
-        });
-        alert('投诉提交成功');
-        this.complaintReason = ''; // 重置输入框
+        })
+        alert('投诉提交成功')
+        this.complaintReason = '' // 重置输入框
       } catch (error) {
-        console.error('提交投诉时出错:', error);
-        alert('投诉提交失败，请稍后重试');
+        console.error('提交投诉时出错:', error)
+        alert('投诉提交失败，请稍后重试')
       }
     }
   }

@@ -11,10 +11,7 @@ import { onMounted, ref } from 'vue'
 // }
 
 // onMounted(() => getBanner())
-
 </script>
-
-
 
 <!-- <template>
   <div class="home-banner">
@@ -35,8 +32,6 @@ import { onMounted, ref } from 'vue'
     </el-carousel>
   </div>
 </template>
-
-
 
 <style scoped>
 .home-banner {

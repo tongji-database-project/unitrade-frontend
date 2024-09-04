@@ -10,7 +10,6 @@ const singleCheck = (i: any, selected: boolean) => {
   cartStore.singleCheck(i.skuId, selected)
 }
 
-
 const allCheck = (selected: boolean) => {
   cartStore.allCheck(selected)
 }
@@ -38,7 +37,10 @@ const allCheck = (selected: boolean) => {
             <tr v-for="(i, id) in cartStore.cartList" :key="id">
               <td>
                 <!-- 单选框 -->
-                <el-checkbox :model-value="i.selected" @change="(selected: boolean) => singleCheck(i, selected)" />
+                <el-checkbox
+                  :model-value="i.selected"
+                  @change="(selected: boolean) => singleCheck(i, selected)"
+                />
               </td>
               <td>
                 <div class="goods">
@@ -61,7 +63,12 @@ const allCheck = (selected: boolean) => {
               </td>
               <td class="tc">
                 <p>
-                  <el-popconfirm title="确认删除吗?" confirm-button-text="确认" cancel-button-text="取消" @confirm="cartStore.delCart(i)">
+                  <el-popconfirm
+                    title="确认删除吗?"
+                    confirm-button-text="确认"
+                    cancel-button-text="取消"
+                    @confirm="cartStore.delCart(i)"
+                  >
                     <template #reference>
                       <a href="javascript:;">删除</a>
                     </template>
@@ -79,7 +86,6 @@ const allCheck = (selected: boolean) => {
               </td>
             </tr>
           </tbody>
-
         </table>
       </div>
       <!-- 操作栏 -->
@@ -90,7 +96,9 @@ const allCheck = (selected: boolean) => {
         </div>
         <tr v-if="cartStore.cartList!.length != 0">
           <div class="total">
-            <el-button size="large" type="primary" @click="$router.push('/checkout')">下单结算</el-button>
+            <el-button size="large" type="primary" @click="$router.push('/checkout')"
+              >下单结算</el-button
+            >
           </div>
         </tr>
       </div>
@@ -168,7 +176,7 @@ const allCheck = (selected: boolean) => {
       height: 100px;
     }
 
-    >div {
+    > div {
       width: 280px;
       font-size: 16px;
       padding-left: 10px;
@@ -213,6 +221,5 @@ const allCheck = (selected: boolean) => {
     font-weight: normal;
     line-height: 50px;
   }
-
 }
 </style>

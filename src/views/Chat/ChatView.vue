@@ -9,8 +9,8 @@ import type { Message } from '@/utils/interfaces'
 import { isBlank, getImageUrl } from '@/utils/utils'
 import { getMessages, sendMessage } from '@/apis/message'
 import { getOtherUserInfo, getUserInfo } from '@/apis/user'
-import {useTokenStore} from '@/stores/token'
-import type { ElScrollbar } from "element-plus"
+import { useTokenStore } from '@/stores/token'
+import type { ElScrollbar } from 'element-plus'
 
 defineProps({
   user_id: { type: String, required: true }
@@ -72,16 +72,16 @@ const sendNewMessage = async () => {
   if (isBlank(new_msg.content)) {
     ElMessage({
       type: 'warning',
-      message: "请勿发送空信息"
+      message: '请勿发送空信息'
     })
     resetMessage(inputFormRef.value)
     return
   }
-  new_msg.sender = my_id.value;
+  new_msg.sender = my_id.value
   new_msg.time = dayjs().format()
   sendMessage(new_msg)
 
-  relative_messages.value.push({...new_msg})
+  relative_messages.value.push({ ...new_msg })
 
   resetMessage(inputFormRef.value)
 

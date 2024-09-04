@@ -1,41 +1,43 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
 // 订单数据接口
 interface OrderItem {
-  id: string;
-  name: string;
-  quantity: number;
-  price: number;
+  id: string
+  name: string
+  quantity: number
+  price: number
 }
 
 interface Order {
-  id: string;
-  merchandise_id: string;
-  name: string;
-  order_quantity: number;
-  state: string;
-  order_time: string;
-  receiving_time: string;
-  address: string;
-  items: OrderItem[];
+  id: string
+  merchandise_id: string
+  name: string
+  order_quantity: number
+  state: string
+  order_time: string
+  receiving_time: string
+  address: string
+  items: OrderItem[]
 }
 
 // 获取路由参数
-const route = useRoute();
-const orderId = route.params.id as string; // 订单ID
+const route = useRoute()
+const orderId = route.params.id as string // 订单ID
 // 从 query 中获取订单数据
-const orderData = route.query.order ? JSON.parse(decodeURIComponent(route.query.order as string)) : null;
+const orderData = route.query.order
+  ? JSON.parse(decodeURIComponent(route.query.order as string))
+  : null
 
 // 创建状态来存储订单信息
-const order = ref<Order | null>(orderData); // 使用传递的数据初始化订单
+const order = ref<Order | null>(orderData) // 使用传递的数据初始化订单
 
 onMounted(() => {
   if (!order.value) {
-    console.error('订单数据未找到。');
+    console.error('订单数据未找到。')
   }
-});
+})
 </script>
 
 <template>
@@ -83,7 +85,8 @@ table {
   border-collapse: collapse;
   margin-top: 20px;
 }
-th, td {
+th,
+td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;

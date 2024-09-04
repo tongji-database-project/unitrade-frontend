@@ -4,9 +4,8 @@ import { useMouseInElement } from '@vueuse/core'
 
 // 图片列表
 const props = defineProps({
-    imageList: { type: String, required: true }
+  imageList: { type: String, required: true }
 })
-
 
 // 1.小图切换大图显示
 const activeIndex = ref(0)
@@ -26,7 +25,6 @@ const top = ref(0)
 const positionX = ref(0)
 const positionY = ref(0)
 watch([elementX, elementY, isOutside], () => {
-
   // 如果鼠标没有移入到盒子里面 直接不执行后面的逻辑
   if (isOutside.value) return
 
@@ -41,24 +39,28 @@ watch([elementX, elementY, isOutside], () => {
   }
 
   // 处理边界
-  if (elementX.value > 300) { left.value = 200 }
-  if (elementX.value < 100) { left.value = 0 }
+  if (elementX.value > 300) {
+    left.value = 200
+  }
+  if (elementX.value < 100) {
+    left.value = 0
+  }
 
-  if (elementY.value > 300) { top.value = 200 }
-  if (elementY.value < 100) { top.value = 0 }
+  if (elementY.value > 300) {
+    top.value = 200
+  }
+  if (elementY.value < 100) {
+    top.value = 0
+  }
 
   // 控制大图的显示
   positionX.value = -left.value * 2
   positionY.value = -top.value * 2
-
 })
-
 </script>
-
 
 <template>
   <div class="goods-image">
-
     <!-- 左侧大图-->
     <div class="middle" ref="target">
       <!-- <img :src="imageList[activeIndex]" alt="" /> -->
@@ -77,13 +79,17 @@ watch([elementX, elementY, isOutside], () => {
       <img :src="imageList" alt="" />
     </ul> -->
     <!-- 放大镜大图 -->
-    <div class="large" :style="[
-      {
-        backgroundImage: `url(${imageList})`,
-        backgroundPositionX: `${positionX}px`,
-        backgroundPositionY: `${positionY}px`,
-      },
-    ]" v-show="!isOutside"></div>
+    <div
+      class="large"
+      :style="[
+        {
+          backgroundImage: `url(${imageList})`,
+          backgroundPositionX: `${positionX}px`,
+          backgroundPositionY: `${positionY}px`
+        }
+      ]"
+      v-show="!isOutside"
+    ></div>
   </div>
 </template>
 
@@ -94,7 +100,7 @@ watch([elementX, elementY, isOutside], () => {
   position: relative;
   display: flex;
 
-  .image{
+  .image {
     width: 480px;
     height: 400px;
     position: relative;
@@ -145,7 +151,5 @@ watch([elementX, elementY, isOutside], () => {
       }
     }
   }
-
-  
 }
 </style>
