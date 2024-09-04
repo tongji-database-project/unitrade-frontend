@@ -32,8 +32,8 @@ const categories = [
     path: '/message'
   },
   {
-    name: '我的申诉',
-    path: '/myappeal'
+    name: '我的申请',
+    path: '/myapplication'
   },
   {
     name: '个人信息修改',

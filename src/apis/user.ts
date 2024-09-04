@@ -272,3 +272,31 @@ export const EditPassword = async (
       }
     })
 }
+
+export const mycomplation=async()=>{
+  return await httpInstance({
+    url: '/mycomplation',
+    method: 'GET'
+  })
+}
+
+export const myrefund=async()=>{
+  return await httpInstance({
+    url: '/myrefund',
+    method: 'GET'
+  })
+}
+
+export const myappeal=async()=>{
+  return await httpInstance({
+    url: '/myappeal',
+    method: 'GET'
+  })
+}
+
+export const getcomplation=async()=>{
+  return await httpInstance({
+    url: '/getcomplation',
+    method: 'GET'
+  })
+}
