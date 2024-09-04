@@ -1,68 +1,49 @@
-// 封装购物车相关接口
-import httpInstance from '@/utils/utils'
-import type { Good } from '@/stores/cartStore'
-
-// TODO: 待定
-
-// 加入购物车
-export const insertCartAPI = ({ skuId, count }: { skuId: number, count: number }) => {
-  return httpInstance({
-    url: '/member/cart',
-    method: 'POST',
-    data: {
-      skuId,
-      count
-    }
-  })
-}
-
-interface CartItem {
-    customerId: string;
-    merchandiseId: string;
-    quantity: number;
-    selected?: boolean;
-}
+import httpInstance from '@/utils/utils';
 
 // 获取购物车列表
-export const getCartItems = (customerId: string) => {
-    return httpInstance({
-        url: `/cart?customerId=${customerId}`,
-        method: 'GET'
-    });
-};
-
-// 删除购物车
-export const delCartAPI = (ids: (number | Good)[]) => {
+export const getCartItemsAPI = (customer_id: string) => {
   return httpInstance({
-    url: '/member/cart',
-    method: 'DELETE',
-    data: {
-      ids
-    }
-  })
-}
-// 添加商品到购物车
-export const addToCart = (cartItem: CartItem) => {
-    return httpInstance({
-        url: '/cart',
-        method: 'POST',
-        data: cartItem
-    });
+    url: `/cart/${customer_id}`,
+    method: 'GET'
+  });
 };
 
-// 更新购物车中的商品数量和选中状态
-export const updateCartItem = (cartItem: CartItem) => {
-    return httpInstance({
-        url: '/cart/update',
-        method: 'POST',
-        data: cartItem
-    });
+// 添加商品到购物车
+export const addToCartAPI = (cart_item: {
+  customer_id: string;
+  merchandise_id: string;
+  merchandise_name: string;
+  merchandise_price: number;
+  picture: string;
+  quanity: number;
+  cart_time: string; // 可以使用 Date 对象，但发送到后端时需要序列化为字符串
+  selected: boolean;
+}) => {
+  return httpInstance({
+    url: '/cart',
+    method: 'POST',
+    data: cart_item
+  });
 };
 
 // 从购物车删除商品
-export const removeFromCart = (customerId: string, merchandiseId: string) => {
-    return httpInstance({
-        url: `/cart/${customerId}/${merchandiseId}`,
-        method: 'DELETE'
-    });
+export const removeFromCartAPI = (customer_id: string, merchandise_id: string) => {
+  return httpInstance({
+    url: `/cart/${customer_id}/${merchandise_id}`,
+    method: 'DELETE'
+  });
+};
+
+// 修改购物车商品状态
+export const updateCartItemAPI = (cart_item_update: {
+  customer_id: string;
+  merchandise_id: string;
+  quanity: number;
+  selected: boolean;
+}) => {
+  return httpInstance({
+    url: '/cart/update',
+    method: 'POST',
+    data: cart_item_update
+  });
 };

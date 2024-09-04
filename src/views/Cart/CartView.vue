@@ -1,38 +1,39 @@
 <script setup lang="ts">
-import { useCartStore } from '@/stores/cartStore'
-import { computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useCartStore } from '@/stores/cartStore';
+import { computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
-const cartStore = useCartStore()
-const router = useRouter()
+const cartStore = useCartStore();
+const router = useRouter();
 
 // 单选回调
-const singleCheck = (skuId: string, selected: boolean) => {
-  cartStore.singleCheck(skuId, selected)
-}
+const singleCheck = (merchandise_id: string, selected: boolean) => {
+  cartStore.updateProductInCart({ merchandise_id, selected });
+};
 
 // 全选回调
 const allCheck = (selected: boolean) => {
-  cartStore.allCheck(selected)
-}
+  cartStore.allCheck(selected);
+};
 
 // 删除购物车项
 const delCart = (item: any) => {
-  cartStore.delCart(item.skuId)
-}
+  cartStore.removeProductFromCart(item.merchandise_id);
+};
 
 // 计算属性
-const cartItems = computed(() => cartStore.cartItems)
-const isAllSelected = computed(() => cartStore.isAll)
-const totalCount = computed(() => cartStore.allCount)
-const selectedCount = computed(() => cartStore.selectedCount)
-const selectedPrice = computed(() => cartStore.selectedPrice)
+const cartItems = computed(() => cartStore.cartItems);
+const isAllSelected = computed(() => cartStore.isAll);
+const totalCount = computed(() => cartStore.allCount);
+const selectedCount = computed(() => cartStore.selectedCount);
+const selectedPrice = computed(() => cartStore.selectedPrice);
 
 // 组件挂载时加载购物车数据
 onMounted(() => {
-  cartStore.loadCart()
-})
+  cartStore.loadCart();
+});
 </script>
+
 
 <template>
   <div class="xtx-cart-page">
@@ -53,29 +54,29 @@ onMounted(() => {
           </thead>
           <!-- 商品列表 -->
           <tbody>
-            <tr v-for="(i, id) in cartStore.cartList" :key="id">
+            <tr v-for="(i, index) in cartItems" :key="index">
               <td>
                 <!-- 单选框 -->
-                <el-checkbox :model-value="i.selected" @change="(selected: boolean) => singleCheck(i, selected)" />
+                <el-checkbox :model-value="i.selected" @change="(selected: boolean) => singleCheck(i.merchandise_id, selected)" />
               </td>
               <td>
                 <div class="goods">
                   <RouterLink to="/"><img :src="i.picture" alt="" /></RouterLink>
                   <div>
                     <p class="name ellipsis">
-                      {{ i.name }}
+                      {{ i.merchandise_name }}
                     </p>
                   </div>
                 </div>
               </td>
               <td class="tc">
-                <p>&yen;{{ i.price }}</p>
+                <p>&yen;{{ i.merchandise_price }}</p>
               </td>
               <td class="tc">
-                <el-input-number v-model="i.count" @change="cartStore.updateProductInCart({ ...i, count: $event })" />
+                <el-input-number v-model="i.quanity" @change="value => cartStore.updateProductInCart({ ...i, quanity: value })" />
               </td>
               <td class="tc">
-                <p class="f16 red">&yen;{{ (i.price * i.count).toFixed(2) }}</p>
+                <p class="f16 red">&yen;{{ (i.merchandise_price * i.quanity).toFixed(2) }}</p>
               </td>
               <td class="tc">
                 <p>
@@ -112,6 +113,7 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
 
 <style scoped>
 .xtx-cart-page {
