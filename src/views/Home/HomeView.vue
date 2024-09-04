@@ -1,18 +1,33 @@
 <script setup lang="ts">
 import MerchandiseCard from '@/components/MerchandiseCard.vue'
-import { ref } from 'vue'
-const merchandise_list = [
-  '1',
-  '2',
-  '3',
-  '4',
-  '5',
-  '6',
-  '7',
-  '8',
-  '1'
-  // Add more images as needed
-]
+import Banner from './components/Banner.vue'
+import Category from './components/Category.vue'
+import { getMerchandiseIdAPI } from '@/apis/home'
+import { onMounted, ref } from 'vue'
+import type { Ref } from 'vue'
+
+const merchandise_id_list: Ref<string[]> = ref([])
+
+const LoadMerchandiseId = async () => {
+  merchandise_id_list.value = await getMerchandiseIdAPI()
+  console.log(merchandise_id_list.value)
+}
+
+onMounted(() => {
+  LoadMerchandiseId()
+})
+// const merchandise_id_list = [
+//   '1',
+//   '2',
+//   '3',
+//   '4',
+//   '5',
+//   '6',
+//   '7',
+//   '8',
+//   '1'
+//   // Add more images as needed
+// ]
 
 const input = ref('')
 </script>
@@ -28,30 +43,23 @@ const input = ref('')
           <template #append>搜素</template>ss
         </el-input>
       </div>
+      <div class="shoppingCart">
+        <!-- <el-icon :size="20" :color="#f0f9f4">
+          <ShoppingCart />
+        </el-icon> -->
+      </div>
+    </div>
+    <div class="container">
+      <Category />
+      <Banner />
     </div>
     <div class="home-body">
-      <div class="merchandise-card" v-for="id in merchandise_list" :key="id">
+      <div class="merchandise-card" v-for="id in merchandise_id_list" :key="id">
         <MerchandiseCard :merchandise_id="id" />
       </div>
     </div>
   </div>
 </template>
-
-<!-- <template>
-  <HomePanel title="新鲜好物" sub-title="新鲜出炉 品质靠谱">
-    <el-row :gutter="20">
-      <el-col :span="6" v-for="item in List" :key="item.id">
-      <div class="goods-list">
-          <RouterLink to="/merchandise/idtest">
-            <img :src="getImageUrl('avatar.jpg')">
-            <p class="name">{{ item.name }}</p>
-            <p class="price">&yen;{{ item.price }}</p>
-          </RouterLink>
-        </div>
-      </el-col>
-    </el-row>   
-  </HomePanel>
-</template> -->
 
 <style scoped>
 .home-page {
@@ -74,6 +82,17 @@ const input = ref('')
   flex-direction: row;
   justify-content: center; /* 水平居中 */
   align-items: center; /* 垂直居中 */
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  padding: 10px;
+  box-sizing: border-box;
+
+  /* display:flex;
+  align-items:center; */
 }
 
 .logo {

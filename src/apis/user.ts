@@ -1,9 +1,11 @@
-import { ElMessage, ElNotification,ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { httpInstance } from '@/utils/utils'
-import 'element-plus/dist/index.css'; //添加el组件的动画效果
+import { useTokenStore } from '@/stores/token'
+import 'element-plus/dist/index.css' //添加el组件的动画效果
+
 // 对于用户登录 API 的二次封装
 
-export const loginAPI = async (isPasswordLogin:boolean, username: string, password: string) => {
+export const loginAPI = async (isPasswordLogin: boolean, username: string, password: string) => {
   return await httpInstance({
     url: '/oauth/login',
     method: 'POST',
@@ -16,7 +18,13 @@ export const loginAPI = async (isPasswordLogin:boolean, username: string, passwo
   })
 }
 
-export const userEnrollAPI = async (username: string, password:string, phone:string, email:string, verificationCode:string) => {
+export const userEnrollAPI = async (
+  username: string,
+  password: string,
+  phone: string,
+  email: string,
+  verificationCode: string
+) => {
   return httpInstance({
     url: '/oauth/register',
     method: 'POST',
@@ -31,7 +39,13 @@ export const userEnrollAPI = async (username: string, password:string, phone:str
   })
 }
 
-export const resetPasswordAPI = async (username: string, password:string, phone:string, email:string, verificationCode:string) => {
+export const resetPasswordAPI = async (
+  username: string,
+  password: string,
+  phone: string,
+  email: string,
+  verificationCode: string
+) => {
   return await httpInstance({
     url: '/ResetPwd',
     method: 'PATCH',
@@ -65,7 +79,7 @@ export const roleJudgeAPI = async () => {
       if (response.status === 200) {
         return response.data
       } else {
-        return "";
+        return ''
       }
     })
     .catch((error) => {
@@ -73,18 +87,46 @@ export const roleJudgeAPI = async () => {
         type: 'warning',
         message: `身份验证失败，错误信息：${error}`
       })
-      return "";
+      return ''
     })
 }
 
-export const AdminEnroll = async (adminname: string,password:string,adminlevel:string) => {
+export const getOtherUserInfo = async (user_id: string) => {
+  return await httpInstance({
+    url: `/info/others/${user_id}`,
+    method: 'GET'
+  })
+    .then((response) => {
+      if (response.status === 200) {
+        return response.data
+      } else {
+        if (response.status === 401) {
+          // 验证失败后置空 token
+          useTokenStore().updatetoken('')
+        }
+        ElMessage({
+          type: 'warning',
+          message: `无法获取用户信息，状态码：${response.status}`
+        })
+      }
+    })
+    .catch((error) => {
+      ElMessage({
+        type: 'warning',
+        message: `身份验证失败，错误信息：${error}`
+      })
+      return ''
+    })
+}
+
+export const AdminEnroll = async (adminname: string, password: string, adminlevel: string) => {
   return await httpInstance({
     url: '/adminenroll',
     method: 'POST',
     data: {
       name: adminname,
       password: password,
-      level:adminlevel,
+      level: adminlevel
     }
   })
 }
@@ -97,7 +139,7 @@ export const getAdminInfo = async () => {
     .then((response) => {
       if (response.status === 200) {
         return response.data
-      } 
+      }
     })
     .catch((error) => {
       ElMessage({
@@ -115,7 +157,7 @@ export const getUserInfo = async () => {
     .then((response) => {
       if (response.status === 200) {
         return response.data
-      } 
+      }
     })
     .catch((error) => {
       ElMessage({
@@ -124,109 +166,109 @@ export const getUserInfo = async () => {
       })
     })
 }
-export const getMyOrder=async()=>{
+export const getMyOrder = async () => {
   return await httpInstance({
     url: '/getMyOrder',
     method: 'GET'
   })
-  .then((response) => {
-    if (response.status === 200) {
-      return response.data
-    } 
-  })
-  .catch((error) => {
-    ElMessage({
-      type: 'warning',
-      message: `无法获取用户信息，错误信息：${error}`
+    .then((response) => {
+      if (response.status === 200) {
+        return response.data
+      }
     })
-  })
+    .catch((error) => {
+      ElMessage({
+        type: 'warning',
+        message: `无法获取用户信息，错误信息：${error}`
+      })
+    })
 }
-export const EditMyinfo = async (username: string,usersex:string,useraddress:string) => {
+export const EditMyinfo = async (username: string, usersex: string, useraddress: string) => {
   return await httpInstance({
     url: '/editMyinfo',
     method: 'POST',
     data: {
       new_name: username,
       new_sex: usersex,
-      new_address:useraddress,
+      new_address: useraddress
     }
   })
-  .then((response) => {
-    if (response.status === 200) {
-      ElMessageBox({
-        message: `信息修改成功,即将跳转个人中心`,
-        type:"success"
-      })
-      return response.status
-    }
-  })
-  .catch((error) => {
-    if(error.response.status===400){
-      if(error.response.data=="无输入")
-      {
-        ElMessage({
-          type:"error",
-          message:"请输入信息"
+    .then((response) => {
+      if (response.status === 200) {
+        ElMessageBox({
+          message: `信息修改成功,即将跳转个人中心`,
+          type: 'success'
         })
-      }else if(error.response.data=="与原名字相同"){
+        return response.status
+      }
+    })
+    .catch((error) => {
+      if (error.response.status === 400) {
+        if (error.response.data == '无输入') {
+          ElMessage({
+            type: 'error',
+            message: '请输入信息'
+          })
+        } else if (error.response.data == '与原名字相同') {
+          ElMessage({
+            type: 'error',
+            message: `修改与原名字相同，换个名字再试一下吧`
+          })
+        } else if (error.response.data == '已存在该名称') {
+          ElMessage({
+            type: 'error',
+            message: `当前名称已存在，请输入一个新的名称`
+          })
+        }
+      } else {
         ElMessage({
-          type:"error",
-          message: `修改与原名字相同，换个名字再试一下吧`
-        })
-      }else if(error.response.data=="已存在该名称"){
-        ElMessage({
-          type:"error",
-          message: `当前名称已存在，请输入一个新的名称`
+          type: 'warning',
+          message: `修改失败：${error}`
         })
       }
-    }
-    else{
-      ElMessage({
-        type: 'warning',
-        message: `修改失败：${error}`
-      })
-    }
-  })
+    })
 }
-export const EditPassword = async (OrientPassword:string,NewPassword:string,ConfirmPassword:string) => {
+export const EditPassword = async (
+  OrientPassword: string,
+  NewPassword: string,
+  ConfirmPassword: string
+) => {
   return await httpInstance({
     url: '/editPassword',
     method: 'POST',
     data: {
-      ORIGIN_PASSWORD:OrientPassword,
+      ORIGIN_PASSWORD: OrientPassword,
       NEW_PASSWORD: NewPassword,
-      CONFIRM_PASSWORD: ConfirmPassword,
+      CONFIRM_PASSWORD: ConfirmPassword
     }
   })
-  .then((response) => {
-    if (response.status === 200) {
-      ElMessageBox({
-        message: `密码修改成功,即将跳转个人中心`,
-        type:"success"
-      })
-      return response.status
-    } 
-  })
-  .catch((error) => {
-    if(error.response.status===400){
-      if(error.response.data=="原密码输入错误")
-        {
+    .then((response) => {
+      if (response.status === 200) {
+        ElMessageBox({
+          message: `密码修改成功,即将跳转个人中心`,
+          type: 'success'
+        })
+        return response.status
+      }
+    })
+    .catch((error) => {
+      if (error.response.status === 400) {
+        if (error.response.data == '原密码输入错误') {
           ElMessage({
-            type:"error",
+            type: 'error',
             message: `原密码错误，请重新输入`
           })
-        }else if(error.response.data=="两次密码不一致"){
+        } else if (error.response.data == '两次密码不一致') {
           ElMessage({
-            type:"error",
+            type: 'error',
             message: `两次输入密码不一致，请重新输入`
           })
         }
-    }
-    else{
-      ElMessage({
-        type:"error",
-        message: `修改失败：${error}`
-      })
-    }
-  })
+      } else {
+        ElMessage({
+          type: 'error',
+          message: `修改失败：${error}`
+        })
+      }
+    })
 }

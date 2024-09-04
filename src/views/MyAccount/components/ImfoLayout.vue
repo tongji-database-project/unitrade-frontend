@@ -1,23 +1,21 @@
-
 <script setup lang="ts">
 import { useTokenStore } from '@/stores/token'
 import { getImageUrl } from '@/utils/utils'
-import {  getUserInfo} from '@/apis/user'
-import {onBeforeMount, ref,computed}from 'vue'
+import { getUserInfo } from '@/apis/user'
+import { onBeforeMount, ref, computed } from 'vue'
 
-interface Myinfos
-{
-  id:string;
-  name:string;
-  address:string;
-  avator:string;
-  reputation:number;
-  sex:string;
-  phone:string;
-  email:string;
+interface Myinfos {
+  id: string
+  name: string
+  address: string
+  avator: string
+  reputation: number
+  sex: string
+  phone: string
+  email: string
 }
-let loading=ref(true)
-const infos = ref<[Myinfos]>();
+let loading = ref(true)
+const infos = ref<[Myinfos]>()
 //追踪登录状态
 const logged_in = computed(() => useTokenStore().logged_in)
 
@@ -34,32 +32,52 @@ const logged_in = computed(() => useTokenStore().logged_in)
 //     infos.value=[{id:"读取失败",name:"读取失败",level:0,sex:"读取失败",reputation:0,avator:"读取失败",address:"读取失败"}]
 //   }
 // }
-const refreshInfo=async()=>{
-  if(logged_in.value){
-    const info=await getUserInfo()
-    infos.value=[{id:info.id,name:info.name,sex:info.sex,reputation:info.reputation,avator:getImageUrl(info.avatar),address:info.address,phone:info.phone,email:info.email}]
-    loading.value=(false)
-  }else{
-    loading.value=(false)
-    infos.value=[{id:"读取失败",name:"读取失败",sex:"读取失败",reputation:0,avator:"读取失败",address:"读取失败",phone:"读取失败",email:"读取失败"}]
+const refreshInfo = async () => {
+  if (logged_in.value) {
+    const info = await getUserInfo()
+    infos.value = [
+      {
+        id: info.id,
+        name: info.name,
+        sex: info.sex,
+        reputation: info.reputation,
+        avator: getImageUrl(info.avatar),
+        address: info.address,
+        phone: info.phone,
+        email: info.email
+      }
+    ]
+    loading.value = false
+  } else {
+    loading.value = false
+    infos.value = [
+      {
+        id: '读取失败',
+        name: '读取失败',
+        sex: '读取失败',
+        reputation: 0,
+        avator: '读取失败',
+        address: '读取失败',
+        phone: '读取失败',
+        email: '读取失败'
+      }
+    ]
   }
 }
-onBeforeMount(async ()=>
-{
+onBeforeMount(async () => {
   refreshInfo()
 })
 </script>
 
 <template>
-  <div v-if="loading"class="centre">
-    <div class="spinner">
-    </div>    
+  <div v-if="loading" class="centre">
+    <div class="spinner"></div>
   </div>
   <div v-else>
     <div class="layout">
-       <div v-for="(info, index) in infos" :key="index"class="avator">
+      <div v-for="(info, index) in infos" :key="index" class="avator">
         <el-avatar :size="60" :src="info.avator"></el-avatar>
-       </div>
+      </div>
       <div class="informations">
         <div v-for="(info, index) in infos" :key="index">
           <p>账号 ID：{{ info.id }}</p>
@@ -69,47 +87,46 @@ onBeforeMount(async ()=>
           <p>电话：{{ info.phone }}</p>
           <p>邮箱：{{ info.email }}</p>
         </div>
-
-     </div>
-       <div v-for="(info, index) in infos" :key="index"class="address">
-        <p>地址：{{ info.address }}</p>
-       </div>
       </div>
+      <div v-for="(info, index) in infos" :key="index" class="address">
+        <p>地址：{{ info.address }}</p>
+      </div>
+    </div>
   </div>
-      
-  
-
 </template>
 <style scoped>
-.layout{
+.layout {
   width: 100%;
   height: 200px;
   border: 2px solid #ccc;
-  border-radius: 10px; 
+  border-radius: 10px;
   display: flex; /* 使用弹性布局 */
   justify-content: space-between; /* 让子元素在容器内水平分布 */
 }
 
-.avator{
+.avator {
   display: flex;
   justify-content: center;
   align-items: center;
-  width:10%;
-  height: 60%; 
+  width: 10%;
+  height: 60%;
 }
 
-.informations{
-  width:60%;
-  margin:20px;
-
+.informations {
+  width: 60%;
+  margin: 20px;
 }
-.address{
-  width:40%;
-  padding:20px;
+.address {
+  width: 40%;
+  padding: 20px;
 }
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 .spinner {
   border: 4px solid rgba(0, 0, 0, 0.1);
@@ -118,14 +135,12 @@ onBeforeMount(async ()=>
   width: 40px;
   height: 40px;
   animation: spin 1s linear infinite;
-  
 }
-.centre
-{
+.centre {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%; 
+  height: 100%;
 }
 </style>
 

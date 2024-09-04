@@ -6,3 +6,14 @@ export interface Message {
   content: string
   time: string
 }
+
+// 发布商品类型，用于发布商品时上传商品信息
+export interface Product {
+  name: string
+  description: string
+  price: number
+  stock: number
+  productType: string
+  images: string[]
+  cover: string
+}
