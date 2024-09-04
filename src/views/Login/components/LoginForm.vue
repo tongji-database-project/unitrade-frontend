@@ -80,8 +80,9 @@ const sendVerifyCodeFind = async () => {
     if (loginType.value == '2') {
       await axios.post(`/api/Email?address=${phoneOrEmail.value}&type=findpwd`)
     } else {
-      await axios.post(`/api/CellphoneCode/86${phoneOrEmail.value}&type=findpwd`)
+      await axios.post(`/api/CellphoneCode?phone=${phoneOrEmail.value}&type=findpwd`)
     }
+    alert('验证码已发送')
   } catch (error) {
     ElMessageBox.alert('验证码发送失败，请稍后重试')
     console.error(error)
@@ -95,8 +96,9 @@ const sendVerifyCodeLogin = async () => {
       await axios.post(`/api/Email?address=${phoneOrEmail.value}&type=login`)
     } else {
       // 发送手机验证码
-      await axios.post(`/api/CellphoneCode?phone=86${phoneOrEmail.value}&type=login`)
+      await axios.post(`/api/CellphoneCode?phone=${phoneOrEmail.value}&type=login`)
     }
+    alert('验证码已发送')
   } catch (error) {
     ElMessageBox.alert('验证码发送失败，请稍后重试')
     console.error(error)

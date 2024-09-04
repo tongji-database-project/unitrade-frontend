@@ -19,8 +19,9 @@ const sendVerifyCode = async () => {
     if (registerType.value == '2') {
       await axios.post(`/api/Email?address=${email.value}&type=register`)
     } else {
-      await axios.post(`/api/CellphoneCode?phone=86${phone.value}&type=register`)
+      await axios.post(`/api/CellphoneCode?phone${phone.value}&type=register`)
     }
+    alert('验证码已发送')
   } catch (error) {
     console.error('发送验证码失败', error)
     alert('发送验证码失败，请稍后重试')
