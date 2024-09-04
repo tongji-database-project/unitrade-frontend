@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { useTokenStore } from '@/stores/token'
 import { ElMessage, ElMessageBox } from 'element-plus';
 import {ref} from'vue'
+import axios from 'axios';
 import { useRouter } from 'vue-router';
 import 'element-plus/dist/index.css'; 
 
@@ -34,9 +36,15 @@ const submitEdit =async()=>{
   const formData = new FormData();
   formData.append('file', file.value);
   try {
+    // const response =await axios.post('/api/setpicture', {File:formData})
+    const tokenStore = useTokenStore()
+    const token = tokenStore.token
     const response = await fetch('/api/setpicture', {
     method: 'POST',
-    body: formData,
+    headers: {
+        'Authorization': `Bearer ${token}` // 添加 token 到请求头
+    },
+    body:formData
     });
     if(response.status===200){
       ElMessageBox({
@@ -44,6 +52,12 @@ const submitEdit =async()=>{
         message:"头像修改成功，即将跳转个人中心"
       })
       ToAccount()
+    }
+    else{
+      ElMessage({
+        type: 'warning',
+        message: `头像修改失败,换个头像再试一下吧`
+    })
     }
   } catch (error) {
     ElMessage({
