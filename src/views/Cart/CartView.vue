@@ -1,20 +1,39 @@
-<script setup>
-import { useCartStore } from '@/stores/cartStore'
-const cartStore = useCartStore()
+<script setup lang="ts">
+import { useCartStore } from '@/stores/cartStore';
+import { computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+
+const cartStore = useCartStore();
+const router = useRouter();
 
 // 单选回调
-const singleCheck = (i, selected) => {
-  console.log(i, selected)
-  // store cartList 数组 无法知道要修改谁的选中状态？
-  // 除了selected补充一个用来筛选的参数 - skuId
-  cartStore.singleCheck(i.skuId, selected)
-}
+const singleCheck = (merchandise_id: string, selected: boolean) => {
+  cartStore.updateProductInCart({ merchandise_id, selected });
+};
 
+// 全选回调
+const allCheck = (selected: boolean) => {
+  cartStore.allCheck(selected);
+};
 
-const allCheck = (selected) => {
-  cartStore.allCheck(selected)
-}
+// 删除购物车项
+const delCart = (item: any) => {
+  cartStore.removeProductFromCart(item.merchandise_id);
+};
+
+// 计算属性
+const cartItems = computed(() => cartStore.cartItems);
+const isAllSelected = computed(() => cartStore.isAll);
+const totalCount = computed(() => cartStore.allCount);
+const selectedCount = computed(() => cartStore.selectedCount);
+const selectedPrice = computed(() => cartStore.selectedPrice);
+
+// 组件挂载时加载购物车数据
+onMounted(() => {
+  cartStore.loadCart();
+});
 </script>
+
 
 <template>
   <div class="xtx-cart-page">
@@ -24,7 +43,7 @@ const allCheck = (selected) => {
           <thead>
             <tr>
               <th width="120">
-                <el-checkbox :model-value="cartStore.isAll" @change="allCheck" />
+                <el-checkbox :model-value="isAllSelected" @change="allCheck" />
               </th>
               <th width="400">商品信息</th>
               <th width="220">单价</th>
@@ -35,33 +54,33 @@ const allCheck = (selected) => {
           </thead>
           <!-- 商品列表 -->
           <tbody>
-            <tr v-for="i in cartStore.cartList" :key="i.id">
+            <tr v-for="(i, index) in cartItems" :key="index">
               <td>
                 <!-- 单选框 -->
-                <el-checkbox :model-value="i.selected" @change="(selected) => singleCheck(i, selected)" />
+                <el-checkbox :model-value="i.selected" @change="(selected: boolean) => singleCheck(i.merchandise_id, selected)" />
               </td>
               <td>
                 <div class="goods">
                   <RouterLink to="/"><img :src="i.picture" alt="" /></RouterLink>
                   <div>
                     <p class="name ellipsis">
-                      {{ i.name }}
+                      {{ i.merchandise_name }}
                     </p>
                   </div>
                 </div>
               </td>
               <td class="tc">
-                <p>&yen;{{ i.price }}</p>
+                <p>&yen;{{ i.merchandise_price }}</p>
               </td>
               <td class="tc">
-                <el-input-number v-model="i.count" />
+                <el-input-number v-model="i.quanity" @change="value => cartStore.updateProductInCart({ ...i, quanity: value })" />
               </td>
               <td class="tc">
-                <p class="f16 red">&yen;{{ (i.price * i.count).toFixed(2) }}</p>
+                <p class="f16 red">&yen;{{ (i.merchandise_price * i.quanity).toFixed(2) }}</p>
               </td>
               <td class="tc">
                 <p>
-                  <el-popconfirm title="确认删除吗?" confirm-button-text="确认" cancel-button-text="取消" @confirm="delCart(i)">
+                  <el-popconfirm title="确认删除吗?" confirm-button-text="确认" cancel-button-text="取消" @confirm="() => delCart(i)">
                     <template #reference>
                       <a href="javascript:;">删除</a>
                     </template>
@@ -69,7 +88,7 @@ const allCheck = (selected) => {
                 </p>
               </td>
             </tr>
-            <tr v-if="cartStore.cartList.length === 0">
+            <tr v-if="cartItems.length === 0">
               <td colspan="6">
                 <div class="cart-none">
                   <el-empty description="购物车列表为空">
@@ -79,24 +98,22 @@ const allCheck = (selected) => {
               </td>
             </tr>
           </tbody>
-
         </table>
       </div>
       <!-- 操作栏 -->
-      <div class="action">
+      <div class="action" v-if="cartItems.length > 0">
         <div class="batch">
-          共 {{ cartStore.allCount }} 件商品，已选择 {{ cartStore.selectedCount }} 件，商品合计：
-          <span class="red">¥ {{ cartStore.selectedPrice.toFixed(2) }} </span>
+          共 {{ totalCount }} 件商品，已选择 {{ selectedCount }} 件，商品合计：
+          <span class="red">¥ {{ selectedPrice.toFixed(2) }} </span>
         </div>
-        <tr v-if="cartStore.cartList.length != 0">
-          <div class="total">
-            <el-button size="large" type="primary" @click="$router.push('/checkout')">下单结算</el-button>
-          </div>
-        </tr>
+        <div class="total">
+          <el-button size="large" type="primary" @click="$router.push('/checkout')">下单结算</el-button>
+        </div>
       </div>
     </div>
   </div>
 </template>
+
 
 <style scoped>
 .xtx-cart-page {
@@ -168,7 +185,7 @@ const allCheck = (selected) => {
       height: 100px;
     }
 
-    >div {
+    > div {
       width: 280px;
       font-size: 16px;
       padding-left: 10px;

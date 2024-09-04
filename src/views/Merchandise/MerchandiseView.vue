@@ -4,12 +4,16 @@ import { ref, reactive, onMounted } from 'vue'
 import { getImageUrl } from '@/utils/utils'
 import {getMerchandiseCardAPI} from '@/apis/home'
 import {getSellerInfoAPI} from '@/apis/merchandise'
+import { useCartStore } from '@/stores/cartStore'; // 引入购物车store
+import { useUserStore } from '@/stores/userStore'; // 引入用户store
+import { ElMessage } from 'element-plus'; // 引入Element Plus的ElMessage组件
 import ImageView from '@/components/ImageView.vue'
 
 const data = reactive({})
 
 const router = useRouter()
 const route = useRoute()
+const cartStore = useCartStore(); // 获取购物车store实例
 
 const meichandise_cover = ref<string>()
 const meichandise_name = ref<string>()
@@ -34,38 +38,50 @@ const loadInfo = async () => {
   star_score.value = seller_info.reputation/20
 }
 
-// count
-const count = ref(1)
-const countChange = (count: any) => {
-  console.log(count)
-}
+// 商品数量
+const count = ref(1);
+const countChange = (countValue: any) => {
+  console.log(countValue);
+  count.value = countValue; // 更新数量
+};
 
 
 // const info_list = [
 //   { id: '1', name: '杯子', price: 99.0 },
 //   // Add more images as needed
 // ]
+const userStore = useUserStore(); // 获取用户状态
 
-// 添加购物车
-const addCart = () => {
-//   if (skuObj.skuId) {
-//     console.log(skuObj, cartStore.addCart)
-//     // 规则已经选择  触发action
-//     cartStore.addCart({
-//       id: goods.value.id,
-//       name: goods.value.name,
-//       picture: goods.value.mainPictures[0],
-//       price: goods.value.price,
-//       count: count.value,
-//       skuId: skuObj.skuId,
-//       attrsText: skuObj.specsText,
-//       selected: true
-//     })
-//   } else {
-//     // 规格没有选择 提示用户
-//     ElMessage.warning('请选择规格')
-//   }
- }
+// 添加商品到购物车
+const addCart = async () => {
+  try {
+    const cartItem = {
+      customer_id: userStore.userInfo.value.id,
+      merchandise_id: props.merchandise_id,
+      merchandise_name: meichandise_name.value,
+      merchandise_price: meichandise_price.value,
+      picture: meichandise_cover.value,
+      quanity: count.value,
+      cart_time: new Date().toISOString(),
+      selected: true // 初始状态为选中
+    };
+
+    // 使用cartStore的方法来添加商品到购物车
+    await cartStore.addProductToCart(cartItem);
+    // 添加成功后显示成功消息
+    ElMessage({
+      message: '商品已成功添加到购物车！',
+      type: 'success',
+    });
+  } catch (error) {
+    console.error('请求添加购物车失败:', error);
+    // 如果添加失败，也可以显示错误消息
+    ElMessage({
+      message: '添加购物车失败，请重试。',
+      type: 'error',
+    });
+  }
+};
 
 onMounted(() => {
   // 调取数据的代码

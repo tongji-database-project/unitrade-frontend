@@ -94,12 +94,13 @@ export const sendMessage = async (message: Message) => {
   })
     .then((response) => {
       if (response.status === 200) {
-        return response.data;
+        return true
       } else {
         ElMessage({
           type: 'error',
           message: `消息发送失败：${response.status}`,
         })
+        return false
       }
     })
     .catch((error) => {
@@ -107,5 +108,6 @@ export const sendMessage = async (message: Message) => {
         type: 'error',
         message: `网页出现错误，错误信息：${error}`,
       })
+      return false
     })
 }

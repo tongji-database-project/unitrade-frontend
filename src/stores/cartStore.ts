@@ -1,103 +1,76 @@
-// 封装购物车模块
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
+import { getCartItemsAPI, addToCartAPI, updateCartItemAPI, removeFromCartAPI } from '@/apis/cart';
+import { useUserStore } from './userStore'; // 用户身份管理在 userStore 中
 
-import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
-import { useUserStore } from './userStore'
-import { insertCartAPI, findNewCartListAPI, delCartAPI } from '@/apis/cart'
 export const useCartStore = defineStore('cart', () => {
-  const userStore = useUserStore()
-  const isLogin = computed(() => userStore.userInfo.token)
-  // 1. 定义state - cartList
-  const cartList = ref([])
-  // 获取最新购物车列表action
-  const updateNewList = async () => {
-    const res = await findNewCartListAPI()
-    cartList.value = res.result
-  }
-  // 2. 定义action - addCart
-  const addCart = async (goods) => {
-    const { skuId, count } = goods
-    if (isLogin.value) {
-      // 登录之后的加入购车逻辑
-      await insertCartAPI({ skuId, count })
-      updateNewList()
-    } else {
-      // 添加购物车操作
-      // 已添加过 - count + 1
-      // 没有添加过 - 直接push
-      // 思路：通过匹配传递过来的商品对象中的skuId能不能在cartList中找到，找到了就是添加过
-      const item = cartList.value.find((item) => goods.skuId === item.skuId)
-      if (item) {
-        // 找到了
-        item.count++
-      } else {
-        // 没找到
-        cartList.value.push(goods)
-      }
-    }
-  }
+    const cartItems = ref([]);
 
-  // 删除购物车
-  const delCart = async (skuId) => {
-    if (isLogin.value) {
-      // 调用接口实现接口购物车中的删除功能
-      await delCartAPI([skuId])
-      updateNewList()
-    } else {
-      // 思路：
-      // 1. 找到要删除项的下标值 - splice
-      // 2. 使用数组的过滤方法 - filter
-      const idx = cartList.value.findIndex((item) => skuId === item.skuId)
-      cartList.value.splice(idx, 1)
-    }
-  }
+    const userStore = useUserStore(); // 获取用户状态
+    const customerId = userStore.userInfo.value.id;
 
-  // 清除购物车
-  const clearCart = () => {
-    cartList.value = []
-  }
+    // 加载购物车
+    const loadCart = async () => {
+        try {
+            const response = await getCartItemsAPI(customerId); // 使用 API 函数获取购物车
+            if (response.status === 200) {
+                cartItems.value = response.data;
+            } else {
+                cartItems.value = []; // 处理错误或无数据情况
+            }
+        } catch (error) {
+            console.error('加载购物车失败:', error);
+            cartItems.value = []; // 错误处理
+        }
+    };
 
-  // 单选功能
-  const singleCheck = (skuId, selected) => {
-    // 通过skuId找到要修改的那一项 然后把它的selected修改为传过来的selected
-    const item = cartList.value.find((item) => item.skuId === skuId)
-    item.selected = selected
-  }
+    // 添加商品到购物车
+    const addProductToCart = async (cartItem) => {
+        try {
+            const response = await addToCartAPI(cartItem);
+            if (response.status === 200) {
+                await loadCart(); // 更新购物车
+            }
+        } catch (error) {
+            console.error('添加商品到购物车失败:', error);
+        }
+    };
 
-  // 全选功能
-  const allCheck = (selected) => {
-    // 把cartList中的每一项的selected都设置为当前的全选框状态
-    cartList.value.forEach(item => item.selected = selected)
-  }
+    // 更新购物车中的商品
+    const updateProductInCart = async (item) => {
+        try {
+            const response = await updateCartItemAPI(item);
+            if (response.status === 200) {
+                await loadCart(); // 更新购物车
+            }
+        } catch (error) {
+            console.error('更新购物车商品失败:', error);
+        }
+    };
 
-  // 计算属性
-  // 1. 总的数量 所有项的count之和
-  const allCount = computed(() => cartList.value.reduce((a, c) => a + c.count, 0))
-  // 2. 总价 所有项的count*price之和
-  const allPrice = computed(() => cartList.value.reduce((a, c) => a + c.count * c.price, 0))
+    // 从购物车删除商品
+    const removeProductFromCart = async (merchandiseId) => {
+        try {
+            const response = await removeFromCartAPI(customerId, merchandiseId);
+            if (response.status === 200) {
+                await loadCart(); // 更新购物车
+            }
+        } catch (error) {
+            console.error('从购物车删除商品失败:', error);
+        }
+    };
 
-  // 3. 已选择数量
-  const selectedCount = computed(() => cartList.value.filter(item => item.selected).reduce((a, c) => a + c.count, 0))
-  // 4. 已选择商品价钱合计
-  const selectedPrice = computed(() => cartList.value.filter(item => item.selected).reduce((a, c) => a + c.count * c.price, 0))
+    // 清空购物车（重置本地状态）
+    const clearCart = () => {
+        cartItems.value = [];
+    };
 
-  // 是否全选
-  const isAll = computed(() => cartList.value.every((item) => item.selected))
-
-  return {
-    cartList,
-    allCount,
-    allPrice,
-    isAll,
-    selectedCount,
-    selectedPrice,
-    clearCart,
-    addCart,
-    delCart,
-    singleCheck,
-    allCheck,
-    updateNewList
-  }
-}, {
-  persist: true,
-})
+    return {
+        cartItems,
+        addProductToCart,
+        updateProductInCart,
+        removeProductFromCart,
+        clearCart,
+        loadCart
+    };
+});

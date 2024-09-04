@@ -1,41 +1,35 @@
-// 管理用户数据相关
-
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { loginAPI } from '@/apis/user'
 import { useCartStore } from './cartStore'
-import { mergeCartAPI } from '@/apis/cart'
+
 export const useUserStore = defineStore('user', () => {
   const cartStore = useCartStore()
-  // 1. 定义管理用户数据的state
-  const userInfo = ref({})
-  // 2. 定义获取接口数据的action函数
-  const getUserInfo = async ({ account, password }) => {
-    const res = await loginAPI({ account, password })
-    userInfo.value = res.result
-    // 合并购物车的操作
-    await mergeCartAPI(cartStore.cartList.map(item => {
-      return {
-        skuId: item.skuId,
-        selected: item.selected,
-        count: item.count
-      }
-    }))
-    cartStore.updateNewList()
+  const userInfo = ref<{ id: string; access_token: string }>({ id: '', access_token: '' }); // 初始化用户信息
+
+  // 登录并加载购物车数据
+  const login = async (response: { access_token: string; id: string }) => {
+    userInfo.value = {
+      id: response.id, // 设置用户ID
+      access_token: response.access_token, // 设置访问令牌
+    };
+
+    try {
+      await cartStore.loadCart(); // 加载购物车数据
+      console.log('购物车数据已成功加载');
+    } catch (error) {
+      console.error('加载购物车数据失败:', error);
+    }
+  };
+
+  // 退出时清除用户信息和购物车数据
+  const logout = () => {
+    userInfo.value = {};
+    cartStore.clearCart(); // 清空购物车
   }
 
-  // 退出时清除用户信息
-  const clearUserInfo = () => {
-    userInfo.value = {}
-    // 执行清除购物车的action
-    cartStore.clearCart()
-  }
-  // 3. 以对象的格式把state和action return
   return {
     userInfo,
-    getUserInfo,
-    clearUserInfo
+    login,
+    logout
   }
-}, {
-  persist: true,
 })

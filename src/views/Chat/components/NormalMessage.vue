@@ -1,22 +1,18 @@
 <script setup lang="ts">
-import { getImageUrl } from '@/utils/utils'
-
 const props = defineProps({
   my_id: { type: String, required: true },
   user_id: { type: String, required: true },
+  avatar: { typs: String, required: true },
   content: { type: String, required: true },
   time: { type: String, required: true }
 })
 
 const is_self = props.user_id === props.my_id
-// TODO: 头像
-const avatar = is_self ? getImageUrl('avatar.jpg') : getImageUrl('avatar2.jpg')
-console.log(props.user_id, props.content)
 </script>
 
 <template>
   <div class="single-message" :class="{ 'self-message': is_self }">
-    <el-avatar :size="45" :src="avatar"></el-avatar>
+    <el-avatar :size="45" :src="props.avatar"></el-avatar>
     <div class="bubble-triangle" :class="{ 'self-message': is_self }"></div>
     <div class="message-box" :class="{ 'self-message': is_self }">
       {{ content }}
