@@ -1,19 +1,37 @@
 <script setup lang="ts">
 import { useCartStore } from '@/stores/cartStore'
+import { computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+
 const cartStore = useCartStore()
+const router = useRouter()
 
 // 单选回调
-const singleCheck = (i: any, selected: boolean) => {
-  console.log(i, selected)
-  // store cartList 数组 无法知道要修改谁的选中状态？
-  // 除了selected补充一个用来筛选的参数 - skuId
-  cartStore.singleCheck(i.skuId, selected)
+const singleCheck = (skuId: string, selected: boolean) => {
+  cartStore.singleCheck(skuId, selected)
 }
 
-
+// 全选回调
 const allCheck = (selected: boolean) => {
   cartStore.allCheck(selected)
 }
+
+// 删除购物车项
+const delCart = (item: any) => {
+  cartStore.delCart(item.skuId)
+}
+
+// 计算属性
+const cartItems = computed(() => cartStore.cartItems)
+const isAllSelected = computed(() => cartStore.isAll)
+const totalCount = computed(() => cartStore.allCount)
+const selectedCount = computed(() => cartStore.selectedCount)
+const selectedPrice = computed(() => cartStore.selectedPrice)
+
+// 组件挂载时加载购物车数据
+onMounted(() => {
+  cartStore.loadCart()
+})
 </script>
 
 <template>
@@ -24,7 +42,7 @@ const allCheck = (selected: boolean) => {
           <thead>
             <tr>
               <th width="120">
-                <el-checkbox :model-value="cartStore.isAll" @change="allCheck" />
+                <el-checkbox :model-value="isAllSelected" @change="allCheck" />
               </th>
               <th width="400">商品信息</th>
               <th width="220">单价</th>
@@ -54,14 +72,14 @@ const allCheck = (selected: boolean) => {
                 <p>&yen;{{ i.price }}</p>
               </td>
               <td class="tc">
-                <el-input-number v-model="i.count" />
+                <el-input-number v-model="i.count" @change="cartStore.updateProductInCart({ ...i, count: $event })" />
               </td>
               <td class="tc">
                 <p class="f16 red">&yen;{{ (i.price * i.count).toFixed(2) }}</p>
               </td>
               <td class="tc">
                 <p>
-                  <el-popconfirm title="确认删除吗?" confirm-button-text="确认" cancel-button-text="取消" @confirm="cartStore.delCart(i)">
+                  <el-popconfirm title="确认删除吗?" confirm-button-text="确认" cancel-button-text="取消" @confirm="() => delCart(i)">
                     <template #reference>
                       <a href="javascript:;">删除</a>
                     </template>
@@ -69,7 +87,7 @@ const allCheck = (selected: boolean) => {
                 </p>
               </td>
             </tr>
-            <tr v-if="cartStore.cartList!.length === 0">
+            <tr v-if="cartItems.length === 0">
               <td colspan="6">
                 <div class="cart-none">
                   <el-empty description="购物车列表为空">
@@ -79,20 +97,17 @@ const allCheck = (selected: boolean) => {
               </td>
             </tr>
           </tbody>
-
         </table>
       </div>
       <!-- 操作栏 -->
-      <div class="action">
+      <div class="action" v-if="cartItems.length > 0">
         <div class="batch">
-          共 {{ cartStore.allCount }} 件商品，已选择 {{ cartStore.selectedCount }} 件，商品合计：
-          <span class="red">¥ {{ cartStore.selectedPrice.toFixed(2) }} </span>
+          共 {{ totalCount }} 件商品，已选择 {{ selectedCount }} 件，商品合计：
+          <span class="red">¥ {{ selectedPrice.toFixed(2) }} </span>
         </div>
-        <tr v-if="cartStore.cartList!.length != 0">
-          <div class="total">
-            <el-button size="large" type="primary" @click="$router.push('/checkout')">下单结算</el-button>
-          </div>
-        </tr>
+        <div class="total">
+          <el-button size="large" type="primary" @click="$router.push('/checkout')">下单结算</el-button>
+        </div>
       </div>
     </div>
   </div>
@@ -168,7 +183,7 @@ const allCheck = (selected: boolean) => {
       height: 100px;
     }
 
-    >div {
+    > div {
       width: 280px;
       font-size: 16px;
       padding-left: 10px;

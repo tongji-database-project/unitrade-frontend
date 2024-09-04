@@ -1,72 +1,386 @@
-<template>
-  <div class="checkout-container">
-    <h1>结算</h1>
-    <el-table :data="orderItems" style="width: 100%">
-      <el-table-column prop="merchandise_name" label="商品名称"></el-table-column>
-      <el-table-column prop="price" label="单价"></el-table-column>
-      <el-table-column prop="quantity" label="数量"></el-table-column>
-      <el-table-column label="小计">
-        <template #default="{ row }">
-          {{ (row.price * row.quantity).toFixed(2) }}
-        </template>
-      </el-table-column>
-    </el-table>
-    <div class="total-price">总价: {{ totalPrice.toFixed(2) }}</div>
-    <el-form ref="form" :model="form" label-width="120px">
-      <el-form-item label="地址">
-        <el-input v-model="form.address" readonly></el-input>
-      </el-form-item>
-      <el-form-item label="电话">
-        <el-input v-model="form.phone" readonly></el-input>
-      </el-form-item>
-    </el-form>
-    <el-button type="primary" @click="confirmOrder">确认订单</el-button>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import axios from 'axios';
-import { ElTable, ElTableColumn, ElForm, ElFormItem, ElInput, ElButton } from 'element-plus';
+import { getCheckInfoAPI, createOrderAPI } from '@/apis/checkout'
+import { useRouter } from 'vue-router'
+import { onMounted, ref } from 'vue'
+import { useCartStore } from '@/stores/cartStore'
+const cartStore = useCartStore()
+const router = useRouter()
+// 获取结算信息
+const checkInfo = <any>ref({}) // 订单对象
+const curAddress = <any>ref({}) // 默认地址
+const getCheckInfo = async () => {
+  const res = await getCheckInfoAPI()
+  checkInfo.value = res.result
+  // 适配默认地址
+  // 从地址列表中筛选出来 isDefault === 0 那一项
+  const item = checkInfo.value.userAddresses.find(item => item.isDefault === 0)
+  curAddress.value = item
+}
 
-const orderItems = ref([]);
-const totalPrice = ref(0);
-const form = ref({
-  address: '',
-  phone: ''
-});
-const router = useRouter();
+onMounted(() => getCheckInfo())
 
-const fetchOrderDetails = async () => {
-  try {
-    const response = await axios.get('/api/order-details');
-    orderItems.value = response.data.items;
-    totalPrice.value = orderItems.value.reduce((sum: number, item: { price: number, quantity: number }) => sum + item.price * item.quantity, 0);
+// 控制弹框打开
+const showDialog = ref(false)
 
-    const customerDetails = await axios.get('/api/customer-details');
-    form.value.address = customerDetails.data.address;
-    form.value.phone = customerDetails.data.phone;
-  } catch (error) {
-    console.error('Failed to fetch order details:', error);
-  }
-};
 
-const confirmOrder = async () => {
-  try {
-    const orderConfirmation = await axios.post('/api/confirm-order', {
-      items: orderItems.value,
-      total: totalPrice.value,
-      address: form.value.address,
-      phone: form.value.phone
-    });
-    if (orderConfirmation.status === 200) {
-      router.push('/payment');
+// 切换地址
+const activeAddress = ref({})
+const switchAddress = (item) => {
+  activeAddress.value = item
+}
+const confirm = () => {
+  curAddress.value = activeAddress.value
+  showDialog.value = false
+  activeAddress.value = {}
+}
+
+// 创建订单
+const createOrder = async () => {
+  const res = await createOrderAPI({
+    deliveryTimeType: 1,
+    payType: 1,
+    payChannel: 1,
+    buyerMessage: '',
+    goods: checkInfo.value.goods.map(item => {
+      return {
+        skuId: item.skuId,
+        count: item.count
+      }
+    }),
+    addressId: curAddress.value.id
+  })
+  const orderId = res.result.id
+  router.push({
+    path: '/payment',
+    query: {
+      id: orderId
     }
-  } catch (error) {
-    console.error('Failed to confirm order:', error);
-  }
-};
+  })
+  // 更新购物车
+  cartStore.updateNewList()
+}
 
-onMounted(fetchOrderDetails);
 </script>
+
+<template>
+  <div class="xtx-pay-checkout-page">
+    <div class="container">
+      <div class="wrapper">
+        <!-- 收货地址 -->
+        <h3 class="box-title">收货地址</h3>
+        <div class="box-body">
+          <div class="address">
+            <div class="text">
+              <div class="none" v-if="!curAddress">您需要先添加收货地址才可提交订单。</div>
+              <ul v-else>
+                <li><span>收<i />货<i />人：</span>{{ curAddress.receiver }}</li>
+                <li><span>联系方式：</span>{{ curAddress.contact }}</li>
+                <li><span>收货地址：</span>{{ curAddress.fullLocation }} {{ curAddress.address }}</li>
+              </ul>
+            </div>
+            <div class="action">
+              <el-button size="large" @click="showDialog = true">切换地址</el-button>
+              <el-button size="large">添加地址</el-button>
+            </div>
+          </div>
+        </div>
+        <!-- 商品信息 -->
+        <h3 class="box-title">商品信息</h3>
+        <div class="box-body">
+          <table class="goods">
+            <thead>
+              <tr>
+                <th width="520">商品信息</th>
+                <th width="170">单价</th>
+                <th width="170">数量</th>
+                <th width="170">小计</th>
+                <th width="170">实付</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="i in checkInfo.goods" :key="i.id">
+                <td>
+                  <a href="javascript:;" class="info">
+                    <img :src="i.picture" alt="">
+                    <div class="right">
+                      <p>{{ i.name }}</p>
+                      <p>{{ i.attrsText }}</p>
+                    </div>
+                  </a>
+                </td>
+                <td>&yen;{{ i.price }}</td>
+                <td>{{ i.price }}</td>
+                <td>&yen;{{ i.totalPrice }}</td>
+                <td>&yen;{{ i.totalPayPrice }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- 支付方式 -->
+        <h3 class="box-title">支付方式</h3>
+        <div class="box-body">
+          <a class="my-btn active" href="javascript:;">在线支付</a>
+        </div>
+        <!-- 金额明细 -->
+        <h3 class="box-title">金额明细</h3>
+        <div class="box-body">
+          <div class="total">
+            <dl>
+              <dt>商品件数：</dt>
+              <dd>{{ checkInfo.summary?.goodsCount }}件</dd>
+            </dl>
+            <dl>
+              <dt>商品总价：</dt>
+              <dd>¥{{ checkInfo.summary?.totalPrice.toFixed(2) }}</dd>
+            </dl>
+            <dl>
+              <dt>运<i></i>费：</dt>
+              <dd>¥{{ checkInfo.summary?.postFee.toFixed(2) }}</dd>
+            </dl>
+            <dl>
+              <dt>应付总额：</dt>
+              <dd class="price">{{ checkInfo.summary?.totalPayPrice.toFixed(2) }}</dd>
+            </dl>
+          </div>
+        </div>
+        <!-- 提交订单 -->
+        <div class="submit">
+          <el-button @click="createOrder" type="primary" size="large">提交订单</el-button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 切换地址 -->
+  <el-dialog v-model="showDialog" title="切换收货地址" width="30%" center>
+    <div class="addressWrapper">
+      <div class="text item" :class="{ active: activeAddress.id === item.id }" @click="switchAddress(item)"
+        v-for="item in checkInfo.userAddresses" :key="item.id">
+        <ul>
+          <li><span>收<i />货<i />人：</span>{{ item.receiver }} </li>
+          <li><span>联系方式：</span>{{ item.contact }}</li>
+          <li><span>收货地址：</span>{{ item.fullLocation + item.address }}</li>
+        </ul>
+      </div>
+    </div>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button>取消</el-button>
+        <el-button type="primary" @click="confirm">确定</el-button>
+      </span>
+    </template>
+  </el-dialog>
+<!-- 添加地址 --></template>
+
+<style scoped>
+.xtx-pay-checkout-page {
+  margin-top: 20px;
+
+  .wrapper {
+    background: #fff;
+    padding: 0 20px;
+
+    .box-title {
+      font-size: 16px;
+      font-weight: normal;
+      padding-left: 10px;
+      line-height: 70px;
+      border-bottom: 1px solid #f5f5f5;
+    }
+
+    .box-body {
+      padding: 20px 0;
+    }
+  }
+}
+
+.address {
+  border: 1px solid #f5f5f5;
+  display: flex;
+  align-items: center;
+
+  .text {
+    flex: 1;
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+
+    .none {
+      line-height: 90px;
+      color: #999;
+      text-align: center;
+      width: 100%;
+    }
+
+    >ul {
+      flex: 1;
+      padding: 20px;
+
+      li {
+        line-height: 30px;
+
+        span {
+          color: #999;
+          margin-right: 5px;
+
+          >i {
+            width: 0.5em;
+            display: inline-block;
+          }
+        }
+      }
+    }
+
+    >a {
+      color: $xtxColor;
+      width: 160px;
+      text-align: center;
+      height: 90px;
+      line-height: 90px;
+      border-right: 1px solid #f5f5f5;
+    }
+  }
+
+  .action {
+    width: 420px;
+    text-align: center;
+
+    .btn {
+      width: 140px;
+      height: 46px;
+      line-height: 44px;
+      font-size: 14px;
+
+      &:first-child {
+        margin-right: 10px;
+      }
+    }
+  }
+}
+
+.goods {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+
+  .info {
+    display: flex;
+    text-align: left;
+
+    img {
+      width: 70px;
+      height: 70px;
+      margin-right: 20px;
+    }
+
+    .right {
+      line-height: 24px;
+
+      p {
+        &:last-child {
+          color: #999;
+        }
+      }
+    }
+  }
+
+  tr {
+    th {
+      background: #f5f5f5;
+      font-weight: normal;
+    }
+
+    td,
+    th {
+      text-align: center;
+      padding: 20px;
+      border-bottom: 1px solid #f5f5f5;
+
+      &:first-child {
+        border-left: 1px solid #f5f5f5;
+      }
+
+      &:last-child {
+        border-right: 1px solid #f5f5f5;
+      }
+    }
+  }
+}
+
+.my-btn {
+  width: 228px;
+  height: 50px;
+  border: 1px solid #e4e4e4;
+  text-align: center;
+  line-height: 48px;
+  margin-right: 25px;
+  color: #666666;
+  display: inline-block;
+
+  &.active,
+  &:hover {
+    border-color: $xtxColor;
+  }
+}
+
+.total {
+  dl {
+    display: flex;
+    justify-content: flex-end;
+    line-height: 50px;
+
+    dt {
+      i {
+        display: inline-block;
+        width: 2em;
+      }
+    }
+
+    dd {
+      width: 240px;
+      text-align: right;
+      padding-right: 70px;
+
+      &.price {
+        font-size: 20px;
+        color: $priceColor;
+      }
+    }
+  }
+}
+
+.submit {
+  text-align: right;
+  padding: 60px;
+  border-top: 1px solid #f5f5f5;
+}
+
+.addressWrapper {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.text {
+  flex: 1;
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+
+  &.item {
+    border: 1px solid #f5f5f5;
+    margin-bottom: 10px;
+    cursor: pointer;
+
+    &.active,
+    &:hover {
+      border-color: $xtxColor;
+      background: lighten($xtxColor, 50%);
+    }
+
+    >ul {
+      padding: 10px;
+      font-size: 14px;
+      line-height: 30px;
+    }
+  }
+}
+</style>

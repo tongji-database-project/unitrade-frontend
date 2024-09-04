@@ -1,7 +1,11 @@
-import request from '@/utils/utils'
+import httpInstance from '@/utils/utils'
 
-export const getOrderAPI = (id: string) => {
-  return request({
-    url: `/member/order/${id}`
+export const getOrderAPI = (order_id: string) => {
+  return httpInstance({
+    url: '/pay/create-payment',
+    method: 'GET',
+    params: {
+        order_id: order_id,
+    }
   })
 }
