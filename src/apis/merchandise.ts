@@ -26,3 +26,52 @@ export const getSellerInfoAPI = async (merchandiseId: string) => {
         })
       })
   }
+
+
+  export const getCommentIdAPI = async (merchandiseId: string) => {
+    return await httpInstance({
+      url: `/commentId/${merchandiseId}`,
+      method: 'GET',
+    })
+
+    .then((response) => {
+        if (response.status === 200) {
+          return response.data
+        } else {
+          ElMessage({
+            type: 'warning',
+            message: `无法获取评论id：${response.status}`
+          })
+        }
+      })
+      .catch((error) => {
+        ElMessage({
+          type: 'warning',
+          message: `无法获取评论id：${error}`
+        })
+      })
+  }
+
+  export const getCommentCardAPI = async (commentId: string) => {
+    return await httpInstance({
+      url: `/commentCard/${commentId}`,
+      method: 'GET',
+    })
+
+    .then((response) => {
+        if (response.status === 200) {
+          return response.data
+        } else {
+          ElMessage({
+            type: 'warning',
+            message: `无法获取评论信息：${response.status}`
+          })
+        }
+      })
+      .catch((error) => {
+        ElMessage({
+          type: 'warning',
+          message: `无法获取评论信息：${error}`
+        })
+      })
+  }

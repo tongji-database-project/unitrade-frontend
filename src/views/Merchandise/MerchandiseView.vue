@@ -1,18 +1,15 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { ref, reactive, onMounted } from 'vue'
 import { getImageUrl } from '@/utils/utils'
 import {getMerchandiseCardAPI} from '@/apis/home'
 import {getSellerInfoAPI} from '@/apis/merchandise'
 import ImageView from '@/components/ImageView.vue'
 
-const props = defineProps({
-  merchandise_id: { type: String, required: true }
-})
-
 const data = reactive({})
 
 const router = useRouter()
+const route = useRoute()
 
 const meichandise_cover = ref<string>()
 const meichandise_name = ref<string>()
@@ -24,12 +21,12 @@ const seller_reputation = ref<number>()
 const star_score = ref<number>()
 
 const loadInfo = async () => {
-  const info= await getMerchandiseCardAPI(props.merchandise_id)
+  const info= await getMerchandiseCardAPI(route.params.id as string)
   meichandise_cover.value = getImageUrl(info.image)
   meichandise_name.value = info.name
   meichandise_price.value = info.price/100
 
-  const seller_info = await getSellerInfoAPI(props.merchandise_id)
+  const seller_info = await getSellerInfoAPI(route.params.id as string)
   seller_cover.value = getImageUrl(seller_info.image)
   seller_id.value = seller_info.id
   seller_name.value = seller_info.name
@@ -94,8 +91,8 @@ onMounted(() => {
         <el-text class="re-value" size="small">信誉值:{{ seller_reputation }}/100</el-text>
       </div>
       <div class="seller-botton">
-        <el-button type="primary">查看商家</el-button>
-        <el-button type="primary">联系商家</el-button>
+        <el-button type="primary" @click="router.push(`/profile/${seller_id}`)">查看商家</el-button>
+        <el-button type="primary" @click="router.push(`/message/${seller_id}`)">联系商家</el-button>
       </div>
     </div>
     <div class="info-container">
@@ -134,6 +131,16 @@ onMounted(() => {
             </el-button>
           </div>
         </div>
+      </div>
+
+      <el-divider border-style="double" />
+
+      <div class="comment">
+        <p class="comment-name">评价</p>
+        <p class="icon-comment-filling" @click="router.push(`/comments/${route.params.id as string}`)">查看评价></p>
+        <!-- <p class="comment-name">评价</p> -->
+        <!-- <el-table-column prop="啦啦啦" width="150" />   -->
+  
       </div>
     </div>
   </div>
@@ -175,7 +182,7 @@ onMounted(() => {
   }
 
   .goods-info {
-    min-height: 600px;
+    height: 450px;
     background: #fff;
     display: flex;
 
@@ -255,13 +262,32 @@ onMounted(() => {
     }
   }
 
-  .goods-footer {
+  .comment-name{
+      font-size: 30px;
+    }
+
+  .comment {
+    height: 180px;
+    position:relative;
     display: flex;
-    margin-top: 20px;    
-    width: 940px;
-    margin-right: 20px;
+    /* border: 2px solid #ccc;
+    border-radius: 20px; */
+
+    .comment-name{
+      font-size: 30px;
+    }
+
+    .icon-comment-filling{
+      font-size: 20px;
+      padding:10px;
+      margin-left:auto;
+
+      &:hover {
+            color: #4ecd96;
+            cursor: pointer;
+          }
+    }
+
   }
-
 }
-
 </style>
