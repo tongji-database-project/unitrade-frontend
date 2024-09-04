@@ -2,7 +2,7 @@
 import { useRouter } from 'vue-router'
 import { ref, reactive, onMounted } from 'vue'
 import { getImageUrl } from '@/utils/utils'
-import {getMerchandiseCardAPI} from '@/apis/home'
+import { getMerchandiseCardAPI } from '@/apis/home'
 
 const props = defineProps({
   merchandise_id: { type: String, required: true }
@@ -30,12 +30,11 @@ const price = ref<number>()
 // ]
 
 const loadInfo = async () => {
-  const info= await getMerchandiseCardAPI(props.merchandise_id)
+  const info = await getMerchandiseCardAPI(props.merchandise_id)
   console.log(info)
   cover.value = getImageUrl(info.image)
   name.value = info.name
-  price.value = info.price/100
-
+  price.value = info.price / 100
 }
 
 onMounted(() => {

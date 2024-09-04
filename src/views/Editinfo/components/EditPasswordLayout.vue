@@ -1,26 +1,30 @@
 <script setup lang="ts">
-import { ref,computed } from "vue";
+import { ref, computed } from 'vue'
 import { useTokenStore } from '@/stores/token'
-import { EditPassword} from '@/apis/user'
-import { useRouter } from 'vue-router';
+import { EditPassword } from '@/apis/user'
+import { useRouter } from 'vue-router'
 const logged_in = computed(() => useTokenStore().logged_in)
 
-const Originpassword=ref('')
+const Originpassword = ref('')
 const Newpassword = ref('')
 const Confirmpassword = ref('')
-const router = useRouter();
+const router = useRouter()
 const ToAccount = () => {
   setTimeout(() => {
     router.push('/account')
-  }, 2000); // 延迟时间为 2000 毫秒（2 秒）
+  }, 2000) // 延迟时间为 2000 毫秒（2 秒）
 }
 const submitForm = async () => {
-    if(logged_in.value){
-      const response=await EditPassword(Originpassword.value,Newpassword.value,Confirmpassword.value)
-      if(response===200){
-        ToAccount()
-      }
+  if (logged_in.value) {
+    const response = await EditPassword(
+      Originpassword.value,
+      Newpassword.value,
+      Confirmpassword.value
+    )
+    if (response === 200) {
+      ToAccount()
     }
+  }
 }
 </script>
 
@@ -28,15 +32,33 @@ const submitForm = async () => {
   <form @submit.prevent="submitForm" class="form">
     <p>请输入原密码：</p>
     <div class="input-container">
-      <input type="password" v-model="Originpassword" id="Originpassword" placeholder="请输入原密码" required />
+      <input
+        type="password"
+        v-model="Originpassword"
+        id="Originpassword"
+        placeholder="请输入原密码"
+        required
+      />
     </div>
     <p>请输入新密码：</p>
     <div class="input-container">
-      <input type="password" v-model="Newpassword" id="Newpassword" placeholder="请输入新密码" required />
+      <input
+        type="password"
+        v-model="Newpassword"
+        id="Newpassword"
+        placeholder="请输入新密码"
+        required
+      />
     </div>
     <p>请确认密码</p>
     <div class="input-container">
-      <input type="password" v-model="Confirmpassword" id="Confirmpassword" placeholder="请再次新密码" required/>
+      <input
+        type="password"
+        v-model="Confirmpassword"
+        id="Confirmpassword"
+        placeholder="请再次新密码"
+        required
+      />
     </div>
     <div>
       <button type="submit">修改密码</button>
@@ -45,12 +67,12 @@ const submitForm = async () => {
 </template>
 
 <style scoped>
-.form{
-    margin:50px;
-    width:40%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.form {
+  margin: 50px;
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 .form-container {
   display: flex;
@@ -102,10 +124,8 @@ button[type='submit']:hover {
   width: 40px;
   height: 40px;
   animation: spin 1s linear infinite;
-  
 }
-.centre
-{
+.centre {
   display: flex;
   justify-content: center;
   align-items: center;

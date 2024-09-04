@@ -11,6 +11,9 @@
         @change="selectChange"
         class="select-sort"
       />
+      <el-button type="primary" @click="router.push('product-sub')" class="search-button"
+        >发布商品</el-button
+      >
     </div>
     <div class="product-table-header">
       <div class="product-cover">封面</div>

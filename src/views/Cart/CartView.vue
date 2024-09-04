@@ -230,6 +230,5 @@ onMounted(() => {
     font-weight: normal;
     line-height: 50px;
   }
-
 }
 </style>

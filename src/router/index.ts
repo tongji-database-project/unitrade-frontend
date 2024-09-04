@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { roleJudgeAPI } from '@/apis/user';
+import { roleJudgeAPI } from '@/apis/user'
 import LayoutView from '@/views/Layout/LayoutView.vue'
 import HomeView from '@/views/Home/HomeView.vue'
 import MerchandiseView from '@/views/Merchandise/MerchandiseView.vue'
@@ -18,11 +18,10 @@ import RefundRequestView from '@/views/RefundRequest/RefundRequestView.vue'
 import MessageView from '@/views/Message/MessageView.vue'
 import ChatView from '@/views/Chat/ChatView.vue'
 
-import TestView from '@/views/TestView.vue'
-import EditInfoView from '@/views/Editinfo/EditInfoView.vue';
-import ReceivedView from '@/views/Received/ReceivedView.vue';
-import TransitView from '@/views/Transit/TransitView.vue';
-import UncommandView from '@/views/Uncommand/UncommandView.vue';
+import EditInfoView from '@/views/Editinfo/EditInfoView.vue'
+import ReceivedView from '@/views/Received/ReceivedView.vue'
+import TransitView from '@/views/Transit/TransitView.vue'
+import UncommandView from '@/views/Uncommand/UncommandView.vue'
 
 import { ElMessage,ElMessageBox } from 'element-plus'
 import 'element-plus/dist/index.css';
@@ -44,11 +43,6 @@ const router = createRouter({
           component: HomeView
         },
         {
-          path: 'test',
-          name: 'test',
-          component: TestView
-        },
-        {
           path: 'merchandise/:id',
           name: 'merchandise',
           component: MerchandiseView
@@ -63,57 +57,62 @@ const router = createRouter({
           name: 'profile',
           component: ProfileView
         },
+        {
+          path: 'complaintsubmission/:seller_id',
+          name: 'complaintsubmission',
+          component: ComplaintSubmissionView
+        },
         // 以下几个 URL 均结合当前的 token 来确定返回哪一个用户的信息
         {
           path: 'cart',
           name: 'cart',
           component: CartView,
-          beforeEnter: async (to, from, next) => {   
-            const role=await roleJudgeAPI();
-            if (role!=="User") {  
-              next('/login');  
+          beforeEnter: async (to, from, next) => {
+            const role = await roleJudgeAPI()
+            if (role !== 'User') {
+              next('/login')
               ElMessage({
-                type:"error",
+                type: 'error',
                 message: `请先登录管理员账户`
               })
-            }else{
-              next();
+            } else {
+              next()
             }
-          },
+          }
         },
         {
           path: 'checkout',
           name: 'checkout',
           component: CheckoutView,
-          beforeEnter: async (to, from, next) => {   
-            const role=await roleJudgeAPI();
-            if (role!=="User") {  
-              next('/login');  
+          beforeEnter: async (to, from, next) => {
+            const role = await roleJudgeAPI()
+            if (role !== 'User') {
+              next('/login')
               ElMessage({
-                type:"error",
+                type: 'error',
                 message: `请先登录管理员账户`
               })
-            }else{
-              next();
+            } else {
+              next()
             }
-          },
+          }
         },
         {
           path: 'payment/:id',
           name: 'payment',
           component: PaymentView,
-          beforeEnter: async (to, from, next) => {   
-            const role=await roleJudgeAPI();
-            if (role!=="User") {  
-              next('/login');  
+          beforeEnter: async (to, from, next) => {
+            const role = await roleJudgeAPI()
+            if (role !== 'User') {
+              next('/login')
               ElMessage({
-                type:"error",
+                type: 'error',
                 message: `请先登录管理员账户`
               })
-            }else{
-              next();
+            } else {
+              next()
             }
-          },
+          }
         },
         {
           path: 'paycallback',
@@ -124,18 +123,18 @@ const router = createRouter({
           path: 'account',
           name: 'my-account',
           component: MyAccountView,
-          beforeEnter: async (to, from, next) => {   
-            const role=await roleJudgeAPI();
-            if (role!=="User") {  
-              next('/login');  
+          beforeEnter: async (to, from, next) => {
+            const role = await roleJudgeAPI()
+            if (role !== 'User') {
+              next('/login')
               ElMessage({
-                type:"error",
+                type: 'error',
                 message: `请先登录账户`
               })
-            }else{
-              next();
+            } else {
+              next()
             }
-          },
+          }
         },
         {
           path: 'onsale',
@@ -143,7 +142,7 @@ const router = createRouter({
           component: OnsaleListView
         },
         {
-          path: 'product-sub/:id',
+          path: 'product-sub',
           name: 'product-submission',
           component: ProductSubmissionView
         },
@@ -151,18 +150,28 @@ const router = createRouter({
           path: 'order',
           name: 'order',
           component: OrderListView,
-          beforeEnter: async (to, from, next) => {   
-            const role=await roleJudgeAPI();
-            if (role!=="User") {  
-              next('/login');  
+          beforeEnter: async (to, from, next) => {
+            const role = await roleJudgeAPI()
+            if (role !== 'User') {
+              next('/login')
               ElMessage({
-                type:"error",
+                type: 'error',
                 message: `请先登录账户`
               })
-            }else{
-              next();
+            } else {
+              next()
             }
-          },
+          }
+        },
+        {
+          path: '/order-detail/:id',
+          name: 'OrderDetail',
+          component: OrderView
+        },
+        {
+          path: '/refund/:id',
+          name: 'RefundRequest',
+          component: RefundRequestView
         },
         {
           path: 'message',
@@ -176,103 +185,103 @@ const router = createRouter({
               props: true
             }
           ],
-          beforeEnter: async (to, from, next) => {   
-            const role=await roleJudgeAPI();
-            if (role!=="User") {  
-              next('/login');  
+          beforeEnter: async (to, from, next) => {
+            const role = await roleJudgeAPI()
+            if (role !== 'User') {
+              next('/login')
               ElMessage({
-                type:"error",
+                type: 'error',
                 message: `请先登录管理员账户`
               })
-            }else{
-              next();
+            } else {
+              next()
             }
-          },
+          }
         },
         {
-          path:"myappeal",
-          name:"myappeal",
-          component:MyappealView,
-          beforeEnter: async (to, from, next) => {   
-            const role=await roleJudgeAPI();
-            if (role!=="User") {  
-              next('/login');  
+          path: 'myappeal',
+          name: 'myappeal',
+          component: MyappealView,
+          beforeEnter: async (to, from, next) => {
+            const role = await roleJudgeAPI()
+            if (role !== 'User') {
+              next('/login')
               ElMessage({
-                type:"error",
+                type: 'error',
                 message: `请先登录账户`
               })
-            }else{
-              next();
+            } else {
+              next()
             }
-          },
+          }
         },
         {
-          path:'Editinfo',
-          name:'Editinfo',
-          component:EditInfoView,
-          beforeEnter: async (to, from, next) => {   
-            const role=await roleJudgeAPI();
-            if (role!=="User") {  
-              next('/login');  
+          path: 'Editinfo',
+          name: 'Editinfo',
+          component: EditInfoView,
+          beforeEnter: async (to, from, next) => {
+            const role = await roleJudgeAPI()
+            if (role !== 'User') {
+              next('/login')
               ElMessage({
-                type:"error",
+                type: 'error',
                 message: `请先登录账户`
               })
-            }else{
-              next();
+            } else {
+              next()
             }
-          },
+          }
         },
         {
-          path:"received",
-          name:"received",
-          component:ReceivedView,
-          beforeEnter: async (to, from, next) => {   
-            const role=await roleJudgeAPI();
-            if (role!=="User") {  
-              next('/login');  
+          path: 'received',
+          name: 'received',
+          component: ReceivedView,
+          beforeEnter: async (to, from, next) => {
+            const role = await roleJudgeAPI()
+            if (role !== 'User') {
+              next('/login')
               ElMessage({
-                type:"error",
+                type: 'error',
                 message: `请先登录账户`
               })
-            }else{
-              next();
+            } else {
+              next()
             }
-          },
+          }
         },
         {
-          path:"transit",
-          name:"transit",
-          component:TransitView,
-          beforeEnter: async (to, from, next) => {   
-            const role=await roleJudgeAPI();
-            if (role!=="User") {  
-              next('/login');  
+          path: 'transit',
+          name: 'transit',
+          component: TransitView,
+          beforeEnter: async (to, from, next) => {
+            const role = await roleJudgeAPI()
+            if (role !== 'User') {
+              next('/login')
               ElMessage({
-                type:"error",
+                type: 'error',
                 message: `请先登录账户`
               })
-            }else{
-              next();
+            } else {
+              next()
             }
-          },
+          }
         },
         {
-          path:"uncommand",
-          name:"uncommand",
-          component:UncommandView,
-          beforeEnter: async (to, from, next) => {   
-            const role=await roleJudgeAPI();
-            if (role!=="User") {  
-              next('/login');  
+          path: 'uncommand',
+          name: 'uncommand',
+          component: UncommandView,
+          beforeEnter: async (to, from, next) => {
+            const role = await roleJudgeAPI()
+            if (role !== 'User') {
+              next('/login')
               ElMessage({
-                type:"error",
+                type: 'error',
                 message: `请先登录账户`
               })
-            }else{
-              next();
+            } else {
+              next()
             }
-          },
+          }
         }
       ]
     },
@@ -301,18 +310,18 @@ const router = createRouter({
       path: '/admin/:id',
       name: 'admin',
       component: () => import('../views/Admin/AdminView.vue'),
-      beforeEnter: async (to, from, next) => {   
-        const role=await roleJudgeAPI();
-        if (role!=="Admin") {  
-          next('/adminlogin');  
+      beforeEnter: async (to, from, next) => {
+        const role = await roleJudgeAPI()
+        if (role !== 'Admin') {
+          next('/adminlogin')
           ElMessage({
-            type:"error",
+            type: 'error',
             message: `请先登录管理员账户`
           })
-        }else{
-          next();
+        } else {
+          next()
         }
-      },
+      }
     }
   ]
 })

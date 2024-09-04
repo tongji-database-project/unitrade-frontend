@@ -13,7 +13,7 @@ const changeSession = (user_id: string) => {
 }
 
 onMounted(async () => {
-  relative_contact.value = await getContactingUser();
+  relative_contact.value = await getContactingUser()
   console.log('relative_contact:', relative_contact.value)
 })
 </script>

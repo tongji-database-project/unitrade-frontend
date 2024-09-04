@@ -7,10 +7,10 @@ import { getMerchandiseIdAPI } from '@/apis/home'
 import { onMounted, ref ,computed, nextTick} from 'vue';
 import type {Ref} from 'vue';
 
-const merchandise_id_list:Ref<string[]>=ref([])
+const merchandise_id_list: Ref<string[]> = ref([])
 
 const LoadMerchandiseId = async () => {
-  merchandise_id_list.value = await getMerchandiseIdAPI() 
+  merchandise_id_list.value = await getMerchandiseIdAPI()
   console.log(merchandise_id_list.value)
 }
 
@@ -106,11 +106,11 @@ function scrollToTop() {
   align-items: center;
 }
 
-.container{
+.container {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  padding: 10px; 
+  padding: 10px;
   box-sizing: border-box;
 
 }
@@ -138,100 +138,3 @@ function scrollToTop() {
   margin-top: 10px;
 }
 </style>
-
-
-<!-- <script setup lang="ts">
-import MerchandiseCard from '@/components/MerchandiseCard.vue'
-import Banner from './components/Banner.vue'
-import Category from './components/Category.vue'
-import { getMerchandiseIdAPI } from '@/apis/home'
-import { onMounted, ref } from 'vue';
-import type {Ref} from 'vue';
-
-const merchandise_id_list:Ref<string[]>=ref([])
-
-const LoadMerchandiseId = async () => {
-  merchandise_id_list.value = await getMerchandiseIdAPI() 
-  console.log(merchandise_id_list.value)
-}
-
-onMounted(() => {
-  LoadMerchandiseId()
-})
-
-const input = ref('')
-</script>
-
-<template>
-  <div class="home-page">
-    <div class="home-header">
-      <div class="logo">
-        <el-image class="logo-image" src="http://47.97.215.255/img/avatar.jpg" fit="cover" />
-      </div>
-      <div class="input-box">
-        <el-input v-model="input" placeholder="请输入商品">
-          <template #append>搜素</template>ss
-        </el-input>
-      </div>
-    </div>
-    <div class="container">
-      <Category />
-      <Banner />
-    </div>
-    <div class="home-body">
-      <div class="merchandise-card" v-for="id in merchandise_id_list" :key="id">
-        <MerchandiseCard :merchandise_id="id" />
-      </div>
-    </div>
-  </div>
-</template> -->
-
-<!-- <style scoped>
-.home-page {
-  display: flex;
-  padding: 0 3rem;
-  flex-direction: column;
-}
-
-.home-body {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: flex-start;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-.home-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
-
-.container{
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  padding: 10px; 
-  box-sizing: border-box;
-
-}
-
-.logo {
-  width: 50px;
-  height: 50px;
-}
-
-.input-box {
-  width: 500px;
-  margin: 0 auto;
-}
-
-.goods-list {
-  display: flex;
-  justify-content: space-between;
-  width: 130px;
-  height: 200px;
-}
-</style> -->

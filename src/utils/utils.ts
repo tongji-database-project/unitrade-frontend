@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import { useTokenStore } from '@/stores/token'
-import 'element-plus/dist/index.css'; //添加el组件的动画效果
+import 'element-plus/dist/index.css' //添加el组件的动画效果
 
 const getImageUrl = (path: string) => {
   // 开头有根目录 / 则去掉这个 /

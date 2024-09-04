@@ -1,85 +1,85 @@
 <script setup lang="ts">
-import { ElMessage, ElMessageBox } from 'element-plus';
-import {ref} from'vue'
-import { useRouter } from 'vue-router';
-import 'element-plus/dist/index.css'; 
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import 'element-plus/dist/index.css'
 
-let file = ref<File | null>(null);
-let imageUrl = ref<string | null>(null);
-const router = useRouter();
+let file = ref<File | null>(null)
+let imageUrl = ref<string | null>(null)
+const router = useRouter()
 const ToAccount = () => {
   setTimeout(() => {
     router.push('/account')
-  }, 2000); // 延迟时间为 2000 毫秒（2 秒）
+  }, 2000) // 延迟时间为 2000 毫秒（2 秒）
 }
-function handleFileChange(event:Event){
-  const input = event.target as HTMLInputElement;
-      if (input.files && input.files[0]) {
-        file.value = input.files[0];
-        if (file.value.type.startsWith('image/')) {
-          const reader=new FileReader();
-          reader.onload=(e)=>{
-            imageUrl.value=e.target?.result as string
-          }
-          reader.readAsDataURL(file.value);
-        } else {
-          alert('请选择一个有效的图片文件');
-        }
+function handleFileChange(event: Event) {
+  const input = event.target as HTMLInputElement
+  if (input.files && input.files[0]) {
+    file.value = input.files[0]
+    if (file.value.type.startsWith('image/')) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        imageUrl.value = e.target?.result as string
       }
-}
-const submitEdit =async()=>{
-  if (!file.value) {
-    return;
+      reader.readAsDataURL(file.value)
+    } else {
+      alert('请选择一个有效的图片文件')
+    }
   }
-  const formData = new FormData();
-  formData.append('file', file.value);
+}
+const submitEdit = async () => {
+  if (!file.value) {
+    return
+  }
+  const formData = new FormData()
+  formData.append('file', file.value)
   try {
     const response = await fetch('/api/setpicture', {
-    method: 'POST',
-    body: formData,
-    });
-    if(response.status===200){
+      method: 'POST',
+      body: formData
+    })
+    if (response.status === 200) {
       ElMessageBox({
-        type:"success",
-        message:"头像修改成功，即将跳转个人中心"
+        type: 'success',
+        message: '头像修改成功，即将跳转个人中心'
       })
       ToAccount()
     }
   } catch (error) {
     ElMessage({
-        type: 'warning',
-        message: `头像修改失败，错误信息：${error}`
+      type: 'warning',
+      message: `头像修改失败，错误信息：${error}`
     })
-    console.error('Error uploading file:', error);
+    console.error('Error uploading file:', error)
   }
 }
-
 </script>
 <template>
-    <div>
-      <div v-if="imageUrl">
-        <img :src="imageUrl" alt="Preview" style="max-width: 300px; max-height: 300px;" />
-      </div> 
-      <div v-else>
-        <img src="https://via.placeholder.com/300" alt="Preview" style="max-width: 300px;max-height: 300px;">
-      </div>
-      <div class="button">
-        <input type="file" @change="handleFileChange" />
-        <div v-if="imageUrl">
-            <button @click="submitEdit">提交</button>
-
-        </div>
-     </div>
+  <div>
+    <div v-if="imageUrl">
+      <img :src="imageUrl" alt="Preview" style="max-width: 300px; max-height: 300px" />
     </div>
+    <div v-else>
+      <img
+        src="https://via.placeholder.com/300"
+        alt="Preview"
+        style="max-width: 300px; max-height: 300px"
+      />
+    </div>
+    <div class="button">
+      <input type="file" @change="handleFileChange" />
+      <div v-if="imageUrl">
+        <button @click="submitEdit">提交</button>
+      </div>
+    </div>
+  </div>
 </template>
-  
 
-  
 <style>
-.button{
-    width:40%;
-    display: flex; /* 使用弹性布局 */
-    justify-content: space-between; /* 让子元素在容器内水平分布 */
+.button {
+  width: 40%;
+  display: flex; /* 使用弹性布局 */
+  justify-content: space-between; /* 让子元素在容器内水平分布 */
 }
 .modal-content {
   background: white;
@@ -106,18 +106,16 @@ const submitEdit =async()=>{
   width: 40px;
   height: 40px;
   animation: spin 1s linear infinite;
-  
 }
-.centre
-{
+.centre {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%; /* 居中于视口 */
 }
- </style>
-  
-   <!-- <script setup lang="ts">
+</style>
+
+<!-- <script setup lang="ts">
    import { ref } from 'vue';
    
    const file = ref<File | null>(null);
@@ -162,4 +160,3 @@ const submitEdit =async()=>{
     <button @click="upload">提交</button>
   </div>
 </template> -->
-  
