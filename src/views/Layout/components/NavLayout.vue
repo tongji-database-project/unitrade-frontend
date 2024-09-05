@@ -12,6 +12,8 @@ const logged_in = computed(() => useTokenStore().logged_in)
 
 const user_avatar = ref('')
 
+const input = ref('')
+
 // 用于加载用户头像的函数
 const load_avatar = async () => {
   if (logged_in.value) {
@@ -32,16 +34,16 @@ onMounted(() => {
   load_avatar()
 })
 
-const categories = [
-  {
-    name: '分类 1',
-    path: '/'
-  },
-  {
-    name: '分类 2',
-    path: '/'
-  }
-]
+// const categories = [
+//   {
+//     name: '分类 1',
+//     path: '/'
+//   },
+//   {
+//     name: '分类 2',
+//     path: '/'
+//   }
+// ]
 </script>
 
 <template>
@@ -49,10 +51,15 @@ const categories = [
     <el-space class="container" spacer="|">
       <RouterLink class="logo" to="/">
         <!-- TODO: logo 待替换 -->
-        <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="30" height="30" />
+        <img alt="Vue logo" class="logo" :src= "getImageUrl('logo.png')" width="100" height="70" />
       </RouterLink>
-      <div class="header-category" v-for="({ name, path }, index) in categories" :key="index">
+      <!-- <div class="header-category" v-for="({ name, path }, index) in categories" :key="index">
         <RouterLink :to="path">{{ name }}</RouterLink>
+      </div> -->
+      <div class="input-box">
+        <el-input v-model="input" placeholder="请输入商品">
+          <template #append>搜素</template>ss
+        </el-input>
       </div>
     </el-space>
     <el-space class="container" v-if="logged_in" spacer="|">

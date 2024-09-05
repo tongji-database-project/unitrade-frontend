@@ -2,7 +2,6 @@
 import { getImageUrl } from '@/utils/utils'
 import MerchandiseCard from '@/components/MerchandiseCard.vue'
 import Banner from './components/Banner.vue'
-import Category from './components/Category.vue'
 import { getMerchandiseIdAPI } from '@/apis/home'
 import { onMounted, ref ,computed, nextTick} from 'vue';
 import type {Ref} from 'vue';
@@ -57,7 +56,7 @@ function scrollToTop() {
 
 <template>
   <div class="home-page">
-    <div class="home-header">
+    <!-- <div class="home-header">
       <div class="logo">
         <el-image class="logo-image" :src= "getImageUrl('logo.png')" fit="cover" />
       </div>
@@ -66,9 +65,8 @@ function scrollToTop() {
           <template #append>搜素</template>ss
         </el-input>
       </div>
-    </div>
+    </div> -->
     <div class="container">
-      <Category />
       <Banner />
     </div>
     <div class="home-body">
