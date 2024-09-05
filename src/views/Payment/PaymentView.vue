@@ -1,20 +1,29 @@
 <script setup lang="ts">
-import { getOrderAPI } from '@/apis/pay'
+import { createPayAPI, getOrderTotalAPI } from '@/apis/pay'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCountDown } from '@/composables/useCountDown'
-const { formatTime /*, start*/ } = useCountDown()
-// 获取订单数据
+
+const { formatTime, start } = useCountDown();
+
+// 初始化
 const route = useRoute()
-const payInfo = ref<any>({})
-const getPayInfo = async () => {
-  const res = await getOrderAPI(route.params.id)
-  payInfo.value = res.result
-  console.log('ge')
-  // 初始化倒计时秒数
-  //start(res.result.countdown)
-}
-onMounted(() => getPayInfo())
+const payTotal = ref<number | null>(null) // 用来存储订单总金额
+
+// 获取订单数据
+const getOrderTotal = async () => {
+  try {
+    const res = await getOrderTotalAPI(route.params.id);
+    if (res.status === 200) {
+      payTotal.value = res.data; // 假设后端返回的数据在res.data中
+    } else {
+      console.error('获取订单总金额失败', res.message);
+    }
+  } catch (error) {
+    console.error('API调用失败', error);
+  }
+};
+onMounted(() => { start(300), getOrderTotal()}) // 5分钟倒计时，300秒
 
 // 跳转支付
 // 携带订单id以及回调地址跳转到支付地址（get）
@@ -40,7 +49,7 @@ const payUrl = `${baseURL}pay/aliPay?orderId=${route.query.id}&redirect=${redire
         </div>
         <div class="amount">
           <span>应付总额：</span>
-          <span>¥{{ payInfo.payMoney?.toFixed(2) }}</span>
+          <span>¥{{ payTotal?.toFixed(2) }}</span>
         </div>
       </div>
       <!-- 付款方式 -->

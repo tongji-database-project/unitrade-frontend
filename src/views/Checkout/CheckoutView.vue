@@ -19,11 +19,12 @@ const checkInfo = ref({
   grand_total: 0,
 });
 
-const isLoading = ref(true); // 用于控制页面加载状态
+const isLoading = ref(false); // 用于控制页面加载状态
 
 
 // 获取结算信息
 const getCheckInfo = async () => {
+  isLoading.value = true; // 开始加载
   try {
     const res = await getCheckoutSummaryAPI();
     if (res.data) {
@@ -36,7 +37,7 @@ const getCheckInfo = async () => {
   } catch (error) {
     console.error('获取结算信息失败:', error);
   } finally {
-    isLoading.value = false; // 数据加载完成后设置为 false
+    isLoading.value = false; // 加载完成
   }
 };
 
@@ -82,7 +83,7 @@ const createOrder = async () => {
 </script>
 
 <template>
-  <div class="xtx-pay-checkout-page" v-if="!isLoading"> <!-- 仅在数据加载完成后显示页面 -->
+  <div v-loading="isLoading" element-loading-text="正在加载..." element-loading-spinner="el-icon-loading" class="xtx-pay-checkout-page">
     <div class="container">
       <div class="wrapper">
         <!-- 收货地址 -->
@@ -140,8 +141,8 @@ const createOrder = async () => {
         <div class="box-body">
           <div class="total">
             <dl>
-              <dt>商品件数：</dt> 
-              <dd>{{ checkInfo?.cartItems?.length || 0 }}件</dd>
+              <dt>商品种类：</dt> 
+              <dd>{{ checkInfo?.cartItems?.length || 0 }}种</dd>
             </dl>
             <dl>
               <dt>商品总价：</dt>
@@ -164,7 +165,6 @@ const createOrder = async () => {
       </div>
     </div>
   </div>
-  <div v-if="isLoading">正在加载...</div> <!-- 显示加载状态 -->
 </template>
 
 <style scoped>
