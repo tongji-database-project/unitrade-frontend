@@ -116,6 +116,7 @@ import type { Product } from '@/utils/interfaces'
 import { submitProduct } from '@/apis/product'
 import { getImageUrl } from '@/utils/utils'
 import { getModifyProduct } from '@/apis/product'
+import { cancelProduct } from '@/apis/product'
 
 const route = useRoute()
 //route.params.id
@@ -178,7 +179,15 @@ const validatePrice = (rule: any, value: number, callback: (error?: Error) => vo
 }
 
 const handleSubmit = async () => {
-  console.log(product.value);
+  try {
+    const response = await cancelProduct(route.params.id as string)
+    console.log(response)
+    if (response.status === 200) {
+      console.log('ok')
+    }
+  } catch (error) {
+    console.error('Error fetching products:', error)
+  }
   await submitProduct(product.value)
     .then((response) => {
       if (response.status === 200) {
