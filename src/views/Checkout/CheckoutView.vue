@@ -1,69 +1,78 @@
 <script setup lang="ts">
-import { getCheckInfoAPI, createOrderAPI } from '@/apis/checkout'
+import { getCheckoutSummaryAPI, createOrderAPI } from '@/apis/checkout'
 import { useRouter } from 'vue-router'
 import { onMounted, ref } from 'vue'
 import { useCartStore } from '@/stores/cartStore'
+import { useUserStore } from '@/stores/userStore'
+import { getImageUrl } from '@/utils/utils'
+
 const cartStore = useCartStore()
+const userStore = useUserStore()
 const router = useRouter()
+
+// 初始化checkInfo为一个默认对象，而不是null或undefined
+const checkInfo = ref({
+  user_name: '',
+  phone: '',
+  address: '', 
+  CartItems: [], // 确保CartItems是一个空数组而不是undefined
+  total_price: 0,
+  shipping_fee: 0,
+  grand_total: 0,
+});
+
+const isLoading = ref(true); // 用于控制页面加载状态
+
+// 获取用户ID
+const userId = userStore.userInfo.id;
+
 // 获取结算信息
-const checkInfo = <any>ref({}) // 订单对象
-const curAddress = <any>ref({}) // 默认地址
 const getCheckInfo = async () => {
-  const res = await getCheckInfoAPI()
-  checkInfo.value = res.result
-  // 适配默认地址
-  // 从地址列表中筛选出来 isDefault === 0 那一项
-  const item = checkInfo.value.userAddresses.find(item => item.isDefault === 0)
-  curAddress.value = item
-}
+  try {
+    const res = await getCheckoutSummaryAPI(userId);
+    if (res.data) {
+      checkInfo.value = res.data;
+      console.log('结算信息:', checkInfo.value);
+    } else {
+      // 如果没有返回数据，确保checkInfo有默认值
+      checkInfo.value = {   user_name: '', phone: '',  address: '' , CartItems: [], total_price: 0, shipping_fee: 0, grand_total: 0 };
+    }
+  } catch (error) {
+    console.error('获取结算信息失败:', error);
+  } finally {
+    isLoading.value = false; // 数据加载完成后设置为 false
+  }
+};
 
-onMounted(() => getCheckInfo())
-
-// 控制弹框打开
-const showDialog = ref(false)
-
-
-// 切换地址
-const activeAddress = ref({})
-const switchAddress = (item) => {
-  activeAddress.value = item
-}
-const confirm = () => {
-  curAddress.value = activeAddress.value
-  showDialog.value = false
-  activeAddress.value = {}
-}
+onMounted(() => {
+  getCheckInfo();
+});
 
 // 创建订单
 const createOrder = async () => {
-  const res = await createOrderAPI({
-    deliveryTimeType: 1,
-    payType: 1,
-    payChannel: 1,
-    buyerMessage: '',
-    goods: checkInfo.value.goods.map(item => {
-      return {
-        skuId: item.skuId,
-        count: item.count
-      }
-    }),
-    addressId: curAddress.value.id
-  })
-  const orderId = res.result.id
-  router.push({
-    path: '/payment',
-    query: {
-      id: orderId
-    }
-  })
-  // 更新购物车
-  cartStore.updateNewList()
-}
+  if (!checkInfo.value) return; // 如果checkInfo为空，直接返回
 
+  try {
+    const res = await createOrderAPI({
+      goods: checkInfo.value.CartItems.map(item => ({
+        merchandise_id: item.merchandise_id,
+        quantity: item.quanity
+      })),
+      addressId: checkInfo.value.address // 使用已简化的地址
+    });
+    const orderId = res.data.id;
+    router.push({ path: '/payment', query: { id: orderId } });
+    
+    // 更新购物车
+    cartStore.loadCart();
+  } catch (error) {
+    console.error('订单创建失败:', error);
+  }
+};
 </script>
 
 <template>
-  <div class="xtx-pay-checkout-page">
+  <div class="xtx-pay-checkout-page" v-if="!isLoading"> <!-- 仅在数据加载完成后显示页面 -->
     <div class="container">
       <div class="wrapper">
         <!-- 收货地址 -->
@@ -71,16 +80,12 @@ const createOrder = async () => {
         <div class="box-body">
           <div class="address">
             <div class="text">
-              <div class="none" v-if="!curAddress">您需要先添加收货地址才可提交订单。</div>
+              <div class="none" v-if="!checkInfo.address">您需要先添加收货地址才可提交订单。</div>
               <ul v-else>
-                <li><span>收<i />货<i />人：</span>{{ curAddress.receiver }}</li>
-                <li><span>联系方式：</span>{{ curAddress.contact }}</li>
-                <li><span>收货地址：</span>{{ curAddress.fullLocation }} {{ curAddress.address }}</li>
+                <li><span>收<i />货<i />人：</span>{{ checkInfo.ueser_name }}</li>
+                <li><span>联系方式：</span>{{ checkInfo.phone }}</li>
+                <li><span>收货地址：</span>{{ checkInfo.address }}</li>
               </ul>
-            </div>
-            <div class="action">
-              <el-button size="large" @click="showDialog = true">切换地址</el-button>
-              <el-button size="large">添加地址</el-button>
             </div>
           </div>
         </div>
@@ -98,20 +103,19 @@ const createOrder = async () => {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="i in checkInfo.goods" :key="i.id">
+              <tr v-for="i in checkInfo.CartItems" :key="i.merchandise_id">
                 <td>
                   <a href="javascript:;" class="info">
-                    <img :src="i.picture" alt="">
+                    <img :src="getImageUrl(i.picture)" alt="">
                     <div class="right">
-                      <p>{{ i.name }}</p>
-                      <p>{{ i.attrsText }}</p>
+                      <p>{{ i.merchandise_name }}</p>
                     </div>
                   </a>
                 </td>
-                <td>&yen;{{ i.price }}</td>
-                <td>{{ i.price }}</td>
-                <td>&yen;{{ i.totalPrice }}</td>
-                <td>&yen;{{ i.totalPayPrice }}</td>
+                <td>&yen;{{ i.merchandise_price.toFixed(2) }}</td>
+                <td>{{ i.quanity }}</td>
+                <td>&yen;{{ (i.merchandise_price * i.quanity).toFixed(2) }}</td>
+                <td>&yen;{{ (i.merchandise_price * i.quanity).toFixed(2) }}</td>
               </tr>
             </tbody>
           </table>
@@ -126,20 +130,20 @@ const createOrder = async () => {
         <div class="box-body">
           <div class="total">
             <dl>
-              <dt>商品件数：</dt>
-              <dd>{{ checkInfo.summary?.goodsCount }}件</dd>
+              <dt>商品件数：</dt> 
+              <dd>{{ checkInfo?.CartItems?.length || 0 }}件</dd>
             </dl>
             <dl>
               <dt>商品总价：</dt>
-              <dd>¥{{ checkInfo.summary?.totalPrice.toFixed(2) }}</dd>
+              <dd>¥{{ checkInfo?.total_price?.toFixed(2) }}</dd>
             </dl>
             <dl>
               <dt>运<i></i>费：</dt>
-              <dd>¥{{ checkInfo.summary?.postFee.toFixed(2) }}</dd>
+              <dd>¥{{ checkInfo?.shipping_fee?.toFixed(2) }}</dd>
             </dl>
             <dl>
               <dt>应付总额：</dt>
-              <dd class="price">{{ checkInfo.summary?.totalPayPrice.toFixed(2) }}</dd>
+              <dd class="price">{{ checkInfo?.grand_total?.toFixed(2) }}</dd>
             </dl>
           </div>
         </div>
@@ -150,26 +154,8 @@ const createOrder = async () => {
       </div>
     </div>
   </div>
-  <!-- 切换地址 -->
-  <el-dialog v-model="showDialog" title="切换收货地址" width="30%" center>
-    <div class="addressWrapper">
-      <div class="text item" :class="{ active: activeAddress.id === item.id }" @click="switchAddress(item)"
-        v-for="item in checkInfo.userAddresses" :key="item.id">
-        <ul>
-          <li><span>收<i />货<i />人：</span>{{ item.receiver }} </li>
-          <li><span>联系方式：</span>{{ item.contact }}</li>
-          <li><span>收货地址：</span>{{ item.fullLocation + item.address }}</li>
-        </ul>
-      </div>
-    </div>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button>取消</el-button>
-        <el-button type="primary" @click="confirm">确定</el-button>
-      </span>
-    </template>
-  </el-dialog>
-<!-- 添加地址 --></template>
+  <div v-if="isLoading">正在加载...</div> <!-- 显示加载状态 -->
+</template>
 
 <style scoped>
 .xtx-pay-checkout-page {
@@ -211,7 +197,7 @@ const createOrder = async () => {
       width: 100%;
     }
 
-    >ul {
+    > ul {
       flex: 1;
       padding: 20px;
 
@@ -222,7 +208,7 @@ const createOrder = async () => {
           color: #999;
           margin-right: 5px;
 
-          >i {
+          > i {
             width: 0.5em;
             display: inline-block;
           }
@@ -230,8 +216,8 @@ const createOrder = async () => {
       }
     }
 
-    >a {
-      color: $xtxColor;
+    > a {
+      color: #42b983; /* 直接使用实际的颜色值 */
       width: 160px;
       text-align: center;
       height: 90px;
@@ -318,7 +304,8 @@ const createOrder = async () => {
 
   &.active,
   &:hover {
-    border-color: $xtxColor;
+    border-color: #000000; /* 使用实际的颜色值 */
+    
   }
 }
 
@@ -342,7 +329,7 @@ const createOrder = async () => {
 
       &.price {
         font-size: 20px;
-        color: $priceColor;
+        color: #ff5722; /* 使用实际的颜色值 */
       }
     }
   }
@@ -372,11 +359,11 @@ const createOrder = async () => {
 
     &.active,
     &:hover {
-      border-color: $xtxColor;
-      background: lighten($xtxColor, 50%);
+      border-color: #42b983; /* 使用实际的颜色值 */
+      background: #e6f7f2; /* 根据实际颜色的更浅版本 */
     }
 
-    >ul {
+    > ul {
       padding: 10px;
       font-size: 14px;
       line-height: 30px;
@@ -384,3 +371,4 @@ const createOrder = async () => {
   }
 }
 </style>
+

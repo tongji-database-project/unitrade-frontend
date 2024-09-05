@@ -2,6 +2,7 @@
 import { useCartStore } from '@/stores/cartStore';
 import { computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { getImageUrl } from '@/utils/utils'
 
 const cartStore = useCartStore();
 const router = useRouter();
@@ -13,7 +14,10 @@ const singleCheck = (merchandise_id: string, selected: boolean) => {
 
 // 全选回调
 const allCheck = (selected: boolean) => {
-  cartStore.allCheck(selected);
+  // 全选时，遍历所有商品进行单选状态更新
+  cartStore.cartItems.forEach(item => {
+    cartStore.updateProductInCart({ merchandise_id: item.merchandise_id, selected });
+  });
 };
 
 // 删除购物车项
@@ -23,17 +27,16 @@ const delCart = (item: any) => {
 
 // 计算属性
 const cartItems = computed(() => cartStore.cartItems);
-const isAllSelected = computed(() => cartStore.isAll);
-const totalCount = computed(() => cartStore.allCount);
-const selectedCount = computed(() => cartStore.selectedCount);
-const selectedPrice = computed(() => cartStore.selectedPrice);
+const isAllSelected = computed(() => cartItems.value.every(item => item.selected));
+const totalCount = computed(() => cartItems.value.reduce((acc, item) => acc + item.quanity, 0));
+const selectedCount = computed(() => cartItems.value.filter(item => item.selected).reduce((acc, item) => acc + item.quanity, 0));
+const selectedPrice = computed(() => cartItems.value.filter(item => item.selected).reduce((acc, item) => acc + item.merchandise_price * item.quanity, 0));
 
 // 组件挂载时加载购物车数据
 onMounted(() => {
   cartStore.loadCart();
 });
 </script>
-
 
 <template>
   <div class="xtx-cart-page">
@@ -61,7 +64,9 @@ onMounted(() => {
               </td>
               <td>
                 <div class="goods">
-                  <RouterLink to="/"><img :src="i.picture" alt="" /></RouterLink>
+                  <RouterLink to="/">
+                    <img :src="getImageUrl(i.picture)" :alt="i.merchandise_name" />
+                  </RouterLink>
                   <div>
                     <p class="name ellipsis">
                       {{ i.merchandise_name }}
@@ -100,24 +105,25 @@ onMounted(() => {
           </tbody>
         </table>
       </div>
-      <!-- 操作栏 -->
-      <div class="action" v-if="cartItems.length > 0">
-        <div class="batch">
-          共 {{ totalCount }} 件商品，已选择 {{ selectedCount }} 件，商品合计：
-          <span class="red">¥ {{ selectedPrice.toFixed(2) }} </span>
-        </div>
-        <div class="total">
-          <el-button size="large" type="primary" @click="$router.push('/checkout')">下单结算</el-button>
-        </div>
+    </div>
+
+    <!-- 操作栏，固定在页面右下角 -->
+    <div class="action fixed-action" v-if="cartItems.length > 0">
+      <div class="batch">
+        共 {{ totalCount }} 件商品，已选择 {{ selectedCount }} 件，商品合计：
+        <span class="red">¥ {{ selectedPrice.toFixed(2) }} </span>
+      </div>
+      <div class="total">
+        <el-button size="large" type="primary" @click="$router.push('/checkout')">下单结算</el-button>
       </div>
     </div>
   </div>
 </template>
 
-
 <style scoped>
 .xtx-cart-page {
   margin-top: 20px;
+  position: relative; /* 允许子元素使用绝对定位 */
 
   .cart {
     background: #fff;
@@ -221,6 +227,16 @@ onMounted(() => {
       font-size: 18px;
       margin-right: 20px;
       font-weight: bold;
+    }
+
+    /* 固定在页面右下角 */
+    &.fixed-action {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      z-index: 1000; /* 确保在其他元素上方 */
     }
   }
 

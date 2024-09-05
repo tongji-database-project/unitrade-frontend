@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRouter, useRoute } from 'vue-router'
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { getImageUrl } from '@/utils/utils'
 import {getMerchandiseCardAPI} from '@/apis/home'
 import {getSellerInfoAPI} from '@/apis/merchandise'
@@ -55,8 +55,8 @@ const userStore = useUserStore(); // 获取用户状态
 const addCart = async () => {
   try {
     const cartItem = {
-      customer_id: userStore.userInfo.value.id,
-      merchandise_id: props.merchandise_id,
+      customer_id: userStore.userInfo.id,
+      merchandise_id: route.params.id,
       merchandise_name: meichandise_name.value,
       merchandise_price: meichandise_price.value,
       picture: meichandise_cover.value,

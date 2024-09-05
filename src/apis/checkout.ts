@@ -1,20 +1,18 @@
-import httpInstance from '@/utils/utils'
+import httpInstance from '@/utils/utils';
 
-
-// 获取详情接口
-export const getCheckInfoAPI = () => {
+// 获取订单结算信息，包括用户信息和购物车选中商品信息
+export const getCheckoutSummaryAPI = (user_id: string) => {
   return httpInstance({
-    url: '/member/order/pre'
-
-  })
-}
-
+    url: `/checkout/${user_id}`,
+    method: 'GET'
+  });
+};
 
 // 创建订单
-export const createOrderAPI = (data) => {
+export const createOrderAPI = (order_summary: any) => {
   return httpInstance({
-    url: '/member/order',
+    url: '/checkout/create-order',
     method: 'POST',
-    data
-  })
-}
+    data: order_summary
+  });
+};
