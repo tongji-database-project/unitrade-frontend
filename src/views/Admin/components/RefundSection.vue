@@ -8,6 +8,7 @@ import 'element-plus/dist/index.css'
 
 let isloading = ref(true)
 let isempty=ref(false)
+let indexes=ref<number[]>([]);
 
 export type refundinformation = {
   refund_id: string
@@ -23,7 +24,9 @@ export type refundinformation = {
 let refundinformations = ref<refundinformation[]>([])
 
 const deleteconfirm = (index: number) => {
-  refundinformations.value.splice(index, 1)
+  let trueindex=indexes.value.findIndex(element => element === index)
+  refundinformations.value.splice(trueindex, 1)
+  indexes.value.splice(trueindex, 1)
   if(refundinformations.value.length==0){
         isempty.value=true;
   }
@@ -49,6 +52,11 @@ onMounted(async () => {
       isloading.value = false
       if(refundinformations.value.length==0){
         isempty.value=true;
+      }
+      else{
+        for(let i:number=0;i<refundinformations.value.length;i++){
+          indexes.value.push(i);
+        }
       }
     } else {
       ElMessage({
