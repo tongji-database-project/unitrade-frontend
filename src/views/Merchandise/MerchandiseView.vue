@@ -5,7 +5,6 @@ import { getImageUrl } from '@/utils/utils'
 import {getMerchandiseCardAPI} from '@/apis/home'
 import {getSellerInfoAPI} from '@/apis/merchandise'
 import { useCartStore } from '@/stores/cartStore'; // 引入购物车store
-import { useUserStore } from '@/stores/userStore'; // 引入用户store
 import { ElMessage } from 'element-plus'; // 引入Element Plus的ElMessage组件
 import ImageView from '@/components/ImageView.vue'
 
@@ -49,13 +48,11 @@ const countChange = (countValue: any) => {
 //   { id: '1', name: '杯子', price: 99.0 },
 //   // Add more images as needed
 // ]
-const userStore = useUserStore(); // 获取用户状态
 
 // 添加商品到购物车
 const addCart = async () => {
   try {
     const cartItem = {
-      customer_id: userStore.userInfo.id,
       merchandise_id: route.params.id,
       merchandise_name: meichandise_name.value,
       merchandise_price: meichandise_price.value,

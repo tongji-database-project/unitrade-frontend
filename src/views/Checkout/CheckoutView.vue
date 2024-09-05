@@ -3,11 +3,9 @@ import { getCheckoutSummaryAPI, createOrderAPI } from '@/apis/checkout'
 import { useRouter } from 'vue-router'
 import { onMounted, ref } from 'vue'
 import { useCartStore } from '@/stores/cartStore'
-import { useUserStore } from '@/stores/userStore'
 import { getImageUrl } from '@/utils/utils'
 
 const cartStore = useCartStore()
-const userStore = useUserStore()
 const router = useRouter()
 
 // 初始化checkInfo为一个默认对象，而不是null或undefined
@@ -23,13 +21,11 @@ const checkInfo = ref({
 
 const isLoading = ref(true); // 用于控制页面加载状态
 
-// 获取用户ID
-const userId = userStore.userInfo.id;
 
 // 获取结算信息
 const getCheckInfo = async () => {
   try {
-    const res = await getCheckoutSummaryAPI(userId);
+    const res = await getCheckoutSummaryAPI();
     if (res.data) {
       checkInfo.value = res.data;
       console.log('结算信息:', checkInfo.value);

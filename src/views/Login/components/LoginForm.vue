@@ -5,12 +5,10 @@ import { defineProps } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import { useTokenStore } from '@/stores/token'
-import { useUserStore } from '@/stores/userStore'
 import { useCartStore } from '@/stores/cartStore'
 import { loginAPI, adminLoginAPI, resetPasswordAPI } from '@/apis/user'
 
 const TokenStore = useTokenStore()
-const userStore = useUserStore()
 const cartStore = useCartStore()
 const router = useRouter()
 
@@ -135,7 +133,6 @@ const submitForm = async () => {
 
       if (response.status === 200) {
         TokenStore.updatetoken(response.data.access_token)
-        await userStore.login(response.data)
         try {
           await cartStore.loadCart(); // 加载购物车数据
           console.log('购物车数据已成功加载');

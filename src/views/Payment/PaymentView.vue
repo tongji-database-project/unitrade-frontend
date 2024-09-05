@@ -14,7 +14,6 @@ const getPayInfo = async () => {
   // 初始化倒计时秒数
   //start(res.result.countdown)
 }
-start(60)
 onMounted(() => getPayInfo())
 
 // 跳转支付
