@@ -25,3 +25,13 @@ export const getUserProducts = () => {
     method: 'GET'
   });
 }
+
+export const getModifyProduct = (productID : string) => {
+  return httpInstance({
+    url: '/seller/modify',
+    method: 'POST',
+    data: {
+      ProductID:productID
+    }
+  });
+}

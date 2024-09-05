@@ -37,7 +37,8 @@ const props = defineProps({
 const emit = defineEmits(['cancled'])
 
 const handleModify = () => {
-  router.push(`product-sub/${props.product_id}`)
+  // router.push(`product-sub/${props.product_id}`)
+  router.push(`product-mod/${props.product_id}`)
 }
 
 const handleCancle = () => {
