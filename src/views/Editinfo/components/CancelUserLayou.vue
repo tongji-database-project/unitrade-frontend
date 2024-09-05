@@ -18,9 +18,13 @@ function deny_cancel(){
 }
 const confirm_cancel=async()=>{
     const response=await cancelUser(password.value)
-    is_cancel.value=false
-    TokenStore.deletetoken()
-    router.push('/')
+    if(response!=200){
+      is_cancel.value=false
+    }
+    else{  
+      TokenStore.deletetoken()
+      router.push('/')
+    }
 }
 </script>
 
