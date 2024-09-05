@@ -31,7 +31,7 @@
           let one:getcomplationinformation={
             complation_id:oneInfo.complation_id,
             complainant:oneInfo.user_name,
-            reason:oneInfo.compaltion_reason,
+            reason:oneInfo.complation_reason,
             time:new Date(oneInfo.complation_time),
             have_appealed:oneInfo.have_appealed
           };

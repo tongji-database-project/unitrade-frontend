@@ -31,7 +31,7 @@
         myappealInfo.data.forEach((oneInfo:any) => {
           let one:myappealinformation={
             complainant_name:oneInfo.user_name,
-            complation_reason:oneInfo.compaltion_reason,
+            complation_reason:oneInfo.complation_reason,
             appeal_reason:oneInfo.appeal_reason,
             time:new Date(oneInfo.appeal_time),
             state:oneInfo.appeal_state

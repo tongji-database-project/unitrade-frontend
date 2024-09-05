@@ -30,7 +30,7 @@
         mycomplationInfo.data.forEach((oneInfo:any) => {
           let one:mycomplationinformation={
             seller:oneInfo.seller_name,
-            reason:oneInfo.compaltion_reason,
+            reason:oneInfo.complation_reason,
             time:new Date(oneInfo.complation_time),
             state:oneInfo.complation_state
           };
