@@ -259,3 +259,38 @@ export const getcomplation=async()=>{
     method: 'GET'
   })
 }
+export const cancelUser=async(password:string)=>{
+  return await httpInstance({
+    url:'/oauth/cancel',
+    method:'POST',
+    data:{
+      password:password
+    }
+  })
+  .then((response) => {
+    if (response.status === 200) {
+      ElMessageBox({
+        message: `账号注销成功`,
+        type: 'success'
+      })
+      return response.status
+    }
+  })
+  .catch((error) => {
+    if (error.response.status === 400) {
+      console.log("ASdasd")
+      console.log(error.response.data)
+      if (error.response.data == '密码错误，注销失败') {
+        ElMessage({
+          type: 'error',
+          message: `原密码错误，请重新输入`
+        })
+      }
+    } else {
+      ElMessage({
+        type: 'error',
+        message: `注销失败：${error}`
+      })
+    }
+  })
+}
