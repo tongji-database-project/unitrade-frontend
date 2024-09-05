@@ -8,7 +8,6 @@ import 'element-plus/dist/index.css'
 
 let isloading = ref(true)
 let isempty=ref(false)
-let indexes=ref<number[]>([]);
 
 export type refundinformation = {
   refund_id: string
@@ -24,9 +23,7 @@ export type refundinformation = {
 let refundinformations = ref<refundinformation[]>([])
 
 const deleteconfirm = (index: number) => {
-  let trueindex=indexes.value.findIndex(element => element === index)
-  refundinformations.value.splice(trueindex, 1)
-  indexes.value.splice(trueindex, 1)
+  refundinformations.value.splice(index, 1)
   if(refundinformations.value.length==0){
         isempty.value=true;
   }
@@ -53,11 +50,6 @@ onMounted(async () => {
       if(refundinformations.value.length==0){
         isempty.value=true;
       }
-      else{
-        for(let i:number=0;i<refundinformations.value.length;i++){
-          indexes.value.push(i);
-        }
-      }
     } else {
       ElMessage({
         type: 'error',
@@ -79,7 +71,7 @@ onMounted(async () => {
     <div class="spinner" v-if="isloading"></div>
     <div class="list" v-else>
       <div class="empty" v-if="isempty">无</div>
-      <div v-for="(item, index) in refundinformations" :key="index" class="table" v-else>
+      <div v-for="(item, index) in refundinformations" :key="item.refund_id" class="table" v-else>
         <OneRefund :onerefundinformation="item" :num="index" @delete="deleteconfirm" />
       </div>
     </div>

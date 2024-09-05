@@ -68,7 +68,7 @@ onMounted(async () => {
     <div class="spinner" v-if="isloading"></div>
     <div class="list" v-else>
       <div class="empty" v-if="isempty">无</div>
-      <div v-for="(item, index) in complationinformations" :key="index" class="table" v-else>
+      <div v-for="(item, index) in complationinformations" :key="item.complation_id" class="table" v-else>
         <OneComplation :onecomplationinformation="item" :num="index" @delete="deleteconfirm" />
       </div>
     </div>

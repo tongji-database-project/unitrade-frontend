@@ -72,7 +72,7 @@ onMounted(async () => {
     <div class="spinner" v-if="isloading"></div>
     <div class="list" v-else>
       <div class="empty" v-if="isempty">无</div>
-      <div v-for="(item, index) in appealinformations" :key="index" class="table" v-else>
+      <div v-for="(item, index) in appealinformations" :key="item.appeal_id" class="table" v-else>
         <OneAppeal :oneappealinformation="item" :num="index" @delete="deleteconfirm" />
       </div>
     </div>
