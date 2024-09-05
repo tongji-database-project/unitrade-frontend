@@ -28,11 +28,19 @@
       const mycomplationInfo = await mycomplation();
       if(mycomplationInfo.status===200){
         mycomplationInfo.data.forEach((oneInfo:any) => {
+          let onestate:string="";
+          if(oneInfo.complation_state=="Pen"){
+            onestate=="待审核";
+          }else if(oneInfo.complation_state=="Agr"){
+            onestate=="已通过";
+          }else{
+            onestate=="未通过";
+          }
           let one:mycomplationinformation={
             seller:oneInfo.seller_name,
             reason:oneInfo.complation_reason,
             time:new Date(oneInfo.complation_time),
-            state:oneInfo.complation_state
+            state:onestate
           };
           mycomplationinformations.value.push(one);
         });

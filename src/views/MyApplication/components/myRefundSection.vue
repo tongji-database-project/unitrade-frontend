@@ -29,12 +29,20 @@
       const myrefundInfo = await myrefund();
       if(myrefundInfo.status===200){
         myrefundInfo.data.forEach((oneInfo:any) => {
+          let onestate:string="";
+          if(oneInfo.refund_state=="Pen"){
+            onestate=="待审核";
+          }else if(oneInfo.refund_state=="Agr"){
+            onestate=="已通过";
+          }else{
+            onestate=="未通过";
+          }
           let one:myrefundinformation={
             order_id:oneInfo.order_id,
             commodity:oneInfo.merchandise_name,
             reason:oneInfo.refund_reason,
             time:new Date(oneInfo.refund_time),
-            state:oneInfo.refund_state
+            state:onestate
           };
           myrefundinformations.value.push(one);
         });

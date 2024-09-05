@@ -243,10 +243,10 @@ const submitForm = async () => {
       </div>
 
       <div class="action-buttons">
-        <button type="button" @click="toggleLoginType">
+        <button type="button" @click="toggleLoginType" v-if="!isadmin">
           {{ isPasswordLogin ? '验证码登录' : '账号密码登录' }}
         </button>
-        <button type="button" @click="forgetPassword">忘记密码？</button>
+        <button type="button" @click="forgetPassword" v-if="!isadmin">忘记密码？</button>
       </div>
 
       <div>

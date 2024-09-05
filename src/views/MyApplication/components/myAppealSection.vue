@@ -29,12 +29,20 @@
       const myappealInfo = await myappeal();
       if(myappealInfo.status===200){
         myappealInfo.data.forEach((oneInfo:any) => {
+          let onestate:string="";
+          if(oneInfo.appeal_state=="Pen"){
+            onestate="待审核";
+          }else if(oneInfo.appeal_state=="Agr"){
+            onestate="已通过";
+          }else{
+            onestate="未通过";
+          }
           let one:myappealinformation={
             complainant_name:oneInfo.user_name,
             complation_reason:oneInfo.complation_reason,
             appeal_reason:oneInfo.appeal_reason,
             time:new Date(oneInfo.appeal_time),
-            state:oneInfo.appeal_state
+            state:onestate
           };
           myappealinformations.value.push(one);
         });
