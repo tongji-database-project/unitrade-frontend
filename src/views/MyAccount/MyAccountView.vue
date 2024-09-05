@@ -20,12 +20,8 @@ const categories = [
     path: '/order'
   },
   {
-    name: '我的收藏',
-    path: '/' /*未设置 */
-  },
-  {
     name: '我的主页',
-    path: '/' /*未设置 */
+    path: '/profile/:id' 
   },
   {
     name: '我的消息',
@@ -36,7 +32,7 @@ const categories = [
     path: '/myapplication'
   },
   {
-    name: '个人信息修改',
+    name: '个人设置',
     path: '/Editinfo'
   }
 ]
@@ -47,9 +43,9 @@ function Tologin() {
 }
 
 onBeforeMount(() => {
-  // if(logged_in.value){
+  if(logged_in.value){
   hint_login.value = false
-  // }
+  }
 })
 </script>
 

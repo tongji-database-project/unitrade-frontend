@@ -72,7 +72,7 @@ const router = createRouter({
               next('/login')
               ElMessage({
                 type: 'error',
-                message: `请先登录管理员账户`
+                message: `请先登录账户`
               })
             } else {
               next()
@@ -89,7 +89,7 @@ const router = createRouter({
               next('/login')
               ElMessage({
                 type: 'error',
-                message: `请先登录管理员账户`
+                message: `请先登录账户`
               })
             } else {
               next()
@@ -106,7 +106,7 @@ const router = createRouter({
               next('/login')
               ElMessage({
                 type: 'error',
-                message: `请先登录管理员账户`
+                message: `请先登录账户`
               })
             } else {
               next()
@@ -185,7 +185,7 @@ const router = createRouter({
               next('/login')
               ElMessage({
                 type: 'error',
-                message: `请先登录管理员账户`
+                message: `请先登录账户`
               })
             } else {
               next()

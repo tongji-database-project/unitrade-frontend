@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref , computed} from 'vue'
+import { useTokenStore } from '@/stores/token'
 import EditAvatorLayout from './components/EditAvatorLayout.vue'
+import { useRouter } from 'vue-router'
 import EditInfoLayout from './components/EditInfoLayout.vue'
 import EditPasswordLayout from './components/EditPasswordLayout.vue'
 const categories = [
@@ -17,20 +19,16 @@ const categories = [
     path: '/order'
   },
   {
-    name: '我的收藏',
-    path: '/' /*未设置 */
-  },
-  {
     name: '我的主页',
-    path: '/' /*未设置 */
+    path: '/profile/:id' 
   },
   {
     name: '我的消息',
     path: '/message'
   },
   {
-    name: '我的申诉',
-    path: '/myappeal'
+    name: '我的申请',
+    path: '/myapplication'
   },
   {
     name: '个人中心',
@@ -47,6 +45,12 @@ function chooseAvator() {
 function choosePassword() {
   contentclass.value = 'EditPassword'
 }
+function quit(){
+  TokenStore.deletetoken()
+  router.push('/')
+}
+const router = useRouter()
+const TokenStore = useTokenStore()
 </script>
 <template>
   <div class="container">
@@ -74,6 +78,9 @@ function choosePassword() {
         </div>
         <div v-else class="not_choose">
           <p @click="choosePassword">密码修改</p>
+        </div>
+        <div class="not_choose">
+          <p @click="quit">退出登录</p>
         </div>
       </div>
       <div class="content">

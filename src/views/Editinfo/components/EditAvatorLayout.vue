@@ -2,7 +2,6 @@
 import { useTokenStore } from '@/stores/token'
 import { ElMessage, ElMessageBox } from 'element-plus';
 import {ref} from'vue'
-import axios from 'axios';
 import { useRouter } from 'vue-router';
 import 'element-plus/dist/index.css'; 
 
