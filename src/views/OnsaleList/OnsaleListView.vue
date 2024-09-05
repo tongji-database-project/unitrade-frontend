@@ -25,6 +25,7 @@
       >
         价格
       </div>
+      <div class="product-stock">类型</div>
       <div class="product-stock">库存</div>
       <div class="product-sales">销量</div>
       <div class="product-description">描述</div>
@@ -34,10 +35,11 @@
         :product_id="product.id"
         :product_name="product.name"
         :product_price="product.price"
+        :product_type="product.productType"
         :product_stock="product.stock"
         :product_sales="product.sales"
         :product_description="product.description"
-        :product_imageUrl="product.imageUrl"
+        :product_imageUrl="product.cover"
         @cancled="handleCancle"
       />
     </el-card>
@@ -45,9 +47,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref , onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import OnsaleProduct from './components/OnsaleProduct.vue'
+import type { ProductOnsale } from '@/utils/interfaces'
+import { getUserProducts } from '@/apis/product'
+import { getImageUrl } from '@/utils/utils'
 
 const router = useRouter()
 const priceSortOrder = ref('')
@@ -57,39 +62,36 @@ const props = {
   expandTrigger: 'hover' as const
 }
 
-interface Product {
-  id: string
-  name: string
-  price: number
-  stock: number
-  sales: number
-  description: string
-  imageUrl: string
-}
-
 const searchQuery = ref('')
 
-const products = ref<Product[]>([
-  {
-    id: '123',
-    name: '铅笔',
-    price: 100,
-    stock: 50,
-    sales: 20,
-    description: '商品描述',
-    imageUrl: 'http://47.97.215.255/img/avatar.jpg'
-  },
-  {
-    id: '124',
-    name: '橡皮',
-    price: 150,
-    stock: 30,
-    sales: 2,
-    description: '商品描述',
-    imageUrl: 'http://47.97.215.255/img/avatar.jpg'
+const products = ref<ProductOnsale[]>([])
+
+onMounted(async () => {
+  await fetchProducts();
+})
+
+const fetchProducts = async () => {
+  try {
+    const response = await getUserProducts();
+    console.log(response)
+    if (response.status === 200) {
+      
+      products.value = response.data.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        description: item.product_details,
+        price: item.price,
+        stock: item.inventory,
+        productType: item.type,
+        cover: getImageUrl(item.cover_image_url),
+        sales: item.sales,
+      }));
+    }
+  } catch (error) {
+    console.error("Error fetching products:", error);
   }
-  // 其他商品数据
-])
+};
+
 
 const sortOrder = [
   {

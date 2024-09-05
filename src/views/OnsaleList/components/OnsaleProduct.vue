@@ -6,6 +6,7 @@
         {{ product_name }}
       </div>
       <div class="product-detail">{{ product_price }}</div>
+      <div class="product-detail">{{ product_type }}</div>
       <div class="product-detail">{{ product_stock }}</div>
       <div class="product-detail">{{ product_sales }}</div>
       <div class="product-description">{{ product_description }}</div>
@@ -23,13 +24,14 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const props = defineProps({
-  product_id: { type: String, required: true },
-  product_name: { type: String, required: true },
-  product_price: { type: Number, required: true },
-  product_stock: { type: Number, required: true },
-  product_sales: { type: Number, required: true },
-  product_description: { type: String, required: true },
-  product_imageUrl: { type: String, required: true }
+  product_id: { type: String, required: true ,default: ''},
+  product_name: { type: String, required: true ,default: ''},
+  product_price: { type: Number, required: true ,default: 0},
+  product_type: { type: String, required: true ,default: 0},
+  product_stock: { type: Number, required: true ,default: 0},
+  product_sales: { type: Number, required: true ,default: 0},
+  product_description: { type: String, required: true ,default: ''},
+  product_imageUrl: { type: String, required: true ,default: ''}
 })
 
 const emit = defineEmits(['cancled'])

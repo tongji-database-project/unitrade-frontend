@@ -124,8 +124,8 @@ const product = ref<Product>({
   name: '',
   description: '',
   price: 0,
-  stock: 0,
-  productType: '',
+  stock: 1,
+  productType:'',
   images: [],
   cover: ''
 })
