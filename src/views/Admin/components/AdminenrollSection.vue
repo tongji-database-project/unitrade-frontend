@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { AdminEnroll } from '@/apis/user'
+import { AdminEnroll } from '@/apis/admin'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import 'element-plus/dist/index.css'
 

@@ -5,7 +5,8 @@ import { defineProps } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import { useTokenStore } from '@/stores/token'
-import { loginAPI, adminLoginAPI, resetPasswordAPI } from '@/apis/user'
+import { loginAPI, resetPasswordAPI } from '@/apis/user'
+import { adminLoginAPI } from '@/apis/admin'
 
 const TokenStore = useTokenStore()
 const router = useRouter()

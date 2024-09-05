@@ -7,6 +7,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import 'element-plus/dist/index.css'
 
 let isloading = ref(true)
+let isempty=ref(false)
 
 export type refundinformation = {
   refund_id: string
@@ -83,6 +84,9 @@ onMounted(async () => {
         refundinformations.value.push(one)
       })
       isloading.value = false
+      if(refundinformations.value.length==0){
+        isempty.value=true;
+      }
     } else {
       ElMessage({
         type: 'error',
@@ -103,7 +107,8 @@ onMounted(async () => {
   <div class="main">
     <div class="spinner" v-if="isloading"></div>
     <div class="list" v-else>
-      <div v-for="(item, index) in refundinformations" :key="index" class="table">
+      <div class="empty" v-if="isempty">无</div>
+      <div v-for="(item, index) in refundinformations" :key="index" class="table" v-else>
         <OneRefund :onerefundinformation="item" :num="index" @delete="deleteconfirm" />
       </div>
     </div>
@@ -117,6 +122,12 @@ onMounted(async () => {
 .list {
   max-height: 650px;
   overflow-y: auto;
+}
+.empty{
+  margin-top: 100px;
+  margin-left: 50%;
+  font-size: 40px;
+  font-weight: bold; 
 }
 .table {
   width: 100%;

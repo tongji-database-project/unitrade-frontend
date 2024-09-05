@@ -7,6 +7,7 @@
   import 'element-plus/dist/index.css';
 
   let isloading=ref(true);
+  let isempty=ref(false)
 
   export type getcomplationinformation={
     complation_id:string;
@@ -37,6 +38,9 @@
           getcomplationinformations.value.push(one);
         });
         isloading.value=false;
+        if(getcomplationinformations.value.length==0){
+          isempty.value=true;
+        }
       }
       else{
         ElMessage({
@@ -50,7 +54,6 @@
         type:"error",
         message: `数据库连接失败`
       })
-      isloading.value=false;
     }
   });
 </script>
@@ -59,7 +62,8 @@
   <div class="main">
     <div class="spinner" v-if="isloading"></div>
     <div class="list" v-else>
-      <div v-for="(item, index) in getcomplationinformations" :key="index" class="table">
+      <div class="empty" v-if="isempty">无</div>
+      <div v-for="(item, index) in getcomplationinformations" :key="index" class="table" v-else>
         <OneComplation :onecomplationinformation="item" :num="index" />
       </div>
     </div>
@@ -74,6 +78,13 @@
   .list{
     max-height: 650px;
     overflow-y: auto;
+  }
+
+  .empty{
+    margin-top: 100px;
+    margin-left: 50%;
+    font-size: 40px;
+    font-weight: bold; 
   }
 
   .table{

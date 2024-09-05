@@ -1,12 +1,13 @@
 <!-- 我的申诉 -->
 <script lang="ts" setup>
   import { ref, onMounted } from 'vue';  
-  import axios from 'axios';
+  import { myappeal } from '@/apis/user';
   import OneMyAppeal from './OneMyAppeal.vue';
   import { ElMessage,ElMessageBox } from 'element-plus'
   import 'element-plus/dist/index.css';
 
   let isloading=ref(true);
+  let isempty=ref(false)
 
   export type myappealinformation={
     complainant_name:string;
@@ -25,7 +26,7 @@
   onMounted(async () => {  
     //加载数据过程
     try{
-      const myappealInfo = await axios.get('/api/myappeal');
+      const myappealInfo = await myappeal();
       if(myappealInfo.status===200){
         myappealInfo.data.forEach((oneInfo:any) => {
           let one:myappealinformation={
@@ -38,6 +39,9 @@
           myappealinformations.value.push(one);
         });
         isloading.value=false;
+        if(myappealinformations.value.length==0){
+          isempty.value=true;
+        }
       }
       else{
         ElMessage({
@@ -51,7 +55,6 @@
         type:"error",
         message: `数据库连接失败`
       })
-      isloading.value=false;
     }
   });
 </script>
@@ -60,7 +63,8 @@
   <div class="main">
     <div class="spinner" v-if="isloading"></div>
     <div class="list" v-else>
-      <div v-for="(item, index) in myappealinformations" :key="index" class="table">
+      <div class="empty" v-if="isempty">无</div>
+      <div v-for="(item, index) in myappealinformations" :key="index" class="table" v-else>
         <OneMyAppeal :onemyappealinformation="item" :num="index" />
       </div>
     </div>
@@ -75,6 +79,13 @@
   .list{
     max-height: 650px;
     overflow-y: auto;
+  }
+
+  .empty{
+    margin-top: 100px;
+    margin-left: 50%;
+    font-size: 40px;
+    font-weight: bold; 
   }
 
   .table{

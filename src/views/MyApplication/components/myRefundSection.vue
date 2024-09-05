@@ -1,12 +1,13 @@
 <!-- 我的退款 -->
 <script lang="ts" setup>
   import { ref, onMounted } from 'vue';  
-  import axios from 'axios';
+  import { myrefund } from '@/apis/user';
   import OneMyRefund from './OneMyRefund.vue';
   import { ElMessage,ElMessageBox } from 'element-plus'
   import 'element-plus/dist/index.css';
 
   let isloading=ref(true);
+  let isempty=ref(false)
 
   export type myrefundinformation={
     order_id:string;
@@ -25,7 +26,7 @@
   onMounted(async () => {  
     //加载数据过程
     try{
-      const myrefundInfo = await axios.get('/api/myrefund');
+      const myrefundInfo = await myrefund();
       if(myrefundInfo.status===200){
         myrefundInfo.data.forEach((oneInfo:any) => {
           let one:myrefundinformation={
@@ -38,6 +39,9 @@
           myrefundinformations.value.push(one);
         });
         isloading.value=false;
+        if(myrefundinformations.value.length==0){
+          isempty.value=true;
+        }
       }
       else{
         ElMessage({
@@ -51,7 +55,6 @@
         type:"error",
         message: `数据库连接失败`
       })
-      isloading.value=false;
     }
   });
 </script>
@@ -60,7 +63,8 @@
   <div class="main">
     <div class="spinner" v-if="isloading"></div>
     <div class="list" v-else>
-      <div v-for="(item, index) in myrefundinformations" :key="index" class="table">
+      <div class="empty" v-if="isempty">无</div>
+      <div v-for="(item, index) in myrefundinformations" :key="index" class="table" v-else>
         <OneMyRefund :onemyrefundinformation="item" :num="index" />
       </div>
     </div>
@@ -76,7 +80,12 @@
     max-height: 650px;
     overflow-y: auto;
   }
-
+  .empty{
+    margin-top: 100px;
+    margin-left: 50%;
+    font-size: 40px;
+    font-weight: bold; 
+  }
   .table{
     background-color: rgb(255, 255, 255);
     width: 100%;

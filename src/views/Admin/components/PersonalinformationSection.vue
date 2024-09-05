@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useTokenStore } from '@/stores/token'
-import { getAdminInfo } from '@/apis/user'
+import { getAdminInfo } from '@/apis/admin'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import 'element-plus/dist/index.css'
 
