@@ -15,7 +15,7 @@ const checkInfo = ref({
   user_name: '',
   phone: '',
   address: '', 
-  CartItems: [], // 确保CartItems是一个空数组而不是undefined
+  cartItems: [], // 确保cartItems是一个空数组而不是undefined
   total_price: 0,
   shipping_fee: 0,
   grand_total: 0,
@@ -35,7 +35,7 @@ const getCheckInfo = async () => {
       console.log('结算信息:', checkInfo.value);
     } else {
       // 如果没有返回数据，确保checkInfo有默认值
-      checkInfo.value = {   user_name: '', phone: '',  address: '' , CartItems: [], total_price: 0, shipping_fee: 0, grand_total: 0 };
+      checkInfo.value = {   user_name: '', phone: '',  address: '' , cartItems: [], total_price: 0, shipping_fee: 0, grand_total: 0 };
     }
   } catch (error) {
     console.error('获取结算信息失败:', error);
@@ -48,25 +48,39 @@ onMounted(() => {
   getCheckInfo();
 });
 
-// 创建订单
+// 创建订单函数
 const createOrder = async () => {
-  if (!checkInfo.value) return; // 如果checkInfo为空，直接返回
-
   try {
-    const res = await createOrderAPI({
-      goods: checkInfo.value.CartItems.map(item => ({
-        merchandise_id: item.merchandise_id,
-        quantity: item.quanity
-      })),
-      addressId: checkInfo.value.address // 使用已简化的地址
-    });
-    const orderId = res.data.id;
-    router.push({ path: '/payment', query: { id: orderId } });
+    const orderData = {
+      user_name: checkInfo.value.user_name,
+      phone: checkInfo.value.phone,
+      CartItems: checkInfo.value.cartItems,
+      address: checkInfo.value.address,
+      total_price: checkInfo.value.total_price,
+      shipping_fee: checkInfo.value.shipping_fee,
+      grand_total: checkInfo.value.grand_total
+    };
+
+    const res = await createOrderAPI(orderData);
     
-    // 更新购物车
-    cartStore.loadCart();
+    if (res && res.data) {
+      // 后端返回订单号列表
+      const orderIds = res.data;
+      
+      // 跳转到支付页面或订单详情页面，假设支付页面需要订单ID
+      router.push({ 
+        name: 'payment', 
+        params: { id: orderIds[0] } 
+      });
+
+      // 如果需要清除部分商品而不是全部商品，根据具体逻辑来执行
+      await cartStore.removeProductFromCart(orderData.CartItems.map(item => item.merchandise_id));
+      
+    } else {
+      console.error('生成订单失败，响应为空');
+    }
   } catch (error) {
-    console.error('订单创建失败:', error);
+    console.error('生成订单失败:', error);
   }
 };
 </script>
@@ -82,7 +96,7 @@ const createOrder = async () => {
             <div class="text">
               <div class="none" v-if="!checkInfo.address">您需要先添加收货地址才可提交订单。</div>
               <ul v-else>
-                <li><span>收<i />货<i />人：</span>{{ checkInfo.ueser_name }}</li>
+                <li><span>收<i />货<i />人：</span>{{ checkInfo.user_name }}</li>
                 <li><span>联系方式：</span>{{ checkInfo.phone }}</li>
                 <li><span>收货地址：</span>{{ checkInfo.address }}</li>
               </ul>
@@ -103,9 +117,9 @@ const createOrder = async () => {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="i in checkInfo.CartItems" :key="i.merchandise_id">
+              <tr v-for="i in checkInfo.cartItems" :key="i.merchandise_id">
                 <td>
-                  <a href="javascript:;" class="info">
+                  <a class="info">
                     <img :src="getImageUrl(i.picture)" alt="">
                     <div class="right">
                       <p>{{ i.merchandise_name }}</p>
@@ -131,7 +145,7 @@ const createOrder = async () => {
           <div class="total">
             <dl>
               <dt>商品件数：</dt> 
-              <dd>{{ checkInfo?.CartItems?.length || 0 }}件</dd>
+              <dd>{{ checkInfo?.cartItems?.length || 0 }}件</dd>
             </dl>
             <dl>
               <dt>商品总价：</dt>
@@ -217,7 +231,7 @@ const createOrder = async () => {
     }
 
     > a {
-      color: #42b983; /* 直接使用实际的颜色值 */
+      color: #42b983; 
       width: 160px;
       text-align: center;
       height: 90px;
@@ -250,7 +264,7 @@ const createOrder = async () => {
 
   .info {
     display: flex;
-    text-align: left;
+    text-align: mid;
 
     img {
       width: 70px;
@@ -263,9 +277,9 @@ const createOrder = async () => {
 
       p {
         &:last-child {
-          color: #999;
+          color: #040303;
         }
-      }
+      } 
     }
   }
 
@@ -329,7 +343,7 @@ const createOrder = async () => {
 
       &.price {
         font-size: 20px;
-        color: #ff5722; /* 使用实际的颜色值 */
+        color: #ff5722;
       }
     }
   }
@@ -359,8 +373,8 @@ const createOrder = async () => {
 
     &.active,
     &:hover {
-      border-color: #42b983; /* 使用实际的颜色值 */
-      background: #e6f7f2; /* 根据实际颜色的更浅版本 */
+      border-color: #42b983; 
+      background: #e6f7f2; 
     }
 
     > ul {
