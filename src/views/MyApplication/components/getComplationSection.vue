@@ -18,10 +18,6 @@
   }
 
   let getcomplationinformations = ref<getcomplationinformation[]>([]);
-  getcomplationinformations.value.push({complation_id:"1",complainant:"用户1",reason:"无",time:new Date('2023-03-21T14:30:00'),have_appealed:true});
-  getcomplationinformations.value.push({complation_id:"2",complainant:"用户2",reason:"无",time:new Date('2023-03-21T14:30:00'),have_appealed:false});
-  getcomplationinformations.value.push({complation_id:"3",complainant:"用户3",reason:"无",time:new Date('2023-03-21T14:30:00'),have_appealed:false});
-  getcomplationinformations.value.push({complation_id:"4",complainant:"用户4",reason:"无",time:new Date('2023-03-21T14:30:00'),have_appealed:false});
 
   onMounted(async () => {  
     try{

@@ -18,10 +18,6 @@
   }
 
   let myrefundinformations = ref<myrefundinformation[]>([]);
-  myrefundinformations.value.push({order_id:"1",commodity:"商品1",reason:"无",time:new Date('2023-03-21T14:30:00'),state:"未处理"});
-  myrefundinformations.value.push({order_id:"2",commodity:"商品2",reason:"无",time:new Date('2023-03-21T14:30:00'),state:"未处理"});
-  myrefundinformations.value.push({order_id:"3",commodity:"商品3",reason:"无",time:new Date('2023-03-21T14:30:00'),state:"未处理"});
-  myrefundinformations.value.push({order_id:"4",commodity:"商品4",reason:"无",time:new Date('2023-03-21T14:30:00'),state:"未处理"});
 
   onMounted(async () => {  
     //加载数据过程
@@ -31,11 +27,11 @@
         myrefundInfo.data.forEach((oneInfo:any) => {
           let onestate:string="";
           if(oneInfo.refund_state=="Pen"){
-            onestate=="待审核";
+            onestate="待审核";
           }else if(oneInfo.refund_state=="Agr"){
-            onestate=="已通过";
+            onestate="已通过";
           }else{
-            onestate=="未通过";
+            onestate="未通过";
           }
           let one:myrefundinformation={
             order_id:oneInfo.order_id,

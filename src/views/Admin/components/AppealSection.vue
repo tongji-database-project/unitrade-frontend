@@ -21,49 +21,13 @@ export type appealinformation = {
 }
 
 let appealinformations = ref<appealinformation[]>([])
-appealinformations.value.push({
-  appeal_id: '1',
-  seller_name: '商家1',
-  seller_id: '1',
-  complainant_name: '用户1',
-  complainant_id: '1',
-  credibility: 100,
-  reason: '无',
-  time: new Date('2023-03-21T14:30:00')
-})
-appealinformations.value.push({
-  appeal_id: '2',
-  seller_name: '商家2',
-  seller_id: '2',
-  complainant_name: '用户2',
-  complainant_id: '2',
-  credibility: 100,
-  reason: '无',
-  time: new Date('2023-03-21T14:30:00')
-})
-appealinformations.value.push({
-  appeal_id: '3',
-  seller_name: '商家3',
-  seller_id: '3',
-  complainant_name: '用户3',
-  complainant_id: '3',
-  credibility: 100,
-  reason: '无',
-  time: new Date('2023-03-21T14:30:00')
-})
-appealinformations.value.push({
-  appeal_id: '4',
-  seller_name: '商家4',
-  seller_id: '4',
-  complainant_name: '用户4',
-  complainant_id: '4',
-  credibility: 100,
-  reason: '无',
-  time: new Date('2023-03-21T14:30:00')
-})
+
 
 const deleteconfirm = (index: number) => {
   appealinformations.value.splice(index, 1)
+  if(appealinformations.value.length==0){
+        isempty.value=true;
+  }
 }
 
 onMounted(async () => {

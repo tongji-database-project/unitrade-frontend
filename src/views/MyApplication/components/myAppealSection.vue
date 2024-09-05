@@ -18,10 +18,6 @@
   }
 
   let myappealinformations = ref<myappealinformation[]>([]);
-  myappealinformations.value.push({complainant_name:"用户1",complation_reason:"无",appeal_reason:"无",time:new Date('2023-03-21T14:30:00'),state:"未处理"});
-  myappealinformations.value.push({complainant_name:"用户2",complation_reason:"无",appeal_reason:"无",time:new Date('2023-03-21T14:30:00'),state:"未处理"});
-  myappealinformations.value.push({complainant_name:"用户3",complation_reason:"无",appeal_reason:"无",time:new Date('2023-03-21T14:30:00'),state:"未处理"});
-  myappealinformations.value.push({complainant_name:"用户4",complation_reason:"无",appeal_reason:"无",time:new Date('2023-03-21T14:30:00'),state:"未处理"});
 
   onMounted(async () => {  
     //加载数据过程

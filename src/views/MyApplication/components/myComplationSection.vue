@@ -17,11 +17,7 @@
   }
 
   let mycomplationinformations = ref<mycomplationinformation[]>([]);
-  mycomplationinformations.value.push({seller:"商家1",reason:"无",time:new Date('2023-03-21T14:30:00'),state:"未处理"});
-  mycomplationinformations.value.push({seller:"商家2",reason:"无",time:new Date('2023-03-21T14:30:00'),state:"未处理"});
-  mycomplationinformations.value.push({seller:"商家3",reason:"无",time:new Date('2023-03-21T14:30:00'),state:"未处理"});
-  mycomplationinformations.value.push({seller:"商家4",reason:"无",time:new Date('2023-03-21T14:30:00'),state:"未处理"});
-
+  
   onMounted(async () => {  
     //加载数据过程
     try{
@@ -30,11 +26,11 @@
         mycomplationInfo.data.forEach((oneInfo:any) => {
           let onestate:string="";
           if(oneInfo.complation_state=="Pen"){
-            onestate=="待审核";
+            onestate="待审核";
           }else if(oneInfo.complation_state=="Agr"){
-            onestate=="已通过";
+            onestate="已通过";
           }else{
-            onestate=="未通过";
+            onestate="未通过";
           }
           let one:mycomplationinformation={
             seller:oneInfo.seller_name,

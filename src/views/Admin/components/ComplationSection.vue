@@ -19,41 +19,12 @@ export type complationinformation = {
 }
 
 let complationinformations = ref<complationinformation[]>([])
-complationinformations.value.push({
-  complation_id: '1',
-  seller: '商家1',
-  credibility: 100,
-  reason: '无',
-  complainant: '用户1',
-  time: new Date('2023-03-21T14:30:00')
-})
-complationinformations.value.push({
-  complation_id: '1',
-  seller: '商家2',
-  credibility: 100,
-  reason: '无',
-  complainant: '用户2',
-  time: new Date('2024-03-21T14:30:00')
-})
-complationinformations.value.push({
-  complation_id: '1',
-  seller: '商家3',
-  credibility: 100,
-  reason: '无',
-  complainant: '用户3',
-  time: new Date('2025-03-21T14:30:00')
-})
-complationinformations.value.push({
-  complation_id: '1',
-  seller: '商家4',
-  credibility: 100,
-  reason: '无',
-  complainant: '用户4',
-  time: new Date('2026-03-21T14:30:00')
-})
 
 const deleteconfirm = (index: number) => {
   complationinformations.value.splice(index, 1)
+  if(complationinformations.value.length==0){
+        isempty.value=true;
+  }
 }
 
 onMounted(async () => {
