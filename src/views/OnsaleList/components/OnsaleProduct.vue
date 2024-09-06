@@ -9,7 +9,10 @@
       <div class="product-detail">{{ product_type }}</div>
       <div class="product-detail">{{ product_stock }}</div>
       <div class="product-detail">{{ product_sales }}</div>
-      <div class="product-description">{{ product_description }}</div>
+      <div class="product-description">
+        {{ product_description.length > 3 ? product_description.slice(0, 5) + '...' : product_description }}
+      </div>
+      
     </div>
     <div class="button-container">
       <el-button class="handle-button" type="primary" @click="handleModify">修改信息</el-button>
@@ -86,9 +89,15 @@ const handleCancle = async () => {
   font-size: 15px;
 }
 
+
+
+
+
 .product-description {
   margin: 100px;
   font-size: 15px;
+  -webkit-line-clamp: 2; /* 显示两行，超出的内容会被隐藏 */
+  overflow: hidden; /* 隐藏溢出的内容 */
 }
 
 .button-container {
