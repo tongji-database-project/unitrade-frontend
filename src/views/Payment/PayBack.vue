@@ -5,7 +5,7 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const paymentStatus = ref<'success' | 'fail'>('fail')
-const order_id = ref(route.params.order_id as string || '')
+const order_id = route.query.order_id; // 从查询参数中获取 order_id
 
 
 // 获取支付状态
