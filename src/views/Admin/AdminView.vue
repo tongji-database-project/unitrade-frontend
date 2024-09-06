@@ -32,6 +32,7 @@ function chooseAdminenroll() {
 </script>
 
 <template>
+<div class="all">
   <header class="head">
     <RouterLink class="logo" to="/">
       <!-- TODO: logo 待替换 -->
@@ -56,9 +57,14 @@ function chooseAdminenroll() {
       <AdminenrollSection v-else />
     </div>
   </div>
+</div>
 </template>
 
 <style scoped>
+.all{
+  background-color: lightcyan;
+  background-size: cover; 
+}
 .head {
   display: flex;
   position: absolute;
@@ -70,6 +76,7 @@ function chooseAdminenroll() {
   width: 70%;
   margin: auto;
   margin-top: 50px;
+  
 }
 
 .list {
