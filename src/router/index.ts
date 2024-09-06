@@ -26,7 +26,6 @@ import UncommandView from '@/views/Uncommand/UncommandView.vue'
 
 import { ElMessage,ElMessageBox } from 'element-plus'
 import 'element-plus/dist/index.css';
-import MyappealView from '@/views/Myappeal/MyappealView.vue';
 import MyapplicationView from '@/views/MyApplication/MyapplicationView.vue'
 import MyfollowView from '@/views/Myfollow/MyfollowView.vue';
 import PayBack from '@/views/Payment/PayBack.vue'
