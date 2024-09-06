@@ -61,7 +61,7 @@ const deductpoint = async (point: number) => {
 
 <style scoped>
 .main {
-  height: 250px;
+  height: auto;
   background-color: rgb(246, 246, 246);
   margin-bottom: 10px;
   border: 2px solid #a4a4a4b7;
@@ -78,14 +78,14 @@ const deductpoint = async (point: number) => {
 .button {
   width: 100px;
   height: 30px;
-  border: 1.5px solid rgb(100, 100, 100);
-  background-color: #e9e9e9;
-  color: rgb(0, 0, 0);
+  border: 2px solid black;
+  background-color: rgb(220, 253, 253);
   transition: transform 0.3s ease;
   text-align: center;
   margin-top: 1.5%;
   margin-left: 5%;
   display: inline-block;
+  border-radius: 5px;
 }
 
 .button:hover {
