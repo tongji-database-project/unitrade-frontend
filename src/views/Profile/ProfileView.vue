@@ -27,12 +27,14 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { getUserInfo } from '@/apis/profile' // 调用封装的API
+import { getImageUrl } from '@/utils/utils'
 
 export default defineComponent({
   setup() {
     const route = useRoute()
+    const router = useRouter()
     const userInfo = ref({
       avatar: '',
       name: '',
@@ -46,6 +48,7 @@ export default defineComponent({
       try {
         const response = await getUserInfo(userId)
         userInfo.value = response.data
+        userInfo.value.avatar = getImageUrl(userInfo.value.avatar)
       } catch (error) {
         console.error('获取用户信息失败', error)
       }
