@@ -3,11 +3,12 @@ import { useRouter, useRoute } from 'vue-router'
 import { ref, reactive, onMounted, computed } from 'vue'
 import { getImageUrl } from '@/utils/utils'
 import {getMerchandiseCardAPI} from '@/apis/home'
-import {getSellerInfoAPI} from '@/apis/merchandise'
+import {getSellerIdAPI} from '@/apis/merchandise'
 import {getDetailPictureAPI} from '@/apis/merchandise'
 import { useCartStore } from '@/stores/cartStore'; // 引入购物车store
 import { ElMessage } from 'element-plus'; // 引入Element Plus的ElMessage组件
 import ImageView from '@/components/ImageView.vue'
+import SellerCard from '@/components/SellerCard.vue'
 
 const data = reactive({})
 
@@ -19,11 +20,7 @@ const meichandise_cover = ref<string>()
 const meichandise_name = ref<string>()
 const meichandise_price = ref<number>()
 const meichandise_detail_name = ref<string>()
-const seller_cover = ref<string>()
 const seller_id = ref<string>()
-const seller_name = ref<string>()
-const seller_reputation = ref<number>()
-const star_score = ref<number>()
 const detail_picture = ref<string[]>()
 
 const loadInfo = async () => {
@@ -33,12 +30,9 @@ const loadInfo = async () => {
   meichandise_detail_name.value = info.detail
   meichandise_price.value = info.price / 100
 
-  const seller_info = await getSellerInfoAPI(route.params.id as string)
-  seller_cover.value = getImageUrl(seller_info.image)
-  seller_id.value = seller_info.id
-  seller_name.value = seller_info.name
-  seller_reputation.value = seller_info.reputation
-  star_score.value = seller_info.reputation / 20
+  const seller_info = await getSellerIdAPI(route.params.id as string)
+  seller_id.value = seller_info
+  console.log(`seller_id: ${seller_id.value}`)
 
   const detail_info = await getDetailPictureAPI(route.params.id as string)
   detail_picture.value = detail_info.map((pic: string) => getImageUrl(pic))
@@ -95,20 +89,7 @@ onMounted(() => {
 <template>
   <div class="xtx-goods-page">
     <div class="seller-info">
-      <div class="avatar">
-        <el-avatar :size="40" :src="seller_cover"></el-avatar>
-      </div>
-      <div class="seller-name">
-        <p class="p-name">{{ seller_name }}</p>
-      </div>
-      <div class="reputation">
-        <el-rate v-model="star_score" disabled text-color="#ff9900" />
-        <el-text class="re-value" size="small">信誉值:{{ seller_reputation }}/100</el-text>
-      </div>
-      <div class="seller-botton">
-        <el-button type="primary" @click="router.push(`/profile/${seller_id}`)">查看商家</el-button>
-        <el-button type="primary" @click="router.push(`/message/${seller_id}`)">联系商家</el-button>
-      </div>
+      <SellerCard :seller_id="seller_id!" :key="seller_id" />
     </div>
     <div class="info-container">
       <div class="goods-info">
@@ -163,7 +144,7 @@ onMounted(() => {
 
 <style scoped>
 .xtx-goods-page {
-  .seller-info {
+  /* .seller-info {
     width: 100%;
     height: 80px;
     border: 2px solid #ccc;
@@ -172,28 +153,7 @@ onMounted(() => {
     flex-direction: row;
     align-items: center;
     padding-right: 50px;
-
-    .avatar {
-      padding: 30px 60px;
-    }
-
-    .p-name {
-      font-size: 22px;
-    }
-
-    .reputation {
-      padding: 50px;
-
-      .re-value {
-        padding: 20px;
-      }
-    }
-    .seller-botton {
-      display: flex;
-      flex-direction: row;
-      margin-left: auto;
-    }
-  }
+  } */
 
   .goods-info {
     height: 450px;

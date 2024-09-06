@@ -3,27 +3,27 @@ import { defineStore } from 'pinia'
 import { httpInstance } from '@/utils/utils'
 import { ElMessage } from 'element-plus'
 
-export const getSellerInfoAPI = async (merchandiseId: string) => {
+export const getSellerInfoAPI = async (sellerId: string) => {
   return await httpInstance({
-    url: `/sellerInfo/${merchandiseId}`,
+    url: `/sellerInfo/${sellerId}`,
     method: 'GET',
   })
     .then((response) => {
       if (response.status === 200) {
         return response.data
-      } else {
-        ElMessage({
-          type: 'warning',
-          message: `无法获取商家信息：${response.status}`
-        })
-      }
-    })
-    .catch((error) => {
-      ElMessage({
-        type: 'warning',
-        message: `无法获取商家信息：${error}`
+       } //else {
+      //   ElMessage({
+      //     //type: 'warning',
+      //     //message: `无法获取商家信息：${response.status}`
+      //   })
+      // }
       })
-  })
+    // .catch((error) => {
+    //   ElMessage({
+    //     // type: 'warning',
+    //     // message: `无法获取商家信息：${error}`
+    //   })
+  // })
 }
 
 
@@ -92,6 +92,29 @@ export const getSellerInfoAPI = async (merchandiseId: string) => {
         ElMessage({
           type: 'warning',
           message: `无法获取商品详情图片：${error}`
+        })
+      })
+  }
+
+  export const getSellerIdAPI = async (merchandiseId: string) => {
+    return await httpInstance({
+      url: `/sellerId/${merchandiseId}`,
+      method: 'GET'
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          return response.data
+        } else {
+          ElMessage({
+            type: 'warning',
+            message: `无法获取商家id：${response.status}`
+          })
+        }
+      })
+      .catch((error) => {
+        ElMessage({
+          type: 'warning',
+          message: `无法获取商家id：${error}`
         })
       })
   }
