@@ -4,7 +4,6 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 export const submitProduct = (product: Product) => {
-  // 发起 POST 请求，将商品数据发送到后端
   return httpInstance({
     url: '/seller/publish',
     method: 'POST',
@@ -16,6 +15,43 @@ export const submitProduct = (product: Product) => {
       cover_image_url: product.cover,
       product_image_urls: product.images,
       product_details: product.description
+    }
+  })
+}
+
+export const getUserProducts = () => {
+  return httpInstance({
+    url: '/seller/getUserProducts',
+    method: 'GET'
+  })
+}
+
+export const getModifyProduct = (productID: string) => {
+  return httpInstance({
+    url: '/seller/modify',
+    method: 'POST',
+    data: {
+      ProductID: productID
+    }
+  })
+}
+
+export const cancelProduct = (productID: string) => {
+  return httpInstance({
+    url: '/seller/cancel',
+    method: 'POST',
+    data: {
+      ProductID: productID
+    }
+  })
+}
+
+export const seekUserProducts = (seekName: string) => {
+  return httpInstance({
+    url: '/seller/seek',
+    method: 'POST',
+    data: {
+      SpecialName: seekName
     }
   })
 }
