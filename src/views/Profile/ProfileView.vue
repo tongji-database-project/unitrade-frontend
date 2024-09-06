@@ -65,6 +65,10 @@ export default defineComponent({
     }
 
     const viewProducts = () => {
+      router.push({
+        name: 'profilemerchandise',
+        params: { id: userId.value }
+      })
       console.log('查看商品功能')
     }
 
