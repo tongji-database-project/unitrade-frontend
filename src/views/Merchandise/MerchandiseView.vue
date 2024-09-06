@@ -94,8 +94,8 @@ onMounted(() => {
     <div class="info-container">
       <div class="goods-info">
         <div class="media">
-          <ImageView :imageList="meichandise_cover!" />
-          <!-- <el-image class="cover" :src="meichandise_cover" fit="cover" /> -->
+          <!-- <ImageView :imageList="meichandise_cover!" /> -->
+          <el-image class="cover" :src="meichandise_cover" fit="cover"/>
         </div>
         <div class="spec">
           <p class="g-name">{{ meichandise_name }}</p>
@@ -161,9 +161,19 @@ onMounted(() => {
     display: flex;
 
     .media {
-      width: 580px;
-      height: 600px;
+      width: 500px;
+      height: 470px;
       padding: 30px 50px;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+
+      .cover {
+        width: 100%;       /* 图片宽度为父容器的100% */
+        height: 100%;      /* 图片高度为父容器的100% */
+        object-fit: cover; /* 使图片覆盖整个容器，保持比例填充 */
+      }
     }
 
     .spec {

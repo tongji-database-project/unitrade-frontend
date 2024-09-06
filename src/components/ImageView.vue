@@ -100,17 +100,22 @@ watch([elementX, elementY, isOutside], () => {
   position: relative;
   display: flex;
 
-  .image {
-    width: 480px;
-    height: 400px;
-    position: relative;
-    display: flex;
-  }
+  
 
+  .image {
+    width: 100%;  /* 设置图片宽度为容器的100% */
+    height: 100%; /* 设置图片高度为容器的100% */
+    object-fit: contain;
+    position:relative;
+    display: flex;
+
+  }
   .middle {
     width: 400px;
     height: 400px;
     background: #f5f5f5;
+    display: flex;
+
   }
 
   .large {
