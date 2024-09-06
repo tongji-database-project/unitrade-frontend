@@ -58,7 +58,6 @@ export interface AddCommentParams {
   merchandiseId: string;
   content: string;
   commentType: string;
-  commentPicture?: File | null; // 允许 null 或 undefined
 }
 
 export interface RefundRequest {
