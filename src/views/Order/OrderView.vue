@@ -63,8 +63,8 @@ const clearReview = () => {
       <h2>订单详情</h2>
       <p>订单 ID: {{ orderId }}</p>
       <p>订单状态: {{ order.state}}</p>
-      <p>下单时间: {{ order.ordeR_TIME }}</p>
-      <p>发货时间: {{ order.receivinG_TIME }}</p>
+      <p>下单时间: {{ order.order_time }}</p>
+      <p>发货时间: {{ order.receiving_time }}</p>
       <h3>商品列表</h3>
       <table>
         <thead>
