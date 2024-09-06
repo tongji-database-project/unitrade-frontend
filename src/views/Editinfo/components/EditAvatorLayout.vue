@@ -52,10 +52,10 @@ const submitEdit = async () => {
       })
       ToAccount()
     }
-    else{
+    else if(response.status===413){
       ElMessage({
         type: 'warning',
-        message: `头像修改失败,换个头像再试一下吧`
+        message: `头像文件太大了,请修改分辨率后再上传`
     })
     }
   } catch (error) {
