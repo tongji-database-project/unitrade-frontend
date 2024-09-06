@@ -3,18 +3,6 @@ import { ref } from 'vue';
 import { getCartItemsAPI, addToCartAPI, updateCartItemAPI, removeFromCartAPI } from '@/apis/cart';
 import type { CartItem } from '@/utils/interfaces';
 
-// 定义 CartItem 接口
-interface CartItem {
-  merchandise_id: string;
-  merchandise_name: string;
-  merchandise_price: number;
-  picture: string;
-  quanity: number;
-  picture: string;
-  cart_time: DateTime;
-  selected: boolean;
-}
-
 // 定义 API 响应类型
 interface ApiResponse<T> {
   status: number;
