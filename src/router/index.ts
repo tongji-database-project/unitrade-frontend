@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { roleJudgeAPI } from '@/apis/user'
 import LayoutView from '@/views/Layout/LayoutView.vue'
 import HomeView from '@/views/Home/HomeView.vue'
+import HomeSearch from '@/views/Home/HomeSearch.vue'
+import HomeSearchStore from '@/views/Home/HomeSearchStore.vue'
 import MerchandiseView from '@/views/Merchandise/MerchandiseView.vue'
 import CommentsView from '@/views/Comments/CommentsView.vue'
 import ProfileView from '@/views/Profile/ProfileView.vue'
@@ -42,6 +44,16 @@ const router = createRouter({
           path: '',
           name: 'home',
           component: HomeView
+        },
+        {
+          path: 'homeSearch',
+          name: 'homeSearch',
+          component: HomeSearch
+        },
+        {
+          path: 'homeSearchStore',
+          name: 'homeSearchStore',
+          component: HomeSearchStore
         },
         {
           path: 'merchandise/:id',
