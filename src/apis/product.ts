@@ -23,5 +23,35 @@ export const getUserProducts = () => {
   return httpInstance({
     url: '/seller/getUserProducts',
     method: 'GET'
-  });
+  })
+}
+
+export const getModifyProduct = (productID: string) => {
+  return httpInstance({
+    url: '/seller/modify',
+    method: 'POST',
+    data: {
+      ProductID: productID
+    }
+  })
+}
+
+export const cancelProduct = (productID: string) => {
+  return httpInstance({
+    url: '/seller/cancel',
+    method: 'POST',
+    data: {
+      ProductID: productID
+    }
+  })
+}
+
+export const seekUserProducts = (seekName: string) => {
+  return httpInstance({
+    url: '/seller/seek',
+    method: 'POST',
+    data: {
+      SpecialName: seekName
+    }
+  })
 }

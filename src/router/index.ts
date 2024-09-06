@@ -12,6 +12,7 @@ import CheckoutView from '@/views/Checkout/CheckoutView.vue'
 import PaymentView from '@/views/Payment/PaymentView.vue'
 import OnsaleListView from '@/views/OnsaleList/OnsaleListView.vue'
 import ProductSubmissionView from '@/views/ProductSubmission/ProductSubmissionView.vue'
+import ProductModifyView from '@/views/ProductSubmission/ProductModifyView.vue'
 import OrderListView from '@/views/OrderList/OrderListView.vue'
 import OrderView from '@/views/Order/OrderView.vue'
 import RefundRequestView from '@/views/RefundRequest/RefundRequestView.vue'
@@ -139,6 +140,11 @@ const router = createRouter({
           path: 'product-sub',
           name: 'product-submission',
           component: ProductSubmissionView
+        },
+        {
+          path: 'product-mod/:id',
+          name: 'product-modify',
+          component: ProductModifyView
         },
         {
           path: 'order',

@@ -18,6 +18,7 @@ export interface Product {
   cover: string
 }
 
+
 // 商品展示类型，用于商品展示时上传商品信息
 export interface ProductOnsale {
   id: string
@@ -28,4 +29,22 @@ export interface ProductOnsale {
   cover: string
   description: string
   sales: number
+}
+
+//生成订单时，显示订单的所有信息
+export interface OrderItem {
+  id: string;
+  name: string;
+  quantity: number;
+  price: number;
+}
+
+export interface Order {
+  order_id: string;
+  merchandise_id: string;
+  order_quantity: number;
+  state: string;
+  order_time: string;
+  receiving_time: string;
+  items: OrderItem[];
 }
