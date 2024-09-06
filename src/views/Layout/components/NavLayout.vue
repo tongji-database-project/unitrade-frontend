@@ -15,6 +15,23 @@ const user_avatar = ref('')
 
 const input = ref('')
 
+const selectMethod = ref([])
+
+const selectOptions = [
+  {
+    value: 'categoryProduct',
+    label: '商品'
+  },
+  {
+    value: 'categoryStore',
+    label: '店铺',
+  }
+]
+
+const props = {
+  expandTrigger: 'hover' as const
+}
+
 // 用于加载用户头像的函数
 const load_avatar = async () => {
   if (logged_in.value) {
@@ -56,6 +73,15 @@ const searchProducts = async () => {
     })
 }
 
+
+const selectChange = (value: any[]) => {
+  if (value[0] === 'categoryProduct'){
+    console.log("商品");
+  }else if (value[0] === 'categoryStore') {
+    console.log("店铺");
+  }
+}
+
 // const categories = [
 //   {
 //     name: '分类 1',
@@ -73,11 +99,19 @@ const searchProducts = async () => {
     <el-space class="container" spacer="|">
       <RouterLink class="logo" to="/">
         <!-- TODO: logo 待替换 -->
-        <img alt="Vue logo" class="logo" :src= "getImageUrl('logo.png')" width="100" height="70" />
+        <img alt="Vue logo" class="logo" :src="getImageUrl('logo.png')" width="100" height="70" />
       </RouterLink>
       <!-- <div class="header-category" v-for="({ name, path }, index) in categories" :key="index">
         <RouterLink :to="path">{{ name }}</RouterLink>
       </div> -->
+      <el-cascader
+        v-model="selectMethod"
+        :options="selectOptions"
+        :props="props"
+        @change="selectChange"
+        class="select-sort"
+        style="width: 72px;"
+      />
       <div class="input-box">
         <el-input v-model="input" placeholder="搜索商品..." class="search-input"></el-input>
         <el-button type="primary" @click="searchProducts" class="search-button">搜索</el-button>
@@ -112,7 +146,6 @@ const searchProducts = async () => {
   </div>
 </template>
 
-
 <style scoped>
 .top-nav {
   width: 100%;
@@ -127,7 +160,7 @@ const searchProducts = async () => {
   justify-content: flex-end;
   padding: 0.3rem;
 
-  .input-box{
+  .input-box {
     display: flex;
   }
 }
