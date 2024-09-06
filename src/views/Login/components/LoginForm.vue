@@ -18,6 +18,8 @@ const phoneOrEmail = ref('')
 const verificationCode = ref('')
 const loginType = ref('1') // '1' 表示手机号, '2' 表示邮箱
 const forgetVisible = ref(false)
+const countdown = ref(0) // 倒计时初始为0
+const isButtonDisabled = ref(false) // 按钮状态
 const param = ref({
   username: '',
   password: '',
@@ -31,6 +33,22 @@ const props = defineProps({
   }
 })
 
+const startCountdown = () => {
+  countdown.value = 60;
+  isButtonDisabled.value = true;
+  
+  const timer = setInterval(() => {
+    countdown.value--;
+    if (countdown.value <= 0) {
+      clearInterval(timer);
+      isButtonDisabled.value = false;
+    }
+  }, 1000); // 每秒更新一次
+};
+
+const goBackToLogin = () => {
+  forgetVisible.value = false
+}
 const toggleLoginType = () => {
   isPasswordLogin.value = !isPasswordLogin.value
 }
@@ -76,7 +94,17 @@ const resetPassword = async () => {
   }
 }
 
+const validatePhoneNumber = (phone: string) => {
+  const phoneRegex = /^1[3-9]\d{9}$/; // 简单的中国手机号正则
+  return phoneRegex.test(phone);
+};
+
 const sendVerifyCodeFind = async () => {
+  if (loginType.value === '1' && !validatePhoneNumber(phoneOrEmail.value)) {
+    ElMessageBox.alert('请输入有效的手机号');
+    return;
+  }
+
   try {
     if (loginType.value == '2') {
       await axios.post(`/api/Email?address=${phoneOrEmail.value}&type=findpwd`)
@@ -84,6 +112,7 @@ const sendVerifyCodeFind = async () => {
       await axios.post(`/api/CellphoneCode?phone=${phoneOrEmail.value}&type=findpwd`)
     }
     alert('验证码已发送')
+    startCountdown()
   } catch (error) {
     ElMessageBox.alert('验证码发送失败，请稍后重试')
     console.error(error)
@@ -91,6 +120,10 @@ const sendVerifyCodeFind = async () => {
 }
 
 const sendVerifyCodeLogin = async () => {
+  if (loginType.value === '1' && !validatePhoneNumber(phoneOrEmail.value)) {
+    ElMessageBox.alert('请输入有效的手机号');
+    return;
+  }
   try {
     if (loginType.value == '2') {
       // 发送邮箱验证码
@@ -100,6 +133,7 @@ const sendVerifyCodeLogin = async () => {
       await axios.post(`/api/CellphoneCode?phone=${phoneOrEmail.value}&type=login`)
     }
     alert('验证码已发送')
+    startCountdown()
   } catch (error) {
     ElMessageBox.alert('验证码发送失败，请稍后重试')
     console.error(error)
@@ -155,6 +189,9 @@ const submitForm = async () => {
           <option value="1">手机号</option>
           <option value="2">邮箱</option>
         </select>
+        <button class="return-button" type="button" @click="goBackToLogin">
+          <img src="https://img.tukuppt.com/png_preview/00/15/75/NH1xYlBylA.jpg!/fw/780" alt="Clickable Image" />
+        </button>
       </div>
       <div class="input-container">
         <input
@@ -173,7 +210,10 @@ const submitForm = async () => {
           placeholder="请输入验证码"
           required
         />
-        <button type="button" @click="sendVerifyCodeFind">获取验证码</button>
+        <button class="commom-button" type="button" @click="sendVerifyCodeFind" :disabled="isButtonDisabled">
+          {{ isButtonDisabled ? `${countdown}秒后重试` : '获取验证码' }}
+        </button>
+
       </div>
       <div class="input-container">
         <input
@@ -202,19 +242,22 @@ const submitForm = async () => {
           required
         />
       </div>
-      <button type="submit" @click="resetPassword">重置密码</button>
+      <button class="commom-button" type="submit" @click="resetPassword">重置密码</button>
     </div>
 
     <div v-else>
       <!-- Original Login Form -->
-      <div v-if="isPasswordLogin" class="input-container">
-        <input type="text" v-model="username" id="username" placeholder="请输入用户名" required />
-      </div>
-      <div v-if="isPasswordLogin" class="input-container">
-        <input type="password" v-model="password" id="password" placeholder="请输入密码" required />
+       <h3>欢迎登录</h3>
+      <div v-if="isPasswordLogin" class="passwordlogin">
+        <div class="input-container">
+          <input type="text" v-model="username" id="username" placeholder="请输入用户名" required />
+        </div>
+        <div class="input-container">
+          <input type="password" v-model="password" id="password" placeholder="请输入密码" required />
+        </div>
       </div>
 
-      <div v-if="!isPasswordLogin">
+      <div v-if="!isPasswordLogin" class="VerifyCodeLogin">
         <div class="input-container">
           <select v-model="loginType" id="loginType">
             <option value="1">手机号</option>
@@ -238,7 +281,9 @@ const submitForm = async () => {
             placeholder="请输入验证码"
             required
           />
-          <button type="button" @click="sendVerifyCodeLogin">获取验证码</button>
+          <button type="button" @click="sendVerifyCodeLogin" :disabled="isButtonDisabled">
+            {{ isButtonDisabled ? `${countdown}秒后重试` : '获取验证码' }}
+          </button>
         </div>
       </div>
 
@@ -258,48 +303,106 @@ const submitForm = async () => {
 
 <style scoped>
 .form-container {
+  width: 320px;
+  height: 400px;
+  padding: 20px;
+  border-radius: 12px;
+  background: #f5f5f5;
+  margin: 30px auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center; 
+}
+h3{
+  height: 60px;
+  font-size: 23px;
+  line-height: 43px;
+  text-align: center;
+}
+.passwordlogin > *{
+  height: 35px;
+  /* background-color: red; */
+  margin-bottom: 22px;
+}
+.VerifyCodeLogin > *{
+  height: 35px;
+  /* background-color: red; */
+  margin-bottom: 22px;
+}
+.input-container 
+.input-group{
+  margin-bottom: 100px;
+  /* padding-bottom: 22px; */
+  height: 35px;
+  width: 100%;
+  display: block;
+  /* align-items: center; */
+  /* position: relative; */
+}
+input{
+  outline: medium;
+  border: none;
+  /* width: 100%; 让输入框宽度自适应父容器 */
 }
 
-.input-container {
-  margin-bottom: 20px;
+.input-container input{
+  padding: 8px;
+  flex: 1;
+  height: 35px;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 3px;
+  color: #333;
+  font-size: 12px;
+  border: 1px solid #e0e0e0;
 }
-
-.input-container input,
 .input-group input {
-  width: 300px;
-  height: 30px;
+  padding: 8px;
+  flex: 1;
+  height: 35px;
+  width: 66%;
+  box-sizing: border-box;
+  border-radius: 3px;
+  color: #333;
+  font-size: 12px;
+  border: 1px solid #e0e0e0;
+} 
+
+.input-container input :focus
+.input-group input :focus{
+  border-color: #409eff;
 }
 
-.input-group {
+/* .input-group {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
-}
+} */
 
-.input-group input {
+/* .input-group input {
   flex: 1;
-}
+} */
 
 .input-group button {
-  margin-left: 10px;
-  height: 34px;
+  margin-left: 15px;
+  flex: 1;
+  height: 35px;
   cursor: pointer;
   border: none;
-  background-color: #409eff;
+  box-sizing: border-box;
+  border-radius: 3px;
+  background-color: #bdcefc;
   color: white;
   padding: 0 10px;
-  font-size: 14px;
+  font-size: 12px;
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
 }
 
 .input-group button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  transform: scale(1.03);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
 }
 
 .action-buttons {
@@ -322,29 +425,52 @@ const submitForm = async () => {
   text-decoration: underline;
 }
 
-.reset-password-container button {
-  width: 200px;
-  height: 30px;
+.reset-password-container > *{
+  height: 35px;
+  /* background-color: red; */
+  margin-bottom: 15px;
+}
+
+.reset-password-container .commom-button {
+  /* width: 200px; */
+  height: 35px;
   cursor: pointer;
   border: none;
-  background-color: #409eff;
+  background-color: #bdcefc;
   color: white;
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
 }
 
-.reset-password-container button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+.reset-password-container .commom-button:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 6px rgba(0, 0, 0, 0.3);
+}
+
+.return-button {
+  float: right; 
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer; 
+  width: 30px;
+  height: 30px;
+}
+
+.return-button img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 button[type='submit'] {
-  width: 200px;
-  height: 30px;
+  width: 280px; 
+  background-color: #bdcefc;
+  height: 40px;
   cursor: pointer;
   border: none;
-  background-color: #409eff;
+  border-radius: 20px;
   color: white;
   transition:
     transform 0.3s ease,
@@ -352,7 +478,7 @@ button[type='submit'] {
 }
 
 button[type='submit']:hover {
-  transform: scale(1.1);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  transform: scale(1.03);
+  box-shadow: 0 6px 6px rgba(0, 0, 0, 0.3);
 }
 </style>
