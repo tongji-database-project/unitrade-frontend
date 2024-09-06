@@ -16,9 +16,6 @@ const logged_in = computed(() => useTokenStore().logged_in)
         <RouterLink to="/login">切换账号</RouterLink>
       </div>
       <div>
-        <RouterLink to="/admin/:1">管理员界面(仅供调试)</RouterLink>
-      </div>
-      <div>
         <RouterLink to="/account">个人中心</RouterLink>
       </div>
       <div>
