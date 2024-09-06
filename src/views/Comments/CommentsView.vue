@@ -3,7 +3,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { onMounted,ref, computed, nextTick } from 'vue';
 import type {Ref} from 'vue';
 import {getCommentIdAPI} from '@/apis/merchandise'
-import MerchandiseCard from '@/components/MerchandiseCard.vue';
+import CommentCard from './components/CommentCard.vue';
 
 const router = useRouter()
 const route = useRoute()
@@ -19,16 +19,17 @@ onMounted(() => {
 })
 
 // Reactive data
-const items = ref(Array.from({ length: 100 }, (_, i) => ({ name: `商品 ${i + 1}` })));
+//const items = ref(Array.from({ length: 100 }, (_, i) => ({ name: `商品 ${i + 1}` })));
 const currentPage = ref(1);
 const itemsPerPage = ref(20);
 
 // Computed properties
-const totalPages = computed(() => Math.ceil(items.value.length / itemsPerPage.value));
+const totalPages = computed(() => Math.ceil(comment_id_list.value.length / itemsPerPage.value));
 const pagedItems = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage.value;
   const end = start + itemsPerPage.value;
-  return items.value.slice(start, end);
+  console.log("test 特惠的天堂", comment_id_list.value.slice(start, end))
+  return comment_id_list.value.slice(start, end);
 });
 
 // Methods

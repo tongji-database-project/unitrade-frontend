@@ -8,6 +8,8 @@ import { useTokenStore } from '@/stores/token'
 import { getUserInfo } from '@/apis/user'
 import { getSpecialProductID } from '@/apis/home'
 import { ElMessage } from 'element-plus'
+import { useRouter } from 'vue-router'
+import { getSpecialStoreID } from '@/apis/home'
 
 // 追踪登录状态
 const logged_in = computed(() => useTokenStore().logged_in)
@@ -18,6 +20,10 @@ const input = ref('')
 
 const selectMethod = ref([])
 
+const judge = ref(0)
+
+const router = useRouter()
+
 const selectOptions = [
   {
     value: 'categoryProduct',
@@ -25,7 +31,7 @@ const selectOptions = [
   },
   {
     value: 'categoryStore',
-    label: '店铺',
+    label: '店铺'
   }
 ]
 
@@ -55,31 +61,66 @@ onMounted(() => {
 
 const searchProducts = async () => {
   console.log(input.value)
-  await getSpecialProductID(input.value)
-    .then((response) => {
-      if (response.status === 200) {
-        console.log(response.data)
-      } else if (response.status === 400) {
+  if (judge.value === 0) {
+    await getSpecialProductID(input.value)
+      .then((response) => {
+        if (response.status === 200) {
+          console.log(response.data)
+          // router.push(`homeSearch`)
+          router.push({
+            path: 'homeSearch',
+            query: {
+              myArray: response.data // 传递数组，长度可以是任意的
+            }
+          })
+        } else if (response.status === 400) {
+          ElMessage({
+            type: 'warning',
+            message: `无法获取用户信息状态码：${response.status}`
+          })
+        }
+      })
+      .catch((error) => {
         ElMessage({
           type: 'warning',
-          message: `无法获取用户信息状态码：${response.status}`
+          message: `无法找到该商品，请重新输入`
         })
-      }
-    })
-    .catch((error) => {
-      ElMessage({
-        type: 'warning',
-        message: `无法获取,错误信息：${error}`
       })
-    })
+  } else {
+    await getSpecialStoreID(input.value)
+      .then((response) => {
+        if (response.status === 200) {
+          console.log(response.data)
+          // router.push(`homeSearch`)
+          router.push({
+            path: 'homeSearchStore',
+            query: {
+              myArray: response.data // 传递数组，长度可以是任意的
+            }
+          })
+        } else if (response.status === 400) {
+          ElMessage({
+            type: 'warning',
+            message: `无法获取用户信息状态码：${response.status}`
+          })
+        }
+      })
+      .catch((error) => {
+        ElMessage({
+          type: 'warning',
+          message: `无法找到该店铺，请重新输入`
+        })
+      })
+  }
 }
 
-
 const selectChange = (value: any[]) => {
-  if (value[0] === 'categoryProduct'){
-    console.log("商品");
-  }else if (value[0] === 'categoryStore') {
-    console.log("店铺");
+  if (value[0] === 'categoryProduct') {
+    judge.value = 0
+    console.log('商品')
+  } else if (value[0] === 'categoryStore') {
+    judge.value = 1
+    console.log('店铺')
   }
 }
 
@@ -99,7 +140,6 @@ const selectChange = (value: any[]) => {
   <div class="top-nav">
     <el-space class="container" spacer="|">
       <RouterLink class="logo" to="/">
-        <!-- TODO: logo 待替换 -->
         <img alt="Vue logo" class="logo" :src="getImageUrl('logo.png')" width="100" height="70" />
       </RouterLink>
       <!-- <div class="header-category" v-for="({ name, path }, index) in categories" :key="index">
@@ -111,7 +151,7 @@ const selectChange = (value: any[]) => {
         :props="props"
         @change="selectChange"
         class="select-sort"
-        style="width: 72px;"
+        style="width: 72px"
       />
       <div class="input-box">
         <el-input v-model="input" placeholder="搜索商品..." class="search-input"></el-input>
@@ -181,5 +221,13 @@ const selectChange = (value: any[]) => {
 .header-avatar:hover .header-profile {
   transition: all 0.3s linear;
   display: flex;
+}
+
+.search-button{
+  margin-top: 17px;
+}
+
+.search-input{
+  margin-left: 1px;
 }
 </style>

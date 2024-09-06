@@ -5,14 +5,16 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const paymentStatus = ref<'success' | 'fail'>('fail')
-const order_id = ref(route.params.order_id as string || '')
+const order_id = route.query.order_id; // 从查询参数中获取 order_id
 
 
 // 获取支付状态
 const getPaymentStatus = async () => {
   try {
-    const res = await getPaymentStatusAPI(order_id.value)
+    console.log('订单id', order_id)
+    const res = await getPaymentStatusAPI(order_id as string)
     paymentStatus.value = res.data.success ? 'success' : 'fail'
+    console.log('支付状态', res.data.success)
   } catch (error) {
     console.error('支付状态获取失败', error)
     paymentStatus.value = 'fail'

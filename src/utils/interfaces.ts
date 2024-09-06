@@ -66,6 +66,25 @@ export interface RefundRequest {
   refundFeedback?: string;
 }
 
+export interface ConfirmReceiptParams {
+  orderId: string;
+  merchandiseId: string;
+}
+
+export interface AddCommentParams {
+  orderId: string;
+  merchandiseId: string;
+  content: string;
+  commentType: string;
+}
+
+export interface RefundRequest {
+  orderId: string;
+  refundReason: string;
+  refundFeedback?: string;
+}
+
+// 定义 CartItem 接口
 export interface CartItem {
   merchandise_id: string;
   merchandise_name: string;

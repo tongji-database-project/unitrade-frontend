@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import 'element-plus/dist/index.css'
+import { useTokenStore } from '@/stores/token'
+import { ElMessage, ElMessageBox } from 'element-plus';
+import {ref} from'vue'
+import { useRouter } from 'vue-router';
+import 'element-plus/dist/index.css'; 
 
 let file = ref<File | null>(null)
 let imageUrl = ref<string | null>(null)
@@ -34,16 +35,28 @@ const submitEdit = async () => {
   const formData = new FormData()
   formData.append('file', file.value)
   try {
+    // const response =await axios.post('/api/setpicture', {File:formData})
+    const tokenStore = useTokenStore()
+    const token = tokenStore.token
     const response = await fetch('/api/setpicture', {
-      method: 'POST',
-      body: formData
-    })
-    if (response.status === 200) {
+    method: 'POST',
+    headers: {
+        'Authorization': `Bearer ${token}` // 添加 token 到请求头
+    },
+    body:formData
+    });
+    if(response.status===200){
       ElMessageBox({
         type: 'success',
         message: '头像修改成功，即将跳转个人中心'
       })
       ToAccount()
+    }
+    else if(response.status===413){
+      ElMessage({
+        type: 'warning',
+        message: `头像文件太大了,请修改分辨率后再上传`
+    })
     }
   } catch (error) {
     ElMessage({

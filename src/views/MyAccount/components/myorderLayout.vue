@@ -58,19 +58,19 @@ onBeforeMount(() => {
     </div>
     <div v-for="(order, index) in orders" :key="index" class="order">
       <div class="title">
-        <h @click="toReceived">已收货</h>
+        <h >已收货</h>
       </div>
       <p>{{ order.received }}</p>
     </div>
     <div v-for="(order, index) in orders" :key="index" class="order">
       <div class="title">
-        <h @click="toTransit">运输中</h>
+        <h >运输中</h>
       </div>
       <p>{{ order.transit }}</p>
     </div>
     <div v-for="(order, index) in orders" :key="index" class="order">
       <div class="title">
-        <h @click="toUncommand">未评价</h>
+        <h >未评价</h>
       </div>
       <p>{{ order.uncommand }}</p>
     </div>

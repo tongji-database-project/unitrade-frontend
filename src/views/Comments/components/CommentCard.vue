@@ -20,6 +20,15 @@ const pictures = ref<string[]>()
 const modalOpen = ref(false)
 const currentImage = ref('')
 
+const i= [
+  {img:getImageUrl('banner/banner0.png')},
+  {img:getImageUrl('banner/banner1.png')},
+  {img:getImageUrl('banner/banner2.png')},
+  {img:getImageUrl('banner/banner0.png')},
+  {img:getImageUrl('banner/banner1.png')},
+  {img:getImageUrl('banner/banner2.png')},
+]
+
 const loadInfo = async () => {
   const info= await getCommentCardAPI(props.comment_id)
   console.log(info)
@@ -27,7 +36,7 @@ const loadInfo = async () => {
   name.value = info.user_name
   content.value = info.content
   //time.value = info.time
-  pictures.value = info.pictures.map((pic: string) => getImageUrl(pic))
+  //pictures.value = info.pictures.map((pic: string) => getImageUrl(pic))
 }
 
 const openModal = (image: string) => {
@@ -63,16 +72,17 @@ onMounted(() => {
             <p class="p-name"> {{ name }} </p>
         </div>
     </div>
+    <!-- <el-divider border-style="double" /> -->
     <div class="comment-body">
         <p class="content"> {{ content }} </p>
         <div class="gallery">
         <div 
-            v-for="(image, index) in pictures" 
+            v-for="(image, index) in i" 
             :key="index" 
             class="thumbnail" 
-            @click="openModal(image)"
+            @click="openModal(image.img)"
         >
-            <img :src="image" alt="thumbnail" />
+            <img :src="image.img" alt="thumbnail" />
         </div>
         </div>
         <div v-if="modalOpen" class="modal-overlay" @click="closeModal">
@@ -83,25 +93,41 @@ onMounted(() => {
         </div>
     </div>
 
-
+    <el-divider border-style="double" />
 </template>
 
 <style>
-.comment-header {
+ .comment-header {
     display: flex;
     flex-direction: row;
+    padding:10px;
+    /* border: 2px solid #ccc;
+    border-radius: 20px; */
+
+     .avatar{
+      padding: 8px;
+    } 
+
+    .user-name{
+      .p-name{
+        font-size: 20px;
+        padding: 14px; 
+      }
+    }
 }
 
 .comment-body{
+  padding-left: 20px;
+
     .gallery {
   display: flex;
   justify-content: space-around;
   padding: 20px;
-}
+    }
 
 .thumbnail img {
-  width: 150px; /* Adjust width as needed */
-  height: 100px; /* Adjust height as needed */
+  width: 150px; 
+  height: 100px; 
   cursor: pointer;
   object-fit: cover;
 }
@@ -137,5 +163,5 @@ onMounted(() => {
   color: #fff;
   cursor: pointer;
 }
-}
+} 
 </style>

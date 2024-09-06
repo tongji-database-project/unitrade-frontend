@@ -7,6 +7,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import 'element-plus/dist/index.css'
 
 let isloading = ref(true)
+let isempty=ref(false)
 
 export type refundinformation = {
   refund_id: string
@@ -20,49 +21,12 @@ export type refundinformation = {
 }
 
 let refundinformations = ref<refundinformation[]>([])
-refundinformations.value.push({
-  refund_id: '1',
-  seller_name: '商家1',
-  seller_id: '1',
-  buyer_name: '买家1',
-  buyer_id: '1',
-  commodity: '商品1',
-  reason: '1',
-  time: new Date('2023-03-21T14:30:00')
-})
-refundinformations.value.push({
-  refund_id: '2',
-  seller_name: '商家2',
-  seller_id: '2',
-  buyer_name: '买家2',
-  buyer_id: '2',
-  commodity: '商品2',
-  reason: '2',
-  time: new Date('2023-03-21T14:30:00')
-})
-refundinformations.value.push({
-  refund_id: '3',
-  seller_name: '商家3',
-  seller_id: '3',
-  buyer_name: '买家3',
-  buyer_id: '3',
-  commodity: '商品3',
-  reason: '3',
-  time: new Date('2023-03-21T14:30:00')
-})
-refundinformations.value.push({
-  refund_id: '4',
-  seller_name: '商家4',
-  seller_id: '4',
-  buyer_name: '买家4',
-  buyer_id: '4',
-  commodity: '商品4',
-  reason: '4',
-  time: new Date('2023-03-21T14:30:00')
-})
 
 const deleteconfirm = (index: number) => {
   refundinformations.value.splice(index, 1)
+  if(refundinformations.value.length==0){
+        isempty.value=true;
+  }
 }
 
 onMounted(async () => {
@@ -83,6 +47,9 @@ onMounted(async () => {
         refundinformations.value.push(one)
       })
       isloading.value = false
+      if(refundinformations.value.length==0){
+        isempty.value=true;
+      }
     } else {
       ElMessage({
         type: 'error',
@@ -103,7 +70,8 @@ onMounted(async () => {
   <div class="main">
     <div class="spinner" v-if="isloading"></div>
     <div class="list" v-else>
-      <div v-for="(item, index) in refundinformations" :key="index" class="table">
+      <div class="empty" v-if="isempty">无</div>
+      <div v-for="(item, index) in refundinformations" :key="item.refund_id" class="table" v-else>
         <OneRefund :onerefundinformation="item" :num="index" @delete="deleteconfirm" />
       </div>
     </div>
@@ -117,6 +85,12 @@ onMounted(async () => {
 .list {
   max-height: 650px;
   overflow-y: auto;
+}
+.empty{
+  margin-top: 100px;
+  margin-left: 50%;
+  font-size: 40px;
+  font-weight: bold; 
 }
 .table {
   width: 100%;
