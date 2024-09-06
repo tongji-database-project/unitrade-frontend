@@ -4,12 +4,13 @@ import { useRouter } from 'vue-router'
 import { onMounted, ref } from 'vue'
 import { useCartStore } from '@/stores/cartStore'
 import { getImageUrl } from '@/utils/utils'
+import type {OrderSummary} from '@/utils/interfaces'
 
 const cartStore = useCartStore()
 const router = useRouter()
 
 // 初始化checkInfo为一个默认对象，而不是null或undefined
-const checkInfo = ref({
+const checkInfo = ref<OrderSummary>({
   user_name: '',
   phone: '',
   address: '', 
@@ -48,10 +49,10 @@ onMounted(() => {
 // 创建订单函数
 const createOrder = async () => {
   try {
-    const orderData = {
+    const orderData: OrderSummary = {
       user_name: checkInfo.value.user_name,
       phone: checkInfo.value.phone,
-      Cart_items: checkInfo.value.cart_items,
+      cart_items: checkInfo.value.cart_items,
       address: checkInfo.value.address,
       total_price: checkInfo.value.total_price,
       shipping_fee: checkInfo.value.shipping_fee,
@@ -71,7 +72,10 @@ const createOrder = async () => {
       });
 
       // 如果需要清除部分商品而不是全部商品，根据具体逻辑来执行
-      await cartStore.removeProductFromCart(orderData.Cart_items.map(item => item.merchandise_id));
+      // await cartStore.removeProductFromCart(orderData.cart_items.map(item => item.merchandise_id));
+      for (var item of orderData.cart_items) {
+        await cartStore.removeProductFromCart(item.merchandise_id)
+      }
       
     } else {
       console.error('生成订单失败，响应为空');

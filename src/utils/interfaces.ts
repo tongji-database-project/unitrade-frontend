@@ -48,6 +48,7 @@ export interface Order {
   items: OrderItem[];
 }
 
+// 定义 CartItem 接口
 export interface CartItem {
   merchandise_id: string;
   merchandise_name: string;
