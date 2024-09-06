@@ -15,7 +15,7 @@ const orderData = route.query.order
   : null
 
 // 创建状态来存储订单信息
-const order = ref<Order | null>(orderData); // 使用传递的数据初始化订单
+const order = ref<any | null>(orderData); // 使用传递的数据初始化订单
 console.log("order:", order.value)
 const isDelivered = ref<boolean>(false); // 状态来控制是否已收货
 const showReviewBox = ref<boolean>(false)

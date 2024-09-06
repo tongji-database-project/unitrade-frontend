@@ -100,7 +100,7 @@ export const addComment = async (order_id: string , merchandise_id: string, cont
       ElMessage.error(`请求失败，状态码：${response.status}`);
     }
   } catch (error) {
-    ElMessage.error(`提交评论失败，错误信息：${error.message || '未知错误'}`);
+    ElMessage.error(`提交评论失败，错误信息：${error || '未知错误'}`);
   }
 };
 
@@ -122,7 +122,7 @@ export const confirmReceipt = async (order_id: string, merchandise_id: string): 
       ElMessage.error(`请求失败，状态码：${response.status}`);
     }
   } catch (error) {
-    ElMessage.error(`收货确认失败，错误信息：${error.message}`);
+    ElMessage.error(`收货确认失败，错误信息：${error}`);
   }
 };
 
@@ -145,6 +145,6 @@ export const requestRefund = async (order_id: string, refund_reason: string, ref
       ElMessage.error(`请求失败，状态码：${response.status}`);
     }
   } catch (error) {
-    ElMessage.error(`退款申请失败，错误信息：${error.message}`);
+    ElMessage.error(`退款申请失败，错误信息：${error}`);
   }
 };

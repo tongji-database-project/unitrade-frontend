@@ -52,7 +52,7 @@ const orderData = route.query.order
   : null
 
 // 创建状态来存储订单信息
-const order = ref<Order | null>(orderData) // 使用传递的数据初始化订单
+const order = ref<any | null>(orderData) // 使用传递的数据初始化订单
 
 // 退款理由列表
 const refundReasons = ref<string[]>(['商品质量问题', '发错商品/少件', '商品与描述不符', '其他'])
