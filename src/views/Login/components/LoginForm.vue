@@ -3,10 +3,11 @@ import { ref } from 'vue'
 import axios from 'axios'
 import { defineProps } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { useTokenStore } from '@/stores/token'
 import { loginAPI, resetPasswordAPI } from '@/apis/user'
 import { adminLoginAPI } from '@/apis/admin'
+import 'element-plus/dist/index.css'
 
 const TokenStore = useTokenStore()
 const router = useRouter()
@@ -32,6 +33,10 @@ const props = defineProps({
     default: false
   }
 })
+const resetButtonState = () => {
+  countdown.value = 0
+  isButtonDisabled.value = false
+}
 
 const startCountdown = () => {
   countdown.value = 60;
@@ -48,6 +53,7 @@ const startCountdown = () => {
 
 const goBackToLogin = () => {
   forgetVisible.value = false
+  resetButtonState()
 }
 const toggleLoginType = () => {
   isPasswordLogin.value = !isPasswordLogin.value
@@ -55,6 +61,7 @@ const toggleLoginType = () => {
 
 const forgetPassword = () => {
   forgetVisible.value = true
+  resetButtonState()
 }
 
 const resetPassword = async () => {
@@ -98,20 +105,26 @@ const validatePhoneNumber = (phone: string) => {
   const phoneRegex = /^1[3-9]\d{9}$/; // 简单的中国手机号正则
   return phoneRegex.test(phone);
 };
-
+const validateEmail = (email: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
 const sendVerifyCodeFind = async () => {
   if (loginType.value === '1' && !validatePhoneNumber(phoneOrEmail.value)) {
     ElMessageBox.alert('请输入有效的手机号');
     return;
   }
-
+  if (loginType.value === '2' && !validateEmail(phoneOrEmail.value)) {
+    ElMessageBox.alert('请输入有效的邮箱地址');
+    return;
+  }
   try {
     if (loginType.value == '2') {
       await axios.post(`/api/Email?address=${phoneOrEmail.value}&type=findpwd`)
     } else {
       await axios.post(`/api/CellphoneCode?phone=${phoneOrEmail.value}&type=findpwd`)
     }
-    alert('验证码已发送')
+    ElMessage('验证码已发送')
     startCountdown()
   } catch (error) {
     ElMessageBox.alert('验证码发送失败，请稍后重试')
@@ -124,6 +137,10 @@ const sendVerifyCodeLogin = async () => {
     ElMessageBox.alert('请输入有效的手机号');
     return;
   }
+  if (loginType.value === '2' && !validateEmail(phoneOrEmail.value)) {
+    ElMessageBox.alert('请输入有效的邮箱地址');
+    return;
+  }
   try {
     if (loginType.value == '2') {
       // 发送邮箱验证码
@@ -132,7 +149,7 @@ const sendVerifyCodeLogin = async () => {
       // 发送手机验证码
       await axios.post(`/api/CellphoneCode?phone=${phoneOrEmail.value}&type=login`)
     }
-    alert('验证码已发送')
+    ElMessage(`验证码已发送`)
     startCountdown()
   } catch (error) {
     ElMessageBox.alert('验证码发送失败，请稍后重试')
@@ -210,7 +227,7 @@ const submitForm = async () => {
           placeholder="请输入验证码"
           required
         />
-        <button class="commom-button" type="button" @click="sendVerifyCodeFind" :disabled="isButtonDisabled">
+        <button class="commom-button" type="button" @click="sendVerifyCodeFind" :class="{ 'disabled-button': isButtonDisabled }"  :disabled="isButtonDisabled">
           {{ isButtonDisabled ? `${countdown}秒后重试` : '获取验证码' }}
         </button>
 
@@ -246,7 +263,6 @@ const submitForm = async () => {
     </div>
 
     <div v-else>
-      <!-- Original Login Form -->
        <h3>欢迎登录</h3>
       <div v-if="isPasswordLogin" class="passwordlogin">
         <div class="input-container">
@@ -281,7 +297,7 @@ const submitForm = async () => {
             placeholder="请输入验证码"
             required
           />
-          <button type="button" @click="sendVerifyCodeLogin" :disabled="isButtonDisabled">
+          <button type="button" @click="sendVerifyCodeLogin" :class="{ 'disabled-button': isButtonDisabled }" :disabled="isButtonDisabled">
             {{ isButtonDisabled ? `${countdown}秒后重试` : '获取验证码' }}
           </button>
         </div>
@@ -321,28 +337,22 @@ h3{
 }
 .passwordlogin > *{
   height: 35px;
-  /* background-color: red; */
   margin-bottom: 22px;
 }
 .VerifyCodeLogin > *{
   height: 35px;
-  /* background-color: red; */
   margin-bottom: 22px;
 }
 .input-container 
 .input-group{
   margin-bottom: 100px;
-  /* padding-bottom: 22px; */
   height: 35px;
   width: 100%;
   display: block;
-  /* align-items: center; */
-  /* position: relative; */
 }
 input{
   outline: medium;
   border: none;
-  /* width: 100%; 让输入框宽度自适应父容器 */
 }
 
 .input-container input{
@@ -360,28 +370,13 @@ input{
   padding: 8px;
   flex: 1;
   height: 35px;
-  width: 66%;
+  width: 65%;
   box-sizing: border-box;
   border-radius: 3px;
   color: #333;
   font-size: 12px;
   border: 1px solid #e0e0e0;
 } 
-
-.input-container input :focus
-.input-group input :focus{
-  border-color: #409eff;
-}
-
-/* .input-group {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-} */
-
-/* .input-group input {
-  flex: 1;
-} */
 
 .input-group button {
   margin-left: 15px;
@@ -391,7 +386,7 @@ input{
   border: none;
   box-sizing: border-box;
   border-radius: 3px;
-  background-color: #bdcefc;
+  background-color: #409eff;
   color: white;
   padding: 0 10px;
   font-size: 12px;
@@ -427,16 +422,14 @@ input{
 
 .reset-password-container > *{
   height: 35px;
-  /* background-color: red; */
   margin-bottom: 15px;
 }
 
 .reset-password-container .commom-button {
-  /* width: 200px; */
   height: 35px;
   cursor: pointer;
   border: none;
-  background-color: #bdcefc;
+  background-color: #409eff;
   color: white;
   transition:
     transform 0.3s ease,
@@ -466,7 +459,7 @@ input{
 
 button[type='submit'] {
   width: 280px; 
-  background-color: #bdcefc;
+  background-color: #409eff;
   height: 40px;
   cursor: pointer;
   border: none;
@@ -480,5 +473,12 @@ button[type='submit'] {
 button[type='submit']:hover {
   transform: scale(1.03);
   box-shadow: 0 6px 6px rgba(0, 0, 0, 0.3);
+}
+
+.input-group button.disabled-button {
+  background-color: #d3d3d3;
+  color: #a9a9a9;
+  cursor: not-allowed; /* 禁用光标 */
+  pointer-events: none; /* 禁用鼠标事件 */
 }
 </style>

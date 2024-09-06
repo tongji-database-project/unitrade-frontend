@@ -4,6 +4,7 @@ import axios from 'axios'
 import { useRouter } from 'vue-router'
 import { userEnrollAPI } from '@/apis/user'
 import { ElMessageBox } from 'element-plus'
+import 'element-plus/dist/index.css'
 
 const router = useRouter()
 
@@ -22,6 +23,11 @@ const validatePhoneNumber = (phone: string) => {
   return phoneRegex.test(phone);
 };
 
+const validateEmail = (email: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
 const startCountdown = () => {
   countdown.value = 60;
   isButtonDisabled.value = true;
@@ -38,6 +44,10 @@ const startCountdown = () => {
 const sendVerifyCode = async () => {
   if (registerType.value === '1' && !validatePhoneNumber(phone.value)) {
     ElMessageBox.alert('请输入有效的手机号');
+    return;
+  }
+  if (registerType.value === '2' && !validateEmail(email.value)) {
+    ElMessageBox.alert('请输入有效的邮箱地址');
     return;
   }
   try {
@@ -117,7 +127,7 @@ const submitForm = async () => {
           id="verificationCode"
           placeholder="请输入验证码"
           required/>
-        <button class="commom-button" type="button" @click="sendVerifyCode" :disabled="isButtonDisabled">
+        <button class="commom-button" type="button" @click="sendVerifyCode" :class="{ 'disabled-button': isButtonDisabled }" :disabled="isButtonDisabled">
           {{ isButtonDisabled ? `${countdown}秒后重试` : '获取验证码' }}
         </button>
       </div>
@@ -150,14 +160,12 @@ h3{
 
 .enroll > *{
   height: 22px;
-  /* background-color: red; */
   margin-bottom: 22px;
 }
 
 .input-container 
 .input-group{
   margin-bottom: 100px;
-  /* padding-bottom: 22px; */
   height: 35px;
   width: 100%;
   display: block;
@@ -166,7 +174,6 @@ h3{
 input{
   outline: medium;
   border: none;
-  /* width: 100%; 让输入框宽度自适应父容器 */
 }
 
 .input-container input{
@@ -199,7 +206,7 @@ input{
   border: none;
   box-sizing: border-box;
   border-radius: 3px;
-  background-color: #bdcefc;
+  background-color: #409eff;
   color: white;
   padding: 0 10px;
   font-size: 12px;
@@ -222,7 +229,7 @@ input{
 
 .radio-label {
   display: block;
-  width: 48%; /* 占据一行的48%，两个按钮刚好分开 */
+  width: 48%; 
   box-sizing: border-box;
 }
 
@@ -242,29 +249,11 @@ input{
   margin-top: 25px;  
   margin-bottom: 20px;
 }
-/*
-.action-buttons button {
-  width: 200px;
-  height: 30px;
-  cursor: pointer;
-  border: none;
-  background-color: #409eff;
-  color: white;
-  font-size: 14px;
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-.action-buttons button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-} */
 
 button[type='submit'] {
 
   width: 280px; 
-  background-color: #bdcefc;
+  background-color: #409eff;
   height: 40px;
   cursor: pointer;
   border: none;
@@ -278,5 +267,12 @@ button[type='submit'] {
 button[type='submit']:hover {
   transform: scale(1.03);
   box-shadow: 0 6px 6px rgba(0, 0, 0, 0.3);
+}
+
+.input-group button.disabled-button {
+  background-color: #d3d3d3; 
+  color: #a9a9a9; 
+  cursor: not-allowed; /* 禁用光标 */
+  pointer-events: none; /* 禁用鼠标事件 */
 }
 </style>
