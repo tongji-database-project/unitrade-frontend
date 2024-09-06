@@ -89,10 +89,6 @@ export const addComment = async (params: AddCommentParams): Promise<void> => {
     formData.append('Content', params.content);
     formData.append('CommentType', params.commentType);
 
-    if (params.commentPicture) {
-      formData.append('CommentPicture', params.commentPicture);
-    }
-
     const response = await httpInstance({
       url: '/order/AddComment',
       method: 'POST',
