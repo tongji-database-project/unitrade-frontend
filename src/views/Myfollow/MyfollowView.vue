@@ -2,6 +2,7 @@
 import { onBeforeMount, ref, computed } from 'vue'
 import { useTokenStore } from '@/stores/token'
 import { useRouter } from 'vue-router'
+import MyfollowLayout from './components/MyfollowLayout.vue'
 const logged_in = computed(() => useTokenStore().logged_in)
 let hint_login = ref(true)
 const categories = [
@@ -18,32 +19,33 @@ const categories = [
     path: '/order'
   },
   {
-    name: '我的收藏',
-    path: '/' /*未设置 */
+    name: '我的主页',
+    path: '/profile/:id' 
   },
   {
-    name: '我的主页',
-    path: '/' /*未设置 */
+    name: '个人中心',
+    path: '/account' 
   },
   {
     name: '我的消息',
     path: '/message'
   },
   {
-    name: '我的申诉',
-    path: '/myapeal'
+    name: '我的申请',
+    path: '/myapplication'
   },
   {
-    name: '个人信息修改',
+    name: '个人设置',
     path: '/Editinfo'
   }
 ]
 const router = useRouter()
 
+
 onBeforeMount(() => {
-  // if(logged_in.value){
+  if(logged_in.value){
   hint_login.value = false
-  // }
+  }
 })
 </script>
 
@@ -54,7 +56,10 @@ onBeforeMount(() => {
         <RouterLink :to="path">{{ name }}</RouterLink>
       </div>
     </div>
-    <div class="my-info"></div>
+    <div class="my-info">
+        <p class="header">我的收藏</p>
+        <MyfollowLayout/>
+    </div>
   </div>
 </template>
 
@@ -92,5 +97,8 @@ onBeforeMount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.header{
+    font-size: 20px;
 }
 </style>

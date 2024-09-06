@@ -27,10 +27,10 @@ const delCart = (item: any) => {
 
 // 计算属性
 const cartItems = computed(() => cartStore.cartItems);
-const isAllSelected = computed(() => cartItems.value!.length > 0 && cartItems.value!.every(item => item.selected));
-const totalCount = computed(() => cartItems.value!.reduce((acc, item) => acc + item.quanity, 0));
-const selectedCount = computed(() => cartItems.value!.filter(item => item.selected).reduce((acc, item) => acc + item.quanity, 0));
-const selectedPrice = computed(() => cartItems.value!.filter(item => item.selected).reduce((acc, item) => acc + item.merchandise_price * item.quanity, 0));
+const isAllSelected = computed(() => cartItems.value && cartItems.value!.length > 0 && cartItems.value!.every(item => item.selected));
+const totalCount = computed(() => cartItems.value ? cartItems.value!.reduce((acc, item) => acc + item.quanity, 0) : 0);
+const selectedCount = computed(() => cartItems.value ? cartItems.value!.filter(item => item.selected).reduce((acc, item) => acc + item.quanity, 0) : 0);
+const selectedPrice = computed(() => cartItems.value ? cartItems.value!.filter(item => item.selected).reduce((acc, item) => acc + item.merchandise_price * item.quanity, 0) : 0);
 
 // 组件挂载时加载购物车数据
 onMounted(() => {
@@ -94,7 +94,7 @@ onMounted(() => {
                 </p>
               </td>
             </tr>
-            <tr v-if="cartItems!.length === 0">
+            <tr v-if="cartItems && cartItems!.length === 0">
               <td colspan="6">
                 <div class="cart-none">
                   <el-empty description="购物车列表为空">
@@ -109,7 +109,7 @@ onMounted(() => {
     </div>
 
     <!-- 操作栏，固定在页面右下角 -->
-    <div class="action fixed-action" v-if="cartItems!.length > 0">
+    <div class="action fixed-action" v-if="cartItems && cartItems!.length > 0">
       <div class="batch">
         共 {{ totalCount }} 件商品，已选择 {{ selectedCount }} 件，商品合计：
         <span class="red">¥ {{ selectedPrice.toFixed(2) }} </span>

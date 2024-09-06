@@ -59,17 +59,6 @@ export const resetPasswordAPI = async (
   })
 }
 
-export const adminLoginAPI = async (username: string, password: string) => {
-  return await httpInstance({
-    url: '/adminlogin',
-    method: 'POST',
-    data: {
-      name: username,
-      password: password
-    }
-  })
-}
-
 export const roleJudgeAPI = async () => {
   return await httpInstance({
     url: '/rolejudge',
@@ -116,36 +105,6 @@ export const getOtherUserInfo = async (user_id: string) => {
         message: `身份验证失败，错误信息：${error}`
       })
       return ''
-    })
-}
-
-export const AdminEnroll = async (adminname: string, password: string, adminlevel: string) => {
-  return await httpInstance({
-    url: '/adminenroll',
-    method: 'POST',
-    data: {
-      name: adminname,
-      password: password,
-      level: adminlevel
-    }
-  })
-}
-
-export const getAdminInfo = async () => {
-  return await httpInstance({
-    url: '/admininfo',
-    method: 'GET'
-  })
-    .then((response) => {
-      if (response.status === 200) {
-        return response.data
-      }
-    })
-    .catch((error) => {
-      ElMessage({
-        type: 'warning',
-        message: `无法获取管理员信息，错误信息：${error}`
-      })
     })
 }
 
@@ -271,4 +230,108 @@ export const EditPassword = async (
         })
       }
     })
+}
+
+export const mycomplation=async()=>{
+  return await httpInstance({
+    url: '/mycomplation',
+    method: 'GET'
+  })
+}
+
+export const myrefund=async()=>{
+  return await httpInstance({
+    url: '/myrefund',
+    method: 'GET'
+  })
+}
+
+export const myappeal=async()=>{
+  return await httpInstance({
+    url: '/myappeal',
+    method: 'GET'
+  })
+}
+
+export const getcomplation=async()=>{
+  return await httpInstance({
+    url: '/getcomplation',
+    method: 'GET'
+  })
+}
+export const cancelUser=async(password:string)=>{
+  return await httpInstance({
+    url:'/oauth/cancel',
+    method:'POST',
+    data:{
+      password:password
+    }
+  })
+  .then((response) => {
+    if (response.status === 200) {
+      ElMessageBox({
+        message: `账号注销成功`,
+        type: 'success'
+      })
+      return response.status
+    }
+  })
+  .catch((error) => {
+    if (error.response.status === 400) {
+      if (error.response.data == '密码错误，注销失败') {
+        ElMessage({
+          type: 'error',
+          message: `原密码错误，请重新输入`
+        })
+      }
+    } else {
+      ElMessage({
+        type: 'error',
+        message: `注销失败：${error}`
+      })
+    }
+  })
+}
+export const getMyfollow=async()=>{
+  return await httpInstance({
+    url:'/getMyfollow',
+    method:'GET',
+  })
+  // .then((response) => {
+  //   if (response.status === 200) {
+  //     return response.data
+  //   }
+  // })
+  // .catch((error) => {
+  //   console.log(error)
+  //   console.log("asdads")
+  //   ElMessage({
+  //     type: 'error',
+  //     message: `数据获取失败`
+  //   })
+  // })
+}
+export const denyfollow=async(seller_id:string)=>{
+  return await httpInstance({
+    url:'/denyfollow',
+    method:'POST',
+    data:{
+      seller_id:seller_id
+    }
+  }).then((response) => {
+    if (response.status === 200) {
+      ElMessageBox({
+        message: `取消关注成功`,
+        type: 'success'
+      })
+      return response.status
+    }
+  })
+  .catch((error) => {
+    ElMessage({
+      message:'操作失败',
+      type:'error'
+    })
+  
+  })
 }

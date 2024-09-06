@@ -1,7 +1,7 @@
-<!-- 申诉 -->
+<!-- 商品下架 -->
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
-import OneAppeal from './OneAppeal.vue'
+import OneMerchandise from './OneMerchandise.vue'
 import axios from 'axios'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import 'element-plus/dist/index.css'
@@ -9,46 +9,45 @@ import 'element-plus/dist/index.css'
 let isloading = ref(true)
 let isempty=ref(false)
 
-export type appealinformation = {
-  appeal_id: string
+export type merchandiseinformation = {
+  id: string
+  name: string
+  type:string
+  price:number
   seller_name: string
-  seller_id: string
-  complainant_name: string
-  complainant_id: string
-  credibility: number
-  reason: string
-  time: Date
+  reputation:number
+  comment_num:number
+  average_score:number
 }
 
-let appealinformations = ref<appealinformation[]>([])
-
+let merchandiseinformations = ref<merchandiseinformation[]>([])
 
 const deleteconfirm = (index: number) => {
-  appealinformations.value.splice(index, 1)
-  if(appealinformations.value.length==0){
+  merchandiseinformations.value.splice(index, 1)
+  if(merchandiseinformations.value.length==0){
         isempty.value=true;
   }
 }
 
 onMounted(async () => {
   try {
-    const appealInfo = await axios.get('/api/appeal/query')
-    if (appealInfo.status === 200) {
-      appealInfo.data.forEach((oneInfo: any) => {
-        let one: appealinformation = {
-          appeal_id: oneInfo.appeal_id,
+    const merchandiseInfo = await axios.get('/api/merchandiseaudit/query')
+    if (merchandiseInfo.status === 200) {
+        merchandiseInfo.data.forEach((oneInfo: any) => {
+        let one: merchandiseinformation = {
+          id: oneInfo.merchandise_id,
+          name:oneInfo.merchandise_name,
+          type:oneInfo.merchandise_type,
+          price: oneInfo.merchandise_price,
           seller_name: oneInfo.seller_name,
-          seller_id: oneInfo.seller_id,
-          complainant_name: oneInfo.complainant_name,
-          complainant_id: oneInfo.complainant_id,
-          credibility: oneInfo.credibility,
-          reason: oneInfo.reason,
-          time: new Date(oneInfo.time)
+          reputation:oneInfo.reputation,
+          comment_num:oneInfo.commit_sum,
+          average_score:oneInfo.average_point
         }
-        appealinformations.value.push(one)
+        merchandiseinformations.value.push(one)
       })
       isloading.value = false
-      if(appealinformations.value.length==0){
+      if(merchandiseinformations.value.length==0){
         isempty.value=true;
       }
     } else {
@@ -72,8 +71,8 @@ onMounted(async () => {
     <div class="spinner" v-if="isloading"></div>
     <div class="list" v-else>
       <div class="empty" v-if="isempty">无</div>
-      <div v-for="(item, index) in appealinformations" :key="item.appeal_id" class="table" v-else>
-        <OneAppeal :oneappealinformation="item" :num="index" @delete="deleteconfirm" />
+      <div v-for="(item, index) in merchandiseinformations" :key="item.id" class="table" v-else>
+        <OneMerchandise :onemerchandiseinformation="item" :num="index" @delete="deleteconfirm" />
       </div>
     </div>
   </div>
@@ -94,8 +93,12 @@ onMounted(async () => {
   font-weight: bold; 
 }
 .table {
-  background-color: rgb(255, 255, 255);
   width: 100%;
+  background-color: rgb(255, 255, 255);
+  margin-bottom: 10px; /* 调整这个数值来增加或减少间距 */
+  padding: 10px; /* 可选：添加填充以让表格内容与边界有些距离 */
+  border: 2px solid #a4a4a4b7;
+  border-radius: 15px; /* 可选：为表格添加圆角 */
 }
 .spinner {
   border: 4px solid rgba(0, 0, 0, 0.1);
