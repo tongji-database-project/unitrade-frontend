@@ -13,11 +13,11 @@ const payTotal = ref<number | null>(null) // 用来存储订单总金额
 // 获取订单数据
 const getOrderTotal = async () => {
   try {
-    const res = await getOrderTotalAPI(route.params.id);
+    const res = await getOrderTotalAPI(route.params.id as string);
     if (res.status === 200) {
       payTotal.value = res.data; // 假设后端返回的数据在res.data中
     } else {
-      console.error('获取订单总金额失败', res.message);
+      console.error('获取订单总金额失败', res);
     }
   } catch (error) {
     console.error('API调用失败', error);
@@ -29,7 +29,7 @@ const paymentHTML = ref('')
 // 创建订单并跳转到支付宝页面
 const createPayment = async () => {
   try {
-    const res = await createPayAPI(route.params.id)
+    const res = await createPayAPI(route.params.id as string)
     if (res.status === 200) {
       // 支付页面返回的是HTML，直接插入到当前页面
       paymentHTML.value = res.data

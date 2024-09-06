@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { getCartItemsAPI, addToCartAPI, updateCartItemAPI, removeFromCartAPI } from '@/apis/cart';
+import type { CartItem } from '@/utils/interfaces';
 
 export const useCartStore = defineStore('cart', () => {
-    const cartItems = ref([]);
+    const cartItems = ref<CartItem[]>();
 
     // 加载购物车
     const loadCart = async () => {
@@ -23,7 +24,7 @@ export const useCartStore = defineStore('cart', () => {
     };
 
     // 添加商品到购物车
-    const addProductToCart = async (cartItem) => {
+    const addProductToCart = async (cartItem: CartItem) => {
         try {
             const response = await addToCartAPI(cartItem);
             if (response.status === 200) {
@@ -35,7 +36,7 @@ export const useCartStore = defineStore('cart', () => {
     };
 
     // 更新购物车中的商品
-    const updateProductInCart = async (item) => {
+    const updateProductInCart = async (item: CartItem) => {
         try {
             const response = await updateCartItemAPI(item);
             if (response.status === 200) {
@@ -47,7 +48,7 @@ export const useCartStore = defineStore('cart', () => {
     };
 
     // 从购物车删除商品
-    const removeProductFromCart = async (merchandiseId) => {
+    const removeProductFromCart = async (merchandiseId: string) => {
         try {
             const response = await removeFromCartAPI(merchandiseId);
             if (response.status === 200) {

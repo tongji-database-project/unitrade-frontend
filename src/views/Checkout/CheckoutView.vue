@@ -4,20 +4,13 @@ import { useRouter } from 'vue-router'
 import { onMounted, ref } from 'vue'
 import { useCartStore } from '@/stores/cartStore'
 import { getImageUrl } from '@/utils/utils'
+import type {OrderSummary} from '@/utils/interfaces'
 
 const cartStore = useCartStore()
 const router = useRouter()
 
 // 初始化checkInfo为一个默认对象，而不是null或undefined
-const checkInfo = ref({
-  user_name: '',
-  phone: '',
-  address: '', 
-  cartItems: [], // 确保cartItems是一个空数组而不是undefined
-  total_price: 0,
-  shipping_fee: 0,
-  grand_total: 0,
-});
+const checkInfo = ref<OrderSummary>();
 
 const isLoading = ref(false); // 用于控制页面加载状态
 
@@ -32,7 +25,7 @@ const getCheckInfo = async () => {
       console.log('结算信息:', checkInfo.value);
     } else {
       // 如果没有返回数据，确保checkInfo有默认值
-      checkInfo.value = {   user_name: '', phone: '',  address: '' , cartItems: [], total_price: 0, shipping_fee: 0, grand_total: 0 };
+      checkInfo.value = {   user_name: '', phone: '',  address: '' , cart_items: [], total_price: 0, shipping_fee: 0, grand_total: 0 };
     }
   } catch (error) {
     console.error('获取结算信息失败:', error);
@@ -49,13 +42,13 @@ onMounted(() => {
 const createOrder = async () => {
   try {
     const orderData = {
-      user_name: checkInfo.value.user_name,
-      phone: checkInfo.value.phone,
-      CartItems: checkInfo.value.cartItems,
-      address: checkInfo.value.address,
-      total_price: checkInfo.value.total_price,
-      shipping_fee: checkInfo.value.shipping_fee,
-      grand_total: checkInfo.value.grand_total
+      user_name: checkInfo.value!.user_name,
+      phone: checkInfo.value!.phone,
+      CartItems: checkInfo.value!.cart_items,
+      address: checkInfo.value!.address,
+      total_price: checkInfo.value!.total_price,
+      shipping_fee: checkInfo.value!.shipping_fee,
+      grand_total: checkInfo.value!.grand_total
     };
 
     const res = await createOrderAPI(orderData);
@@ -71,7 +64,10 @@ const createOrder = async () => {
       });
 
       // 如果需要清除部分商品而不是全部商品，根据具体逻辑来执行
-      await cartStore.removeProductFromCart(orderData.CartItems.map(item => item.merchandise_id));
+      // await cartStore.removeProductFromCart(orderData.CartItems.map((item: CartItem) => item.merchandise_id));
+      for (var item of orderData.CartItems) {
+        await cartStore.removeProductFromCart(item.merchandise_id)
+      }
       
     } else {
       console.error('生成订单失败，响应为空');
@@ -91,11 +87,11 @@ const createOrder = async () => {
         <div class="box-body">
           <div class="address">
             <div class="text">
-              <div class="none" v-if="!checkInfo.address">您需要先添加收货地址才可提交订单。</div>
+              <div class="none" v-if="!checkInfo!.address">您需要先添加收货地址才可提交订单。</div>
               <ul v-else>
-                <li><span>收<i />货<i />人：</span>{{ checkInfo.user_name }}</li>
-                <li><span>联系方式：</span>{{ checkInfo.phone }}</li>
-                <li><span>收货地址：</span>{{ checkInfo.address }}</li>
+                <li><span>收<i />货<i />人：</span>{{ checkInfo!.user_name }}</li>
+                <li><span>联系方式：</span>{{ checkInfo!.phone }}</li>
+                <li><span>收货地址：</span>{{ checkInfo!.address }}</li>
               </ul>
             </div>
           </div>
@@ -114,7 +110,7 @@ const createOrder = async () => {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="i in checkInfo.cartItems" :key="i.merchandise_id">
+              <tr v-for="i in checkInfo!.cart_items" :key="i.merchandise_id">
                 <td>
                   <a class="info">
                     <img :src="getImageUrl(i.picture)" alt="">
@@ -142,7 +138,7 @@ const createOrder = async () => {
           <div class="total">
             <dl>
               <dt>商品种类：</dt> 
-              <dd>{{ checkInfo?.cartItems?.length || 0 }}种</dd>
+              <dd>{{ checkInfo?.cart_items?.length || 0 }}种</dd>
             </dl>
             <dl>
               <dt>商品总价：</dt>
