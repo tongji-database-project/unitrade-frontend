@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-import { ref, reactive, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { getImageUrl } from '@/utils/utils'
-import { getMerchandiseCardAPI } from '@/apis/home'
-import { getSellerInfoAPI } from '@/apis/merchandise'
+import {getMerchandiseCardAPI} from '@/apis/home'
+import {getSellerInfoAPI} from '@/apis/merchandise'
+import { useCartStore } from '@/stores/cartStore'; // 引入购物车store
+import { ElMessage } from 'element-plus'; // 引入Element Plus的ElMessage组件
 import ImageView from '@/components/ImageView.vue'
-
-const props = defineProps({
-  merchandise_id: { type: String, required: true }
-})
 
 const data = reactive({})
 
 const router = useRouter()
+const route = useRoute()
+const cartStore = useCartStore(); // 获取购物车store实例
 
 const meichandise_cover = ref<string>()
 const meichandise_name = ref<string>()
@@ -24,12 +24,12 @@ const seller_reputation = ref<number>()
 const star_score = ref<number>()
 
 const loadInfo = async () => {
-  const info = await getMerchandiseCardAPI(props.merchandise_id)
+  const info= await getMerchandiseCardAPI(route.params.id as string)
   meichandise_cover.value = getImageUrl(info.image)
   meichandise_name.value = info.name
   meichandise_price.value = info.price / 100
 
-  const seller_info = await getSellerInfoAPI(props.merchandise_id)
+  const seller_info = await getSellerInfoAPI(route.params.id as string)
   seller_cover.value = getImageUrl(seller_info.image)
   seller_id.value = seller_info.id
   seller_name.value = seller_info.name
@@ -37,37 +37,47 @@ const loadInfo = async () => {
   star_score.value = seller_info.reputation / 20
 }
 
-// count
-const count = ref(1)
-const countChange = (count: any) => {
-  console.log(count)
-}
+// 商品数量
+const count = ref(1);
+const countChange = (countValue: any) => {
+  console.log(countValue);
+  count.value = countValue; // 更新数量
+};
 
 // const info_list = [
 //   { id: '1', name: '杯子', price: 99.0 },
 //   // Add more images as needed
 // ]
 
-// 添加购物车
-const addCart = () => {
-  //   if (skuObj.skuId) {
-  //     console.log(skuObj, cartStore.addCart)
-  //     // 规则已经选择  触发action
-  //     cartStore.addCart({
-  //       id: goods.value.id,
-  //       name: goods.value.name,
-  //       picture: goods.value.mainPictures[0],
-  //       price: goods.value.price,
-  //       count: count.value,
-  //       skuId: skuObj.skuId,
-  //       attrsText: skuObj.specsText,
-  //       selected: true
-  //     })
-  //   } else {
-  //     // 规格没有选择 提示用户
-  //     ElMessage.warning('请选择规格')
-  //   }
-}
+// 添加商品到购物车
+const addCart = async () => {
+  try {
+    const cartItem = {
+      merchandise_id: route.params.id as string,
+      merchandise_name: meichandise_name.value!,
+      merchandise_price: meichandise_price.value!,
+      picture: meichandise_cover.value!,
+      quanity: count.value,
+      cart_time: new Date().toISOString(),
+      selected: true // 初始状态为选中
+    };
+
+    // 使用cartStore的方法来添加商品到购物车
+    await cartStore.addProductToCart(cartItem);
+    // 添加成功后显示成功消息
+    ElMessage({
+      message: '商品已成功添加到购物车！',
+      type: 'success',
+    });
+  } catch (error) {
+    console.error('请求添加购物车失败:', error);
+    // 如果添加失败，也可以显示错误消息
+    ElMessage({
+      message: '添加购物车失败，请重试。',
+      type: 'error',
+    });
+  }
+};
 
 onMounted(() => {
   // 调取数据的代码
@@ -89,8 +99,8 @@ onMounted(() => {
         <el-text class="re-value" size="small">信誉值:{{ seller_reputation }}/100</el-text>
       </div>
       <div class="seller-botton">
-        <el-button type="primary">查看商家</el-button>
-        <el-button type="primary">联系商家</el-button>
+        <el-button type="primary" @click="router.push(`/profile/${seller_id}`)">查看商家</el-button>
+        <el-button type="primary" @click="router.push(`/message/${seller_id}`)">联系商家</el-button>
       </div>
     </div>
     <div class="info-container">
@@ -127,6 +137,16 @@ onMounted(() => {
             <el-button size="large" class="btn" @click="addCart"> 加入购物车 </el-button>
           </div>
         </div>
+      </div>
+
+      <el-divider border-style="double" />
+
+      <div class="comment">
+        <p class="comment-name">评价</p>
+        <p class="icon-comment-filling" @click="router.push(`/comments/${route.params.id as string}`)">查看评价></p>
+        <!-- <p class="comment-name">评价</p> -->
+        <!-- <el-table-column prop="啦啦啦" width="150" />   -->
+  
       </div>
     </div>
   </div>
@@ -167,7 +187,7 @@ onMounted(() => {
   }
 
   .goods-info {
-    min-height: 600px;
+    height: 450px;
     background: #fff;
     display: flex;
 
@@ -247,11 +267,32 @@ onMounted(() => {
     }
   }
 
-  .goods-footer {
+  .comment-name{
+      font-size: 30px;
+    }
+
+  .comment {
+    height: 180px;
+    position:relative;
     display: flex;
-    margin-top: 20px;
-    width: 940px;
-    margin-right: 20px;
+    /* border: 2px solid #ccc;
+    border-radius: 20px; */
+
+    .comment-name{
+      font-size: 30px;
+    }
+
+    .icon-comment-filling{
+      font-size: 20px;
+      padding:10px;
+      margin-left:auto;
+
+      &:hover {
+            color: #4ecd96;
+            cursor: pointer;
+          }
+    }
+
   }
 }
 </style>

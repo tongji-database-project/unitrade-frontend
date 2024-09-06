@@ -1,7 +1,32 @@
-import request from '@/utils/utils'
+import httpInstance from '@/utils/utils'
 
-export const getOrderAPI = (id: string) => {
-  return request({
-    url: `/member/order/${id}`
+export const createPayAPI = (order_id: string) => {
+  return httpInstance({
+    url: '/pay/create-payment',
+    method: 'GET',
+    params: {
+        order_id: order_id,
+    }
   })
 }
+
+export const getOrderTotalAPI = (order_id: string) => {
+    return httpInstance({
+      url: '/pay/get-order-total',
+      method: 'GET',
+      params: {
+          order_id: order_id,
+      }
+    })
+}
+
+export const getPaymentStatusAPI = (order_id: string) => {
+    return httpInstance({
+      url: '/pay/payment-status',
+      method: 'GET',
+      params: {
+          order_id: order_id,
+      }
+    })
+  }
+  

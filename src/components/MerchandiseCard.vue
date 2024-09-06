@@ -53,7 +53,7 @@ onMounted(() => {
 
 <template>
   <!-- <div class="flex-col justify-start items-start page" @click="router.push('/merchandise/234234')"> -->
-  <div class="merchandise-card-item" @click="router.push('/merchandise/234234')">
+  <div class="merchandise-card-item" @click="router.push(`/merchandise/${props.merchandise_id}`)">
     <div class="merchandise-card-image">
       <el-image class="merchandise-card-cover" :src="cover" fit="cover" />
     </div>
@@ -74,6 +74,18 @@ onMounted(() => {
   border: solid 1px rgb(223, 223, 223);
   border-radius: 0.3rem;
   padding: 0.4rem;
+
+  width: 175px;
+  height: 220px;
+
+
+  overflow: hidden; /* 隐藏溢出内容 */
+  white-space: nowrap; /* 不允许换行 */
+  text-overflow: ellipsis; /* 溢出部分显示省略号 */
+
+  &:hover {
+        background: #b4f0ce;
+      }
 }
 
 .merchandise-card-cover {

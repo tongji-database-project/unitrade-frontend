@@ -24,9 +24,10 @@ import ReceivedView from '@/views/Received/ReceivedView.vue'
 import TransitView from '@/views/Transit/TransitView.vue'
 import UncommandView from '@/views/Uncommand/UncommandView.vue'
 
-import { ElMessage, ElMessageBox } from 'element-plus'
-import 'element-plus/dist/index.css'
-import MyappealView from '@/views/Myappeal/MyappealView.vue'
+import { ElMessage,ElMessageBox } from 'element-plus'
+import 'element-plus/dist/index.css';
+import MyappealView from '@/views/Myappeal/MyappealView.vue';
+import PayBack from '@/views/Payment/PayBack.vue'
 
 // TODO: 页面路由配置，可能会频繁调整
 const router = createRouter({
@@ -98,7 +99,7 @@ const router = createRouter({
           }
         },
         {
-          path: 'payment',
+          path: 'payment/:id',
           name: 'payment',
           component: PaymentView,
           beforeEnter: async (to, from, next) => {
@@ -113,6 +114,11 @@ const router = createRouter({
               next()
             }
           }
+        },
+        {
+          path: 'payback/:order_id',
+          name: 'payback',
+          component: PayBack,
         },
         {
           path: 'account',

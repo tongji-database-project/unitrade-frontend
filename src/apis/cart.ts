@@ -1,45 +1,40 @@
-// 封装购物车相关接口
-import request from '@/utils/utils'
-import type { Good } from '@/stores/cartStore'
+import httpInstance from '@/utils/utils';
+import type { CartItem } from '@/utils/interfaces';
 
-// TODO: 待定
+// 获取购物车列表
+export const getCartItemsAPI = () => {
+  return httpInstance({
+    url: `/cart`,
+    method: 'GET'
+  });
+};
 
-// 加入购物车
-export const insertCartAPI = ({ skuId, count }: { skuId: number; count: number }) => {
-  return request({
-    url: '/member/cart',
+// 添加商品到购物车
+export const addToCartAPI = (cart_item: CartItem) => {
+  return httpInstance({
+    url: '/cart',
     method: 'POST',
-    data: {
-      skuId,
-      count
-    }
-  })
-}
+    data: cart_item
+  });
+};
 
-// 获取最新的购物车列表
-export const findNewCartListAPI = () => {
-  return request({
-    url: '/member/cart'
-  })
-}
+// 从购物车删除商品
+export const removeFromCartAPI = (merchandise_id: string) => {
+  return httpInstance({
+    url: `/cart/${merchandise_id}`,
+    method: 'DELETE'
+  });
+};
 
-// 删除购物车
-export const delCartAPI = (ids: (number | Good)[]) => {
-  return request({
-    url: '/member/cart',
-    method: 'DELETE',
-    data: {
-      ids
-    }
-  })
-}
-
-// 合并购物车
-
-export const mergeCartAPI = (data: { skuId: number; selected: boolean; count: number }[]) => {
-  return request({
-    url: '/member/cart/merge',
+// 修改购物车商品状态
+export const updateCartItemAPI = (cart_item_update: {
+  merchandise_id: string;
+  quanity: number;
+  selected: boolean;
+}) => {
+  return httpInstance({
+    url: '/cart/update',
     method: 'POST',
-    data
-  })
-}
+    data: cart_item_update
+  });
+};

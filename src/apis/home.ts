@@ -72,6 +72,17 @@ export const getMerchandiseCardAPI = async (merchandiseId: string) => {
     })
 }
 
+export const getSpecialProductID = (specialName: string) => {
+  // 发起 POST 请求，将商品数据发送到后端
+  return httpInstance({
+    url: '/merchandiseId/getSpecialId',
+    method: 'POST',
+    data: {
+      SpecialName: specialName,
+    }
+  })
+}
+
 // export function getCategoryAPI () {
 //     return httpInstance({
 //       url: '/home/category/head'
