@@ -1,9 +1,9 @@
 import httpInstance from '@/utils/utils';
 
 // 获取购物车列表
-export const getCartItemsAPI = (customer_id: string) => {
+export const getCartItemsAPI = () => {
   return httpInstance({
-    url: `/cart/${customer_id}`,
+    url: `/cart`,
     method: 'GET'
   });
 };
@@ -27,9 +27,9 @@ export const addToCartAPI = (cart_item: {
 };
 
 // 从购物车删除商品
-export const removeFromCartAPI = (customer_id: string, merchandise_id: string) => {
+export const removeFromCartAPI = (merchandise_id: string) => {
   return httpInstance({
-    url: `/cart/${customer_id}/${merchandise_id}`,
+    url: `/cart/${merchandise_id}`,
     method: 'DELETE'
   });
 };

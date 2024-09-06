@@ -1,20 +1,18 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { getCartItemsAPI, addToCartAPI, updateCartItemAPI, removeFromCartAPI } from '@/apis/cart';
-import { useUserStore } from './userStore'; // 用户身份管理在 userStore 中
 
 export const useCartStore = defineStore('cart', () => {
     const cartItems = ref([]);
 
-    const userStore = useUserStore(); // 获取用户状态
-    const customerId = userStore.userInfo.value.id;
-
     // 加载购物车
     const loadCart = async () => {
+      //console.log('开始加载购物车...');
         try {
-            const response = await getCartItemsAPI(customerId); // 使用 API 函数获取购物车
+            const response = await getCartItemsAPI(); // 使用 API 函数获取购物车
             if (response.status === 200) {
                 cartItems.value = response.data;
+                //console.log('购物车加载成功');
             } else {
                 cartItems.value = []; // 处理错误或无数据情况
             }
@@ -51,7 +49,7 @@ export const useCartStore = defineStore('cart', () => {
     // 从购物车删除商品
     const removeProductFromCart = async (merchandiseId) => {
         try {
-            const response = await removeFromCartAPI(customerId, merchandiseId);
+            const response = await removeFromCartAPI(merchandiseId);
             if (response.status === 200) {
                 await loadCart(); // 更新购物车
             }
