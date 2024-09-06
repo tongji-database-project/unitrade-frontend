@@ -47,6 +47,10 @@ function chooseEnroll() {
   align-items: center;
   justify-content: center;
   height: 100vh;
+  background-image: url('https://bpic.588ku.com/back_pic/05/71/77/565baef950a0664.jpg');
+  background-size: cover; /* 确保背景图覆盖整个容器 */
+  background-position: center; /* 背景图居中对齐 */
+  background-repeat: no-repeat; /* 背景图不重复 */
 }
 .main-container div {
   margin-bottom: 10px;

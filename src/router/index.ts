@@ -28,7 +28,8 @@ import UncommandView from '@/views/Uncommand/UncommandView.vue'
 
 import { ElMessage,ElMessageBox } from 'element-plus'
 import 'element-plus/dist/index.css';
-import MyappealView from '@/views/Myappeal/MyappealView.vue';
+import MyapplicationView from '@/views/MyApplication/MyapplicationView.vue'
+import MyfollowView from '@/views/Myfollow/MyfollowView.vue';
 import PayBack from '@/views/Payment/PayBack.vue'
 
 // TODO: 页面路由配置，可能会频繁调整
@@ -86,7 +87,7 @@ const router = createRouter({
               next('/login')
               ElMessage({
                 type: 'error',
-                message: `请先登录管理员账户`
+                message: `请先登录账户`
               })
             } else {
               next()
@@ -103,7 +104,7 @@ const router = createRouter({
               next('/login')
               ElMessage({
                 type: 'error',
-                message: `请先登录管理员账户`
+                message: `请先登录账户`
               })
             } else {
               next()
@@ -120,7 +121,7 @@ const router = createRouter({
               next('/login')
               ElMessage({
                 type: 'error',
-                message: `请先登录管理员账户`
+                message: `请先登录账户`
               })
             } else {
               next()
@@ -211,7 +212,7 @@ const router = createRouter({
               next('/login')
               ElMessage({
                 type: 'error',
-                message: `请先登录管理员账户`
+                message: `请先登录账户`
               })
             } else {
               next()
@@ -219,9 +220,9 @@ const router = createRouter({
           }
         },
         {
-          path: 'myappeal',
-          name: 'myappeal',
-          component: MyappealView,
+          path: 'myapplication',
+          name: 'myapplication',
+          component: MyapplicationView,
           beforeEnter: async (to, from, next) => {
             const role = await roleJudgeAPI()
             if (role !== 'User') {
@@ -239,6 +240,23 @@ const router = createRouter({
           path: 'Editinfo',
           name: 'Editinfo',
           component: EditInfoView,
+          beforeEnter: async (to, from, next) => {
+            const role = await roleJudgeAPI()
+            if (role !== 'User') {
+              next('/login')
+              ElMessage({
+                type: 'error',
+                message: `请先登录账户`
+              })
+            } else {
+              next()
+            }
+          }
+        },
+        {
+          path: 'Myfollow',
+          name: 'Myfollow',
+          component: MyfollowView,
           beforeEnter: async (to, from, next) => {
             const role = await roleJudgeAPI()
             if (role !== 'User') {
