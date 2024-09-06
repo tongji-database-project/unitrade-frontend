@@ -278,8 +278,6 @@ export const cancelUser=async(password:string)=>{
   })
   .catch((error) => {
     if (error.response.status === 400) {
-      console.log("ASdasd")
-      console.log(error.response.data)
       if (error.response.data == '密码错误，注销失败') {
         ElMessage({
           type: 'error',
@@ -292,5 +290,48 @@ export const cancelUser=async(password:string)=>{
         message: `注销失败：${error}`
       })
     }
+  })
+}
+export const getMyfollow=async()=>{
+  return await httpInstance({
+    url:'/getMyfollow',
+    method:'GET',
+  })
+  // .then((response) => {
+  //   if (response.status === 200) {
+  //     return response.data
+  //   }
+  // })
+  // .catch((error) => {
+  //   console.log(error)
+  //   console.log("asdads")
+  //   ElMessage({
+  //     type: 'error',
+  //     message: `数据获取失败`
+  //   })
+  // })
+}
+export const denyfollow=async(seller_id:string)=>{
+  return await httpInstance({
+    url:'/denyfollow',
+    method:'POST',
+    data:{
+      seller_id:seller_id
+    }
+  }).then((response) => {
+    if (response.status === 200) {
+      ElMessageBox({
+        message: `取消关注成功`,
+        type: 'success'
+      })
+      return response.status
+    }
+  })
+  .catch((error) => {
+    ElMessage({
+      message:'操作失败',
+      type:'error'
+    })
+  
   })
 }

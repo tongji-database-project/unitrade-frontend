@@ -2,8 +2,7 @@
 import { onBeforeMount, ref, computed } from 'vue'
 import { useTokenStore } from '@/stores/token'
 import { useRouter } from 'vue-router'
-import ImfoLayout from './components/ImfoLayout.vue'
-import myorderLayout from './components/myorderLayout.vue'
+import MyfollowLayout from './components/MyfollowLayout.vue'
 const logged_in = computed(() => useTokenStore().logged_in)
 let hint_login = ref(true)
 const categories = [
@@ -24,8 +23,8 @@ const categories = [
     path: '/profile/:id' 
   },
   {
-    name: '我的收藏',
-    path: '/myfollow' 
+    name: '个人中心',
+    path: '/account' 
   },
   {
     name: '我的消息',
@@ -42,9 +41,6 @@ const categories = [
 ]
 const router = useRouter()
 
-function Tologin() {
-  router.push('/login')
-}
 
 onBeforeMount(() => {
   if(logged_in.value){
@@ -61,18 +57,8 @@ onBeforeMount(() => {
       </div>
     </div>
     <div class="my-info">
-      <ImfoLayout />
-      <myorderLayout />
-    </div>
-    <div v-if="hint_login == true">
-      <transition name="fade">
-        <div class="modal-overlay">
-          <div class="modal-content" @click="Tologin">
-            <p>当前未登录，请先进行登录</p>
-            <p>点击弹窗跳转到登录页面</p>
-          </div>
-        </div>
-      </transition>
+        <p class="header">我的收藏</p>
+        <MyfollowLayout/>
     </div>
   </div>
 </template>
@@ -111,5 +97,8 @@ onBeforeMount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.header{
+    font-size: 20px;
 }
 </style>

@@ -32,6 +32,10 @@ const categories = [
     path: '/myapplication'
   },
   {
+    name: '我的收藏',
+    path: '/myfollow' 
+  },
+  {
     name: '个人中心',
     path: '/account'
   }
