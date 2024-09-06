@@ -72,3 +72,26 @@ export const getSellerInfoAPI = async (merchandiseId: string) => {
         })
       })
   }
+
+  export const getDetailPictureAPI = async (merchandiseId: string) => {
+    return await httpInstance({
+      url: `/detailPicture/${merchandiseId}`,
+      method: 'GET'
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          return response.data
+        } else {
+          ElMessage({
+            type: 'warning',
+            message: `无法获取商品详情图片：${response.status}`
+          })
+        }
+      })
+      .catch((error) => {
+        ElMessage({
+          type: 'warning',
+          message: `无法获取商品详情图片：${error}`
+        })
+      })
+  }

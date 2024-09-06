@@ -4,6 +4,7 @@ import { ref, reactive, onMounted, computed } from 'vue'
 import { getImageUrl } from '@/utils/utils'
 import {getMerchandiseCardAPI} from '@/apis/home'
 import {getSellerInfoAPI} from '@/apis/merchandise'
+import {getDetailPictureAPI} from '@/apis/merchandise'
 import { useCartStore } from '@/stores/cartStore'; // 引入购物车store
 import { ElMessage } from 'element-plus'; // 引入Element Plus的ElMessage组件
 import ImageView from '@/components/ImageView.vue'
@@ -17,16 +18,19 @@ const cartStore = useCartStore(); // 获取购物车store实例
 const meichandise_cover = ref<string>()
 const meichandise_name = ref<string>()
 const meichandise_price = ref<number>()
+const meichandise_detail_name = ref<string>()
 const seller_cover = ref<string>()
 const seller_id = ref<string>()
 const seller_name = ref<string>()
 const seller_reputation = ref<number>()
 const star_score = ref<number>()
+const detail_picture = ref<string[]>()
 
 const loadInfo = async () => {
   const info= await getMerchandiseCardAPI(route.params.id as string)
   meichandise_cover.value = getImageUrl(info.image)
   meichandise_name.value = info.name
+  meichandise_detail_name.value = info.detail
   meichandise_price.value = info.price / 100
 
   const seller_info = await getSellerInfoAPI(route.params.id as string)
@@ -35,6 +39,9 @@ const loadInfo = async () => {
   seller_name.value = seller_info.name
   seller_reputation.value = seller_info.reputation
   star_score.value = seller_info.reputation / 20
+
+  const detail_info = await getDetailPictureAPI(route.params.id as string)
+  detail_picture.value = detail_info.map((pic: string) => getImageUrl(pic))
 }
 
 // 商品数量
@@ -111,6 +118,7 @@ onMounted(() => {
         </div>
         <div class="spec">
           <p class="g-name">{{ meichandise_name }}</p>
+          <p class="g-detail-name">{{meichandise_detail_name }}</p>
           <div class="g-price">
             <p class="now-price">¥{{ meichandise_price?.toFixed(2) }}</p>
             <p class="old-price">¥{{ meichandise_price?.toFixed(2) }}</p>
@@ -133,20 +141,21 @@ onMounted(() => {
           <!-- 数据组件 -->
           <el-input-number class="count" v-model="count" @change="countChange" />
           <!-- 按钮组件 -->
-          <div>
+          <div class="box">
             <el-button size="large" class="btn" @click="addCart"> 加入购物车 </el-button>
+            <p class="icon-comment-filling" @click="router.push(`/comments/${route.params.id as string}`)">查看评价></p>
           </div>
         </div>
       </div>
 
       <el-divider border-style="double" />
-
-      <div class="comment">
-        <p class="comment-name">评价</p>
-        <p class="icon-comment-filling" @click="router.push(`/comments/${route.params.id as string}`)">查看评价></p>
-        <!-- <p class="comment-name">评价</p> -->
-        <!-- <el-table-column prop="啦啦啦" width="150" />   -->
-  
+    </div>
+    <div class="goods-detail">
+      <p class="detail-name">商品详情</p>
+      <div class="detail-content">
+        <div v-for="(image, index) in detail_picture" :key="index">
+          <el-image class="detail-picture" :src="image" fit="cover" />
+        </div>
       </div>
     </div>
   </div>
@@ -261,26 +270,55 @@ onMounted(() => {
         margin-top: 40px;
       }
 
-      .btn {
-        margin-top: 40px;
+      .box{
+        display: flex;
+       flex-direction: row;
+
+        .btn {
+          margin-top: 40px;
+        }
+
+        .icon-comment-filling{
+           font-size: 15px;
+           padding:40px;
+           margin-left:auto;
+
+           &:hover {
+            color: #4ecd96;
+            cursor: pointer;
+          }
+      }
       }
     }
   }
 
-  .comment-name{
-      font-size: 30px;
+  .goods-detail{
+
+    .detail-name{
+      font-size: 22px;
     }
 
-  .comment {
+    .detail-content{
+      /* background-color: #e1e1e1; */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;             /* Adjust based on your requirement */
+      padding:20px;
+
+      .detail-picture{
+        width: 500px;           
+        height: 600px;
+      }
+    }
+  }
+
+  /*.comment {
     height: 180px;
     position:relative;
     display: flex;
-    /* border: 2px solid #ccc;
-    border-radius: 20px; */
 
-    .comment-name{
-      font-size: 30px;
-    }
 
     .icon-comment-filling{
       font-size: 20px;
@@ -293,6 +331,6 @@ onMounted(() => {
           }
     }
 
-  }
+  } */
 }
 </style>
