@@ -1,4 +1,5 @@
 import httpInstance from '@/utils/utils';
+import type { CartItem } from '@/utils/interfaces';
 
 // 获取购物车列表
 export const getCartItemsAPI = () => {
@@ -9,15 +10,7 @@ export const getCartItemsAPI = () => {
 };
 
 // 添加商品到购物车
-export const addToCartAPI = (cart_item: {
-  merchandise_id: string;
-  merchandise_name: string;
-  merchandise_price: number;
-  picture: string;
-  quanity: number;
-  cart_time: string; // 可以使用 Date 对象，但发送到后端时需要序列化为字符串
-  selected: boolean;
-}) => {
+export const addToCartAPI = (cart_item: CartItem) => {
   return httpInstance({
     url: '/cart',
     method: 'POST',

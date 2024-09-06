@@ -1,20 +1,21 @@
 <script setup lang="ts">
 import { useCartStore } from '@/stores/cartStore';
 import { computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+// import { useRouter } from 'vue-router';
 import { getImageUrl } from '@/utils/utils'
 
 const cartStore = useCartStore();
-const router = useRouter();
+// const router = useRouter();
 
 // 全选回调
 const allCheck = async (selected: boolean) => {
   // 遍历所有商品，更新每个商品的选中状态
-  for (let item of cartStore.cartItems) {
+  for (let item of cartStore.cartItems!) {
     await cartStore.updateProductInCart({
+      ...item,
       merchandise_id: item.merchandise_id, // 确保拼写正确
       quanity: item.quanity,
-      selected: selected // 将 selected 传入
+      selected: selected, // 将 selected 传入
     })
   }
 };
@@ -26,10 +27,10 @@ const delCart = (item: any) => {
 
 // 计算属性
 const cartItems = computed(() => cartStore.cartItems);
-const isAllSelected = computed(() => cartItems.value.length > 0 && cartItems.value.every(item => item.selected));
-const totalCount = computed(() => cartItems.value.reduce((acc, item) => acc + item.quanity, 0));
-const selectedCount = computed(() => cartItems.value.filter(item => item.selected).reduce((acc, item) => acc + item.quanity, 0));
-const selectedPrice = computed(() => cartItems.value.filter(item => item.selected).reduce((acc, item) => acc + item.merchandise_price * item.quanity, 0));
+const isAllSelected = computed(() => cartItems.value!.length > 0 && cartItems.value!.every(item => item.selected));
+const totalCount = computed(() => cartItems.value!.reduce((acc, item) => acc + item.quanity, 0));
+const selectedCount = computed(() => cartItems.value!.filter(item => item.selected).reduce((acc, item) => acc + item.quanity, 0));
+const selectedPrice = computed(() => cartItems.value!.filter(item => item.selected).reduce((acc, item) => acc + item.merchandise_price * item.quanity, 0));
 
 // 组件挂载时加载购物车数据
 onMounted(() => {
@@ -60,7 +61,7 @@ onMounted(() => {
             <tr v-for="(i, index) in cartItems" :key="index">
               <td>
                 <!-- 单选框，使用 v-model 双向绑定商品的选中状态 -->
-                <el-checkbox v-model="i.selected" @change="(selected) => cartStore.updateProductInCart({ ...i, selected })" />
+                <el-checkbox v-model="i.selected" @change="(selected: boolean) => cartStore.updateProductInCart({ ...i, selected })" />
               </td>
               <td>
                 <div class="goods">
@@ -78,7 +79,7 @@ onMounted(() => {
                 <p>&yen;{{ i.merchandise_price.toFixed(2) }}</p>
               </td>
               <td class="tc">
-                <el-input-number v-model="i.quanity" @change="value => cartStore.updateProductInCart({ ...i, quanity: value })" />
+                <el-input-number v-model="i.quanity" @change="(value: number) => cartStore.updateProductInCart({ ...i, quanity: value })" />
               </td>
               <td class="tc">
                 <p class="f16 red">&yen;{{ (i.merchandise_price * i.quanity).toFixed(2) }}</p>
@@ -93,7 +94,7 @@ onMounted(() => {
                 </p>
               </td>
             </tr>
-            <tr v-if="cartItems.length === 0">
+            <tr v-if="cartItems!.length === 0">
               <td colspan="6">
                 <div class="cart-none">
                   <el-empty description="购物车列表为空">
@@ -108,7 +109,7 @@ onMounted(() => {
     </div>
 
     <!-- 操作栏，固定在页面右下角 -->
-    <div class="action fixed-action" v-if="cartItems.length > 0">
+    <div class="action fixed-action" v-if="cartItems!.length > 0">
       <div class="batch">
         共 {{ totalCount }} 件商品，已选择 {{ selectedCount }} 件，商品合计：
         <span class="red">¥ {{ selectedPrice.toFixed(2) }} </span>

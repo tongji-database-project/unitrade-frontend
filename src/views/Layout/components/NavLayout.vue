@@ -7,6 +7,7 @@ import { getImageUrl } from '@/utils/utils'
 import { useTokenStore } from '@/stores/token'
 import { getUserInfo } from '@/apis/user'
 import { getSpecialProductID } from '@/apis/home'
+import { ElMessage } from 'element-plus'
 
 // 追踪登录状态
 const logged_in = computed(() => useTokenStore().logged_in)

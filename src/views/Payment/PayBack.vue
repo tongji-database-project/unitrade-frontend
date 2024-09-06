@@ -12,7 +12,7 @@ const order_id = ref(route.params.order_id as string || '')
 const getPaymentStatus = async () => {
   try {
     const res = await getPaymentStatusAPI(order_id.value)
-    paymentStatus.value = res.result.success ? 'success' : 'fail'
+    paymentStatus.value = res.data.success ? 'success' : 'fail'
   } catch (error) {
     console.error('支付状态获取失败', error)
     paymentStatus.value = 'fail'
@@ -29,11 +29,11 @@ onMounted(() => getPaymentStatus())
       <!-- 支付结果 -->
       <div class="pay-result">
         <!-- 路由参数获取到的是字符串而不是布尔值 -->
-        <el-icon class="iconfont icon-queren2 green" v-if="paymentStatus.value === 'success'"><SuccessFilled /></el-icon>
+        <el-icon class="iconfont icon-queren2 green" v-if="paymentStatus === 'success'"><SuccessFilled /></el-icon>
         <el-icon class="iconfont red" v-else><CircleCloseFilled /></el-icon>
-        <p class="tit">支付{{ paymentStatus.value === 'success' ? '成功' : '失败' }}</p>
+        <p class="tit">支付{{ paymentStatus === 'success' ? '成功' : '失败' }}</p>
         <p class="tip">感谢您使用校易购</p>
-        <p class="tip" v-if="paymentStatus.value === 'success'">我们将尽快为您发货，收货期间请保持手机畅通</p>
+        <p class="tip" v-if="paymentStatus === 'success'">我们将尽快为您发货，收货期间请保持手机畅通</p>
         <div class="btn">
           <el-button type="primary" style="margin-right:20px" @click="$router.push('/order')">查看订单</el-button>
           <el-button @click="$router.push('/')">进入首页</el-button>
