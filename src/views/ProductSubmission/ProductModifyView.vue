@@ -106,7 +106,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
@@ -115,9 +115,10 @@ import type { UploadFile } from 'element-plus'
 import type { Product } from '@/utils/interfaces'
 import { submitProduct } from '@/apis/product'
 import { getImageUrl } from '@/utils/utils'
+import { getModifyProduct } from '@/apis/product'
+import { cancelProduct } from '@/apis/product'
 
 const route = useRoute()
-
 //route.params.id
 
 const product = ref<Product>({
@@ -125,12 +126,49 @@ const product = ref<Product>({
   description: '',
   price: 0,
   stock: 1,
-  productType:'',
+  productType: '',
   images: [],
   cover: ''
 })
 
 const router = useRouter()
+
+const fileList = ref<UploadFile[]>([])
+const coverFileList = ref<UploadFile[]>([])
+const disabled = ref(false)
+
+onMounted(async () => {
+  console.log(route.params.id)
+  try {
+    const response = await getModifyProduct(route.params.id as string);
+    console.log(response)
+    if (response.status === 200) {
+      product.value.name = response.data.name,
+      product.value.description = response.data.product_details,
+      product.value.price = response.data.price,
+      product.value.stock = response.data.inventory,
+      product.value.productType = response.data.type,
+      product.value.cover = response.data.cover_image_url
+      product.value.images = response.data.product_image_urls
+      // 设置封面图片预览
+      coverFileList.value = [
+        {
+          name: '封面图片',
+          url: getImageUrl(response.data.cover_image_url),
+          status: 'success'
+        } as UploadFile
+      ]
+      // 设置商品详情图片预览
+      fileList.value = response.data.product_image_urls.map((url: string) => ({
+        name: '商品图片',
+        url: getImageUrl(url),
+        status: 'success'
+      }) as UploadFile)
+    }
+  } catch (error) {
+    console.error("Error fetching products:", error);
+  }
+})
 
 const validatePrice = (rule: any, value: number, callback: (error?: Error) => void) => {
   if (value <= 0) {
@@ -141,6 +179,15 @@ const validatePrice = (rule: any, value: number, callback: (error?: Error) => vo
 }
 
 const handleSubmit = async () => {
+  try {
+    const response = await cancelProduct(route.params.id as string)
+    console.log(response)
+    if (response.status === 200) {
+      console.log('ok')
+    }
+  } catch (error) {
+    console.error('Error fetching products:', error)
+  }
   await submitProduct(product.value)
     .then((response) => {
       if (response.status === 200) {
@@ -166,9 +213,6 @@ const handleCancle = async () => {
   router.push('onsale')
 }
 
-const fileList = ref<UploadFile[]>([])
-const coverFileList = ref<UploadFile[]>([])
-const disabled = ref(false)
 
 // 删除商品图片
 const handleRemove = (file: UploadFile) => {
@@ -177,9 +221,16 @@ const handleRemove = (file: UploadFile) => {
     fileList.value.splice(index, 1)
     const urlIndex = product.value.images.indexOf(file.url as string)
     console.log('删除成功')
-    if (urlIndex > -1) {
-      product.value.images.splice(urlIndex, 1)
-    }
+    console.log(urlIndex)
+    console.log(file.url)
+    console.log(product.value.images)
+
+    product.value.images.splice(urlIndex, 1)
+    // if (urlIndex > -1) {
+    //   product.value.images.splice(urlIndex, 1)
+    //   // console.log(product)
+    // }
+    console.log(product)
   }
 }
 

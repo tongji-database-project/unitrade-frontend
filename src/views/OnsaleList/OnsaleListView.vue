@@ -18,13 +18,8 @@
     <div class="product-table-header">
       <div class="product-cover">封面</div>
       <div class="product-name">名称</div>
-      <div
-        class="product-price"
-        :class="{ 'arrow-up': priceSortOrder === 'asc', 'arrow-down': priceSortOrder === 'desc' }"
-        @click="sortProductsByPrice"
-      >
-        价格
-      </div>
+      <div class="product-price">价格</div>
+      <div class="product-stock">类型</div>
       <div class="product-stock">库存</div>
       <div class="product-sales">销量</div>
       <div class="product-description">描述</div>
@@ -34,10 +29,11 @@
         :product_id="product.id"
         :product_name="product.name"
         :product_price="product.price"
+        :product_type="product.productType"
         :product_stock="product.stock"
         :product_sales="product.sales"
         :product_description="product.description"
-        :product_imageUrl="product.imageUrl"
+        :product_imageUrl="product.cover"
         @cancled="handleCancle"
       />
     </el-card>
@@ -45,9 +41,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref , onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import OnsaleProduct from './components/OnsaleProduct.vue'
+import type { ProductOnsale } from '@/utils/interfaces'
+import { getUserProducts } from '@/apis/product'
+import { getImageUrl } from '@/utils/utils'
+import { seekUserProducts } from '@/apis/product'
 
 const router = useRouter()
 const priceSortOrder = ref('')
@@ -57,39 +57,36 @@ const props = {
   expandTrigger: 'hover' as const
 }
 
-interface Product {
-  id: string
-  name: string
-  price: number
-  stock: number
-  sales: number
-  description: string
-  imageUrl: string
-}
-
 const searchQuery = ref('')
 
-const products = ref<Product[]>([
-  {
-    id: '123',
-    name: '铅笔',
-    price: 100,
-    stock: 50,
-    sales: 20,
-    description: '商品描述',
-    imageUrl: 'http://47.97.215.255/img/avatar.jpg'
-  },
-  {
-    id: '124',
-    name: '橡皮',
-    price: 150,
-    stock: 30,
-    sales: 2,
-    description: '商品描述',
-    imageUrl: 'http://47.97.215.255/img/avatar.jpg'
+const products = ref<ProductOnsale[]>([])
+
+onMounted(async () => {
+  await fetchProducts();
+})
+
+const fetchProducts = async () => {
+  try {
+    const response = await getUserProducts();
+    console.log(response)
+    if (response.status === 200) {
+      
+      products.value = response.data.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        description: item.product_details,
+        price: item.price,
+        stock: item.inventory,
+        productType: item.type,
+        cover: getImageUrl(item.cover_image_url),
+        sales: item.sales,
+      }));
+    }
+  } catch (error) {
+    console.error("Error fetching products:", error);
   }
-  // 其他商品数据
-])
+};
+
 
 const sortOrder = [
   {
@@ -104,9 +101,8 @@ const sortOrder = [
 
 const selectOptions = [
   {
-    value: 'price',
-    label: '按价格排序',
-    children: sortOrder
+  value: 'sortDefault',
+    label: '默认排序',
   },
   {
     value: 'price',
@@ -114,48 +110,107 @@ const selectOptions = [
     children: sortOrder
   },
   {
-    value: 'price',
-    label: '按价格排序',
+    value: 'stock',
+    label: '按库存排序',
     children: sortOrder
   },
   {
-    value: 'price',
-    label: '按价格排序',
+    value: 'sales',
+    label: '按销量排序',
     children: sortOrder
-  }
+  },
 ]
 
 const selectChange = (value: any[]) => {
-  console.log(value)
+  if (value[0] === 'sortDefault'){
+    sortProductsByDefaultOrder();
+  }else if (value[0] === 'price') {
+    sortProductsByPrice();
+  } else if (value[0] === 'stock') {
+    console.log("库存")
+    sortProductsByStock();
+  } else if (value[0] === 'sales') {
+    console.log("销量")
+    sortProductsBySales();
+  }
 }
 
 const handleCancle = async (id: string) => {
-  // await axios
-  // .get(`/api/test`)
-  // .then(response => {
-  //   if (response.status === 200) {
-  //     infos.value = response.data;
-  //   }
-  // })
-  // .catch(function (error) {
-  //   console.log(error);
-  // });
-
-  router.push('onsale')
+  products.value = products.value.filter(product => product.id !== id)
 }
 
-const searchProducts = async () => {}
+const searchProducts = async () => {
+  console.log(searchQuery.value)
+  try {
+    const response = await seekUserProducts(searchQuery.value);
+    console.log(response)
+    if (response.status === 200) {
+      
+      products.value = response.data.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        description: item.product_details,
+        price: item.price,
+        stock: item.inventory,
+        productType: item.type,
+        cover: getImageUrl(item.cover_image_url),
+        sales: item.sales,
+      }));
+    }
+  } catch (error) {
+    console.error("Error fetching products:", error);
+  }
+}
+
+const sortProductsByDefaultOrder = async () => {
+  try {
+    const response = await getUserProducts();
+    console.log(response)
+    if (response.status === 200) {
+      
+      products.value = response.data.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        description: item.product_details,
+        price: item.price,
+        stock: item.inventory,
+        productType: item.type,
+        cover: getImageUrl(item.cover_image_url),
+        sales: item.sales,
+      }));
+    }
+  } catch (error) {
+    console.error("Error fetching products:", error);
+  }
+};
 
 const sortProductsByPrice = () => {
   if (priceSortOrder.value === 'asc') {
-    priceSortOrder.value = 'desc'
-    products.value.sort((a, b) => b.price - a.price)
-  } else if (priceSortOrder.value === 'desc') {
-    priceSortOrder.value = ''
-    products.value.sort((a, b) => a.id.localeCompare(b.id)) // 重置为初始排序
+    priceSortOrder.value = 'desc';
+    products.value.sort((a, b) => b.price - a.price);
   } else {
-    priceSortOrder.value = 'asc'
-    products.value.sort((a, b) => a.price - b.price)
+    priceSortOrder.value = 'asc';
+    products.value.sort((a, b) => a.price - b.price);
+  }
+}
+
+const sortProductsByStock = () => {
+  if (priceSortOrder.value === 'asc') {
+    priceSortOrder.value = 'desc';
+    products.value.sort((a, b) => b.stock - a.stock);
+  } else {
+    priceSortOrder.value = 'asc';
+    products.value.sort((a, b) => a.stock - b.stock);
+  }
+}
+
+const sortProductsBySales = () => {
+  if (priceSortOrder.value === 'asc') {
+    priceSortOrder.value = 'desc';
+    products.value.sort((a, b) => b.sales - a.sales);
+  } else {
+    priceSortOrder.value = 'asc';
+    products.value.sort((a, b) => a.sales - b.sales);
   }
 }
 </script>
@@ -237,15 +292,4 @@ const sortProductsByPrice = () => {
   font-size: 18px;
 }
 
-.arrow-up::after {
-  content: '▲';
-  margin-left: 5px;
-  color: #008b45;
-}
-
-.arrow-down::after {
-  content: '▼';
-  margin-left: 5px;
-  color: #008b45;
-}
 </style>
