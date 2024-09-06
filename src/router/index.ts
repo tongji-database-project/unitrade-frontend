@@ -128,9 +128,11 @@ const router = createRouter({
           }
         },
         {
-          path: 'payback/:order_id',
+          path: 'payback',
           name: 'payback',
           component: PayBack,
+          props: route => ({ order_id: route.query.order_id }) // 从查询参数获取 order_id
+
         },
         {
           path: 'account',
