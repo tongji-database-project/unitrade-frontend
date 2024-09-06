@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { AdminEnroll } from '@/apis/admin'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import 'element-plus/dist/index.css'
+import { errorMessages } from 'vue/compiler-sfc';
 
 const adminname = ref('')
 const password = ref('')
@@ -25,9 +26,9 @@ const submitForm = async () => {
         type: 'success',
         message: `注册成功`
       })
-    } else {
+    }else {
       ElMessageBox({
-        type: 'error',
+        type: 'warning',
         message: `注册失败，请重试`
       })
     }
@@ -35,7 +36,7 @@ const submitForm = async () => {
     console.error('注册失败:', error)
     ElMessageBox({
       type: 'error',
-      message: `数据库连接失败`
+      message: `注册失败`
     })
   }
 }
