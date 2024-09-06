@@ -115,9 +115,9 @@ const router = createRouter({
           }
         },
         {
-          path: 'paycallback',
-          name: 'paycallback',
-          component: PayBack
+          path: 'payback/:order_id',
+          name: 'payback',
+          component: PayBack,
         },
         {
           path: 'account',

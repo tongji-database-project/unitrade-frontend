@@ -27,7 +27,7 @@ export const useCountDown = () => {
         // 倒计时结束，清除定时器并跳转到首页
         clearInterval(timer);
         timer = null;
-        router.push('/'); // 跳转到首页
+        router.push('/payback'); // 跳转
       }
     }, 1000);
   };

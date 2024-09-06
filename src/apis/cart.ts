@@ -10,7 +10,6 @@ export const getCartItemsAPI = () => {
 
 // 添加商品到购物车
 export const addToCartAPI = (cart_item: {
-  customer_id: string;
   merchandise_id: string;
   merchandise_name: string;
   merchandise_price: number;
@@ -36,7 +35,6 @@ export const removeFromCartAPI = (merchandise_id: string) => {
 
 // 修改购物车商品状态
 export const updateCartItemAPI = (cart_item_update: {
-  customer_id: string;
   merchandise_id: string;
   quanity: number;
   selected: boolean;
