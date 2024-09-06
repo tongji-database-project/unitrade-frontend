@@ -66,7 +66,10 @@ const forgetPassword = () => {
 
 const resetPassword = async () => {
   if (param.value.password !== param.value.checkPassword) {
-    ElMessageBox.alert('两次输入的密码不一致')
+    ElMessage({
+        type: 'warning',
+        message: `两次输入的密码不一致`
+    })
     return
   }
 
@@ -90,14 +93,23 @@ const resetPassword = async () => {
       )
     }
     if (response.status === 200) {
-      //router.push('/login');
+      router.push('/login');
       window.location.reload()
-      alert('密码重置成功')
+      ElMessage({
+        type: 'success',
+        message: `密码重置成功`
+      })
     } else {
-      ElMessageBox.alert('密码重置失败')
+      ElMessage({
+        type: 'warning',
+        message: `密码重置失败`
+      })
     }
   } catch (error) {
-    ElMessageBox.alert('重置密码失败，请稍后重试')
+    ElMessage({
+        type: 'warning',
+        message: `密码重置失败，请稍后重试`
+    })
   }
 }
 
@@ -111,11 +123,17 @@ const validateEmail = (email: string) => {
 };
 const sendVerifyCodeFind = async () => {
   if (loginType.value === '1' && !validatePhoneNumber(phoneOrEmail.value)) {
-    ElMessageBox.alert('请输入有效的手机号');
+    ElMessage({
+        type: 'warning',
+        message: `请输入有效的手机号`
+    })
     return;
   }
   if (loginType.value === '2' && !validateEmail(phoneOrEmail.value)) {
-    ElMessageBox.alert('请输入有效的邮箱地址');
+    ElMessage({
+        type: 'warning',
+        message: `请输入有效的邮箱地址`
+    })
     return;
   }
   try {
@@ -124,21 +142,33 @@ const sendVerifyCodeFind = async () => {
     } else {
       await axios.post(`/api/CellphoneCode?phone=${phoneOrEmail.value}&type=findpwd`)
     }
-    ElMessage('验证码已发送')
+    ElMessage({
+        type: 'success',
+        message: `验证码已发送`
+    })
     startCountdown()
   } catch (error) {
-    ElMessageBox.alert('验证码发送失败，请稍后重试')
+    ElMessage({
+        type: 'warning',
+        message: `验证码发送失败，请稍后重试`
+    })
     console.error(error)
   }
 }
 
 const sendVerifyCodeLogin = async () => {
   if (loginType.value === '1' && !validatePhoneNumber(phoneOrEmail.value)) {
-    ElMessageBox.alert('请输入有效的手机号');
+    ElMessage({
+        type: 'warning',
+        message: `请输入有效的手机号`
+    })
     return;
   }
   if (loginType.value === '2' && !validateEmail(phoneOrEmail.value)) {
-    ElMessageBox.alert('请输入有效的邮箱地址');
+    ElMessage({
+        type: 'warning',
+        message: `请输入有效的邮箱地址`
+    })
     return;
   }
   try {
@@ -149,10 +179,16 @@ const sendVerifyCodeLogin = async () => {
       // 发送手机验证码
       await axios.post(`/api/CellphoneCode?phone=${phoneOrEmail.value}&type=login`)
     }
-    ElMessage(`验证码已发送`)
+    ElMessage({
+        type: 'success',
+        message: `验证码已发送`
+    })
     startCountdown()
   } catch (error) {
-    ElMessageBox.alert('验证码发送失败，请稍后重试')
+    ElMessage({
+        type: 'warning',
+        message: `验证码发送失败，请稍后重试`
+    })
     console.error(error)
   }
 }
