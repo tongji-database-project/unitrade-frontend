@@ -41,10 +41,6 @@ const banner_pictures = [
   </div>
 </template>
 
-
-banner/banner0.png
-
-
 <style scoped>
 .home-banner {
   width: 1000px;
