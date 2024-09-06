@@ -32,6 +32,12 @@ function chooseAdminenroll() {
 </script>
 
 <template>
+  <header class="head">
+    <RouterLink class="logo" to="/">
+      <!-- TODO: logo 待替换 -->
+      <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="50" height="50" />
+    </RouterLink>
+  </header>
   <div class="main">
     <div class="list">
       <p @click="choosePersonalinformation">个人信息</p>
@@ -53,6 +59,13 @@ function chooseAdminenroll() {
 </template>
 
 <style scoped>
+.head {
+  display: flex;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
 .main {
   width: 70%;
   margin: auto;

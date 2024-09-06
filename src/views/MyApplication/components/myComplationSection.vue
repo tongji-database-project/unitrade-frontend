@@ -55,7 +55,7 @@
       console.log(error);
       ElMessage({
         type:"error",
-        message: `数据库连接失败`
+        message: `数据获取失败`
       })
     }
   });
