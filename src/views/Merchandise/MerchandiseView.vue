@@ -124,7 +124,7 @@ onMounted(() => {
           <!-- 按钮组件 -->
           <div class="box">
             <el-button size="large" class="btn" @click="addCart"> 加入购物车 </el-button>
-            <p class="icon-comment-filling" @click="router.push(`/comments/${route.params.id as string}`)">查看评价></p>
+            <p class="icon-comment-filling" @click="router.push(`/comments/${route.params.id}`)">查看评价></p>
           </div>
         </div>
       </div>

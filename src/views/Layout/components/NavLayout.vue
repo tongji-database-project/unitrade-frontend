@@ -98,7 +98,6 @@ const selectChange = (value: any[]) => {
   <div class="top-nav">
     <el-space class="container" spacer="|">
       <RouterLink class="logo" to="/">
-        <!-- TODO: logo 待替换 -->
         <img alt="Vue logo" class="logo" :src="getImageUrl('logo.png')" width="100" height="70" />
       </RouterLink>
       <!-- <div class="header-category" v-for="({ name, path }, index) in categories" :key="index">
