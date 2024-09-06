@@ -4,6 +4,7 @@ import PersonalinformationSection from './components/PersonalinformationSection.
 import ComplationSection from './components/ComplationSection.vue'
 import RefundSection from './components/RefundSection.vue'
 import AppealSection from './components/AppealSection.vue'
+import PullMerchandise from './components/PullMerchandise.vue'
 import AdminenrollSection from './components/AdminenrollSection.vue'
 import 'element-plus/dist/index.css'
 
@@ -22,6 +23,9 @@ function chooseRefund() {
 function chooseAppeal() {
   contentclass.value = 'appeal'
 }
+function choosePullMerchandise() {
+  contentclass.value = 'pullmerchandise'
+}
 function chooseAdminenroll() {
   contentclass.value = 'adminenroll'
 }
@@ -34,6 +38,7 @@ function chooseAdminenroll() {
       <p @click="chooseComplation">投诉</p>
       <p @click="chooseRefund">退款</p>
       <p @click="chooseAppeal">申诉</p>
+      <p @click=" choosePullMerchandise">下架商品</p>
       <p @click="chooseAdminenroll">管理员注册</p>
     </div>
     <div class="content">
@@ -41,6 +46,7 @@ function chooseAdminenroll() {
       <ComplationSection v-else-if="contentclass == 'complation'" />
       <RefundSection v-else-if="contentclass == 'refund'" />
       <AppealSection v-else-if="contentclass == 'appeal'" />
+      <PullMerchandise v-else-if="contentclass == 'pullmerchandise'" />
       <AdminenrollSection v-else />
     </div>
   </div>
