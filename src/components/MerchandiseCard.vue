@@ -34,7 +34,7 @@ const loadInfo = async () => {
   console.log(info)
   cover.value = getImageUrl(info.image)
   name.value = info.name
-  price.value = info.price / 100
+  price.value = info.price
 }
 
 onMounted(() => {

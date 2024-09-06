@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { roleJudgeAPI } from '@/apis/user'
 import LayoutView from '@/views/Layout/LayoutView.vue'
 import HomeView from '@/views/Home/HomeView.vue'
+import HomeSearch from '@/views/Home/HomeSearch.vue'
+import HomeSearchStore from '@/views/Home/HomeSearchStore.vue'
 import MerchandiseView from '@/views/Merchandise/MerchandiseView.vue'
 import CommentsView from '@/views/Comments/CommentsView.vue'
 import ProfileView from '@/views/Profile/ProfileView.vue'
@@ -43,6 +45,16 @@ const router = createRouter({
           path: '',
           name: 'home',
           component: HomeView
+        },
+        {
+          path: 'homeSearch',
+          name: 'homeSearch',
+          component: HomeSearch
+        },
+        {
+          path: 'homeSearchStore',
+          name: 'homeSearchStore',
+          component: HomeSearchStore
         },
         {
           path: 'merchandise/:id',
@@ -117,9 +129,11 @@ const router = createRouter({
           }
         },
         {
-          path: 'payback/:order_id',
+          path: 'payback',
           name: 'payback',
           component: PayBack,
+          props: route => ({ order_id: route.query.order_id }) // 从查询参数获取 order_id
+
         },
         {
           path: 'account',
