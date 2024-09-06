@@ -7,6 +7,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import 'element-plus/dist/index.css'
 
 let isloading = ref(true)
+let isempty=ref(false)
 
 export type complationinformation = {
   complation_id: string
@@ -18,41 +19,12 @@ export type complationinformation = {
 }
 
 let complationinformations = ref<complationinformation[]>([])
-complationinformations.value.push({
-  complation_id: '1',
-  seller: '商家1',
-  credibility: 100,
-  reason: '无',
-  complainant: '用户1',
-  time: new Date('2023-03-21T14:30:00')
-})
-complationinformations.value.push({
-  complation_id: '1',
-  seller: '商家2',
-  credibility: 100,
-  reason: '无',
-  complainant: '用户2',
-  time: new Date('2024-03-21T14:30:00')
-})
-complationinformations.value.push({
-  complation_id: '1',
-  seller: '商家3',
-  credibility: 100,
-  reason: '无',
-  complainant: '用户3',
-  time: new Date('2025-03-21T14:30:00')
-})
-complationinformations.value.push({
-  complation_id: '1',
-  seller: '商家4',
-  credibility: 100,
-  reason: '无',
-  complainant: '用户4',
-  time: new Date('2026-03-21T14:30:00')
-})
 
 const deleteconfirm = (index: number) => {
   complationinformations.value.splice(index, 1)
+  if(complationinformations.value.length==0){
+        isempty.value=true;
+  }
 }
 
 onMounted(async () => {
@@ -72,6 +44,9 @@ onMounted(async () => {
         complationinformations.value.push(one)
       })
       isloading.value = false
+      if(complationinformations.value.length==0){
+        isempty.value=true;
+      }
     } else {
       ElMessage({
         type: 'error',
@@ -92,7 +67,8 @@ onMounted(async () => {
   <div class="main">
     <div class="spinner" v-if="isloading"></div>
     <div class="list" v-else>
-      <div v-for="(item, index) in complationinformations" :key="index" class="table">
+      <div class="empty" v-if="isempty">无</div>
+      <div v-for="(item, index) in complationinformations" :key="item.complation_id" class="table" v-else>
         <OneComplation :onecomplationinformation="item" :num="index" @delete="deleteconfirm" />
       </div>
     </div>
@@ -107,6 +83,13 @@ onMounted(async () => {
 .list {
   max-height: 650px;
   overflow-y: auto;
+}
+
+.empty{
+  margin-top: 100px;
+  margin-left: 50%;
+  font-size: 40px;
+  font-weight: bold; 
 }
 
 .table {
