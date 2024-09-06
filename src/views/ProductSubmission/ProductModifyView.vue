@@ -191,8 +191,8 @@ const handleSubmit = async () => {
   await submitProduct(product.value)
     .then((response) => {
       if (response.status === 200) {
-        ElMessage.success(response.data.message || '商品发布成功')
-        router.push('/onsale') // 发布成功后跳转到其他页面
+        ElMessage.success(response.data.message || '商品修改成功')
+        router.push('/onsale')
         return response.data
       } else if (response.status === 400) {
         ElMessage({
@@ -210,7 +210,7 @@ const handleSubmit = async () => {
 }
 
 const handleCancle = async () => {
-  router.push('onsale')
+  router.push('/onsale')
 }
 
 

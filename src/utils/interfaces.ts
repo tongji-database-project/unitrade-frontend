@@ -48,6 +48,42 @@ export interface Order {
   items: OrderItem[];
 }
 
+export interface ConfirmReceiptParams {
+  orderId: string;
+  merchandiseId: string;
+}
+
+export interface AddCommentParams {
+  orderId: string;
+  merchandiseId: string;
+  content: string;
+  commentType: string;
+}
+
+export interface RefundRequest {
+  order_id: string;
+  refund_reason: string;
+  refund_feedback?: string;
+}
+
+export interface ConfirmReceiptParams {
+  orderId: string;
+  merchandiseId: string;
+}
+
+export interface AddCommentParams {
+  orderId: string;
+  merchandiseId: string;
+  content: string;
+  commentType: string;
+}
+
+export interface RefundRequest {
+  orderId: string;
+  refundReason: string;
+  refundFeedback?: string;
+}
+
 // 定义 CartItem 接口
 export interface CartItem {
   merchandise_id: string;

@@ -1,4 +1,3 @@
-//TODO:销量、发布时间、价格、类型、鼠标移到封面显示图片、鼠标悬停效果（边框变色）、双边框
 <template>
   <div>
     <div class="onsale-list-header">
@@ -11,7 +10,7 @@
         @change="selectChange"
         class="select-sort"
       />
-      <el-button type="primary" @click="router.push('product-sub')" class="search-button"
+      <el-button type="primary" @click="router.push('product-sub')" class="submit-button"
         >发布商品</el-button
       >
     </div>
@@ -19,7 +18,7 @@
       <div class="product-cover">封面</div>
       <div class="product-name">名称</div>
       <div class="product-price">价格</div>
-      <div class="product-stock">类型</div>
+      <div class="product-type">类型</div>
       <div class="product-stock">库存</div>
       <div class="product-sales">销量</div>
       <div class="product-description">描述</div>
@@ -41,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref , onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import OnsaleProduct from './components/OnsaleProduct.vue'
 import type { ProductOnsale } from '@/utils/interfaces'
@@ -62,15 +61,14 @@ const searchQuery = ref('')
 const products = ref<ProductOnsale[]>([])
 
 onMounted(async () => {
-  await fetchProducts();
+  await fetchProducts()
 })
 
 const fetchProducts = async () => {
   try {
-    const response = await getUserProducts();
+    const response = await getUserProducts()
     console.log(response)
     if (response.status === 200) {
-      
       products.value = response.data.map((item: any) => ({
         id: item.id,
         name: item.name,
@@ -79,14 +77,13 @@ const fetchProducts = async () => {
         stock: item.inventory,
         productType: item.type,
         cover: getImageUrl(item.cover_image_url),
-        sales: item.sales,
-      }));
+        sales: item.sales
+      }))
     }
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error('Error fetching products:', error)
   }
-};
-
+}
 
 const sortOrder = [
   {
@@ -101,8 +98,8 @@ const sortOrder = [
 
 const selectOptions = [
   {
-  value: 'sortDefault',
-    label: '默认排序',
+    value: 'sortDefault',
+    label: '默认排序'
   },
   {
     value: 'price',
@@ -118,34 +115,33 @@ const selectOptions = [
     value: 'sales',
     label: '按销量排序',
     children: sortOrder
-  },
+  }
 ]
 
 const selectChange = (value: any[]) => {
-  if (value[0] === 'sortDefault'){
-    sortProductsByDefaultOrder();
-  }else if (value[0] === 'price') {
-    sortProductsByPrice();
+  if (value[0] === 'sortDefault') {
+    sortProductsByDefaultOrder()
+  } else if (value[0] === 'price') {
+    sortProductsByPrice()
   } else if (value[0] === 'stock') {
-    console.log("库存")
-    sortProductsByStock();
+    console.log('库存')
+    sortProductsByStock()
   } else if (value[0] === 'sales') {
-    console.log("销量")
-    sortProductsBySales();
+    console.log('销量')
+    sortProductsBySales()
   }
 }
 
 const handleCancle = async (id: string) => {
-  products.value = products.value.filter(product => product.id !== id)
+  products.value = products.value.filter((product) => product.id !== id)
 }
 
 const searchProducts = async () => {
   console.log(searchQuery.value)
   try {
-    const response = await seekUserProducts(searchQuery.value);
+    const response = await seekUserProducts(searchQuery.value)
     console.log(response)
     if (response.status === 200) {
-      
       products.value = response.data.map((item: any) => ({
         id: item.id,
         name: item.name,
@@ -154,20 +150,19 @@ const searchProducts = async () => {
         stock: item.inventory,
         productType: item.type,
         cover: getImageUrl(item.cover_image_url),
-        sales: item.sales,
-      }));
+        sales: item.sales
+      }))
     }
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error('Error fetching products:', error)
   }
 }
 
 const sortProductsByDefaultOrder = async () => {
   try {
-    const response = await getUserProducts();
+    const response = await getUserProducts()
     console.log(response)
     if (response.status === 200) {
-      
       products.value = response.data.map((item: any) => ({
         id: item.id,
         name: item.name,
@@ -176,41 +171,41 @@ const sortProductsByDefaultOrder = async () => {
         stock: item.inventory,
         productType: item.type,
         cover: getImageUrl(item.cover_image_url),
-        sales: item.sales,
-      }));
+        sales: item.sales
+      }))
     }
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error('Error fetching products:', error)
   }
-};
+}
 
 const sortProductsByPrice = () => {
   if (priceSortOrder.value === 'asc') {
-    priceSortOrder.value = 'desc';
-    products.value.sort((a, b) => b.price - a.price);
+    priceSortOrder.value = 'desc'
+    products.value.sort((a, b) => b.price - a.price)
   } else {
-    priceSortOrder.value = 'asc';
-    products.value.sort((a, b) => a.price - b.price);
+    priceSortOrder.value = 'asc'
+    products.value.sort((a, b) => a.price - b.price)
   }
 }
 
 const sortProductsByStock = () => {
   if (priceSortOrder.value === 'asc') {
-    priceSortOrder.value = 'desc';
-    products.value.sort((a, b) => b.stock - a.stock);
+    priceSortOrder.value = 'desc'
+    products.value.sort((a, b) => b.stock - a.stock)
   } else {
-    priceSortOrder.value = 'asc';
-    products.value.sort((a, b) => a.stock - b.stock);
+    priceSortOrder.value = 'asc'
+    products.value.sort((a, b) => a.stock - b.stock)
   }
 }
 
 const sortProductsBySales = () => {
   if (priceSortOrder.value === 'asc') {
-    priceSortOrder.value = 'desc';
-    products.value.sort((a, b) => b.sales - a.sales);
+    priceSortOrder.value = 'desc'
+    products.value.sort((a, b) => b.sales - a.sales)
   } else {
-    priceSortOrder.value = 'asc';
-    products.value.sort((a, b) => a.sales - b.sales);
+    priceSortOrder.value = 'asc'
+    products.value.sort((a, b) => a.sales - b.sales)
   }
 }
 </script>
@@ -224,15 +219,38 @@ const sortProductsBySales = () => {
 }
 .product-card {
   margin-bottom: 20px;
+  border: 3px solid transparent;
+  transition: border-color 0.3s ease;
+  background-color: #f5fbff;
+  width: 1650px;
+  height: 300px;
+}
+
+.product-card:hover {
+  border-color: #16982b;
+  background-color: #e0f7ff;
 }
 
 .search-input {
-  width: 300px;
+  width: 200px;
   margin-bottom: 10px;
 }
 
 .search-button {
   margin-left: 10px;
+  margin-right: 50px;
+}
+
+.submit-button {
+  background-color: #16982b;
+  margin-left: 70px;
+  margin-right: 10px;
+}
+
+.select-sort {
+  width: 20px;
+  margin-left: 10px;
+  margin-right: 50px;
 }
 
 .onsale-list-header {
@@ -252,7 +270,7 @@ const sortProductsBySales = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: 83px;
+  margin-left: 55px;
   margin-right: 83px;
   font-size: 18px;
 }
@@ -266,11 +284,20 @@ const sortProductsBySales = () => {
   font-size: 18px;
 }
 
+.product-type {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 50px;
+  margin-right: 55px;
+  font-size: 18px;
+}
+
 .product-stock {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: 55px;
+  margin-left: 80px;
   margin-right: 55px;
   font-size: 18px;
 }
@@ -280,7 +307,7 @@ const sortProductsBySales = () => {
   justify-content: center;
   align-items: center;
   margin-left: 84px;
-  margin-right: 84px;
+  margin-right: 130px;
   font-size: 18px;
 }
 
@@ -288,8 +315,8 @@ const sortProductsBySales = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 20px;
+  margin-left: 22px;
+  margin-right: 20px;
   font-size: 18px;
 }
-
 </style>
