@@ -3,8 +3,12 @@
     <h1>退款申请</h1>
 
     <!-- 订单信息 -->
-    <div>
+    <div v-if="order">
       <p>订单 ID: {{ orderId }}</p>
+      <p>订单状态: {{ order.state}}</p>
+      <p>下单时间: {{ order.ordeR_TIME }}</p>
+      <p>发货时间: {{ order.receivinG_TIME }}</p>
+      <p>商品ID:   {{ order.merchandisE_ID }}</p>
     </div>
 
     <!-- 退款理由选择 -->
@@ -27,37 +31,16 @@
     <!-- 申请退款按钮 -->
     <button @click="applyRefund" :disabled="!isReasonValid">申请退款</button>
 
-    <!-- 退款进度显示 -->
-    <div v-if="refundStatus">
-      <h3>退款进度</h3>
-      <p>{{ refundStatus }}</p>
-    </div>
+    
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-
-// 订单数据接口
-interface OrderItem {
-  id: string
-  name: string
-  quantity: number
-  price: number
-}
-
-interface Order {
-  id: string
-  merchandise_id: string
-  name: string
-  order_quantity: number
-  state: string
-  order_time: string
-  receiving_time: string
-  address: string
-  items: OrderItem[]
-}
+import { requestRefund } from '@/apis/order';
+import { ElMessage } from 'element-plus';
+import type { Order } from '@/utils/interfaces';
 
 // 获取路由参数中的订单 ID
 const route = useRoute()
@@ -70,8 +53,6 @@ const orderData = route.query.order
 // 创建状态来存储订单信息
 const order = ref<Order | null>(orderData) // 使用传递的数据初始化订单
 
-//当前订单中包含的商品
-
 // 退款理由列表
 const refundReasons = ref<string[]>(['商品质量问题', '发错商品/少件', '商品与描述不符', '其他'])
 
@@ -81,8 +62,6 @@ const selectedReason = ref<string>('')
 // 其他理由文本框的内容
 const otherReason = ref<string>('')
 
-// 退款进度状态
-const refundStatus = ref<string>('')
 
 // 确定理由有效性
 const isReasonValid = computed(() => {
@@ -93,15 +72,38 @@ const isReasonValid = computed(() => {
 })
 
 // 模拟申请退款函数
-const applyRefund = () => {
-  if (!isReasonValid.value) return
+const applyRefund = async () => {
+  // 检查订单是否存在
+  if (!order.value) {
+    ElMessage.error('订单数据未找到。');
+    return;
+  }
 
-  // 模拟一个异步请求
-  refundStatus.value = '退款处理中...'
-  setTimeout(() => {
-    refundStatus.value = '退款已完成！'
-  }, 2000)
-}
+  // 检查是否选择了退款理由
+  if (!isReasonValid.value) {
+    ElMessage.error('请选择退款理由或输入其他理由。');
+    return;
+  }
+
+  // 确定退款理由，如果选择的是“其他”，则使用用户输入的内容
+  const reason = selectedReason.value === '其他' ? otherReason.value.trim() : selectedReason.value;
+
+  try {
+    // 调用申请退款 API
+    await requestRefund(orderId, reason, '');
+
+    // 提示成功信息
+    ElMessage.success('退款申请已成功提交。');
+
+    // 更新订单状态，模拟将订单状态更新为“已申请退款”
+    if (order.value) {
+      order.value.state = 'yjs'; // 更新订单状态为“已申请退款”
+    }
+  } catch (error) {
+    // 处理错误情况
+    ElMessage.error(`退款申请失败，错误信息：${(error as Error).message}`);
+  }
+};
 
 onMounted(() => {
   if (!order.value) {

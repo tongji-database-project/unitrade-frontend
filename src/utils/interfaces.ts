@@ -48,3 +48,22 @@ export interface Order {
   receiving_time: string;
   items: OrderItem[];
 }
+
+export interface ConfirmReceiptParams {
+  orderId: string;
+  merchandiseId: string;
+}
+
+export interface AddCommentParams {
+  orderId: string;
+  merchandiseId: string;
+  content: string;
+  commentType: string;
+  commentPicture?: File | null; // 允许 null 或 undefined
+}
+
+export interface RefundRequest {
+  orderId: string;
+  refundReason: string;
+  refundFeedback?: string;
+}

@@ -1,6 +1,7 @@
 import { httpInstance } from "@/utils/utils";
-import type { Order } from '@/utils/interfaces';
+import type { Order,AddCommentParams,RefundRequest } from '@/utils/interfaces';
 import { ElMessage } from "element-plus";
+
 
 export const getOrderInfo = async (params: { 
   order_id?: string, 
@@ -40,4 +41,116 @@ export const getOrderInfo = async (params: {
   }
 
   return null;  // 如果出现错误或者状态码不为 200，返回 null
+};
+
+export const getUserAddress = async (): Promise<string | null> => {  // 返回类型为字符串或 null
+  try {
+    const response = await httpInstance({
+      url: '/order/user/address',
+      method: 'GET',  // 使用 GET 方法
+    });
+
+    if (response.status === 200) {
+      ElMessage.success('获取用户地址成功');
+      return response.data;  // 返回用户地址（字符串）
+    } else if (response.status === 401) {
+      ElMessage({
+        type: 'warning',
+        message: `用户未认证，状态码：${response.status}`
+      });
+    } else if (response.status === 404) {
+      ElMessage({
+        type: 'warning',
+        message: `未找到用户地址信息，状态码：${response.status}`
+      });
+    } else {
+      // 处理其他状态码的情况
+      ElMessage({
+        type: 'warning',
+        message: `请求失败，状态码：${response.status}`
+      });
+    }
+  } catch (error) {
+    ElMessage({
+      type: 'error',
+      message: `无法获取用户地址，错误信息：${error}`
+    });
+  }
+
+  return null;  // 如果出现错误或者状态码不为 200，返回 null
+};
+
+// 上传评论的 API
+export const addComment = async (params: AddCommentParams): Promise<void> => {
+  try {
+    const formData = new FormData();
+    formData.append('OrderId', params.orderId);
+    formData.append('MerchandiseId', params.merchandiseId);
+    formData.append('Content', params.content);
+    formData.append('CommentType', params.commentType);
+
+    if (params.commentPicture) {
+      formData.append('CommentPicture', params.commentPicture);
+    }
+
+    const response = await httpInstance({
+      url: '/order/AddComment',
+      method: 'POST',
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    if (response.status === 200) {
+      ElMessage.success(response.data.message || '评论提交成功');
+    } else {
+      ElMessage.error(`请求失败，状态码：${response.status}`);
+    }
+  } catch (error) {
+    ElMessage.error(`提交评论失败，错误信息：${error.message || '未知错误'}`);
+  }
+};
+
+export const confirmReceipt = async (orderId: string, merchandiseId: string): Promise<void> => {
+  try {
+    const response = await httpInstance({
+      url: '/order/confirmReceipt',
+      method: 'POST',
+      data: { orderId, merchandiseId },
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.status === 200) {
+      ElMessage.success('收货确认成功');
+    } else {
+      ElMessage.error(`请求失败，状态码：${response.status}`);
+    }
+  } catch (error) {
+    ElMessage.error(`收货确认失败，错误信息：${error.message}`);
+  }
+};
+
+// 申请退款的 API 请求
+export const requestRefund = async (orderId: string, reason: string, feedback: string): Promise<void> => {
+  try {
+    const response = await httpInstance({
+      url: '/order/requestRefund',
+      method: 'POST',
+      data: { orderId, reason, feedback },
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.status === 200) {
+      ElMessage.success('退款申请成功');
+    } else {
+      ElMessage.error(`请求失败，状态码：${response.status}`);
+    }
+  } catch (error) {
+    ElMessage.error(`退款申请失败，错误信息：${error.message}`);
+  }
 };

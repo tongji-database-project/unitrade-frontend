@@ -4,6 +4,8 @@ import { useRoute } from 'vue-router';
 import type { Order,OrderItem } from '@/utils/interfaces';
 import { ElMessage } from 'element-plus';
 import { useOrderStore } from '@/stores/orderStore';
+import { addComment } from '@/apis/order';
+import { confirmReceipt as apiConfirmReceipt } from '@/apis/order'; // 确保正确导入
 // 获取路由参数
 const route = useRoute()
 const orderId = route.params.id as string // 订单ID
@@ -29,26 +31,50 @@ onMounted(() => {
     isDelivered.value = order.value.state === 'ysh';
   }
 });
-const confirmReceipt = () => {
-  // 更新订单状态（假设有一个函数 updateOrderStatus 调用 API 更新订单状态）
-  order.value!.state = '已收货'; // 更新状态为已收货
-  isDelivered.value = true; // 更新本地状态
-  showReviewBox.value = true; // 显示评价框
-}
-// 提交评价
-const submitReview = () => {
-  if (reviewText.value.trim()) {
-    console.log('提交的评价:', reviewText.value);
-    // 这里可以添加调用 API 提交评价的逻辑
-    // showReviewBox.value = false; // 隐藏评价框
-    orderStore.saveReview(orderId,reviewText.value)
-    reviewText.value = ''; // 清空评价输入框
-    ElMessage.success('评价成功')
-  } else {
-    ElMessage.error('评价内容不能为空')
-    console.warn('评价内容不能为空');
+const confirmReceipt = async () => {
+  if (!order.value || !order.value.ordeR_ID || !order.value.merchandisE_ID) {
+    ElMessage.error('订单或商品信息不完整');
+    return;
   }
-}
+
+  try {
+    // 调用确认收货 API
+    await apiConfirmReceipt({
+      orderId: orderId,        // 确保传递了正确的参数
+      merchandiseId: order.value.merchandisE_ID
+    });
+
+    // 更新本地状态和显示评价框
+    order.value.state = 'ysh';             // 更新状态为已收货
+    isDelivered.value = true;             // 更新本地状态
+    showReviewBox.value = true;           // 显示评价框
+    
+  } catch (error) {
+    console.error('收货确认失败', error);
+    ElMessage.error('收货确认失败，请稍后重试');
+  }
+};
+
+const submitReview = async () => {
+  if (reviewText.value.trim()) {
+    try {
+      await addComment({
+        orderId: orderId, // 确保这与后端匹配
+        merchandiseId: order.value?.merchandise_id ?? '', // 确保这与后端匹配
+        content: reviewText.value,
+        commentType: 'buyer', // 示例类型
+        commentPicture: null // 如果有图片可以在这里传递
+      });
+      reviewText.value = ''; // 清空评价输入框
+    } catch (error) {
+      console.error('评价提交失败', error);
+      ElMessage.error('提交评价失败，请稍后重试');
+    }
+  } else {
+    ElMessage.error('评价内容不能为空');
+  }
+};
+
 const clearReview = () => {
   orderStore.clearReview(orderId);
   reviewText.value = '';
@@ -65,25 +91,8 @@ const clearReview = () => {
       <p>订单状态: {{ order.state}}</p>
       <p>下单时间: {{ order.ordeR_TIME }}</p>
       <p>发货时间: {{ order.receivinG_TIME }}</p>
-      <h3>商品列表</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>商品ID</th>
-            <th>商品名称</th>
-            <th>数量</th>
-            <th>价格</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in order.items" :key="item.id">
-            <td>{{ item.id }}</td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>{{ item.price }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <p>商品ID:   {{ order.merchandisE_ID }}</p>
+      
       <!-- 确认收货按钮 -->
       <button v-if="!isDelivered" @click="confirmReceipt">确认收货</button>
 
