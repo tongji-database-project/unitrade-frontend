@@ -1,6 +1,14 @@
 <script setup lang="ts">
 // import { getBannerAPI } from '@/apis/home'
 import { onMounted, ref } from 'vue'
+import { getImageUrl } from '@/utils/utils'
+
+const banner_pictures = [
+  {img:getImageUrl('banner/banner0.png')},
+  {img:getImageUrl('banner/banner1.png')},
+  {img:getImageUrl('banner/banner2.png')},
+]
+
 
 // const bannerList = ref([])
 
@@ -26,12 +34,16 @@ import { onMounted, ref } from 'vue'
 <template>
   <div class="home-banner">
     <el-carousel height="500px">
-      <el-carousel-item v-for="item in 4" :key="item">
-        <img :src="'http://47.97.215.255/img/avatar.jpg'" />
+      <el-carousel-item v-for="item in 3" :key="item">
+        <img :src="banner_pictures[item-1].img" />
       </el-carousel-item>
     </el-carousel>
   </div>
 </template>
+
+
+banner/banner0.png
+
 
 <style scoped>
 .home-banner {

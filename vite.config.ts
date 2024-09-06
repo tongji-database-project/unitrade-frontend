@@ -29,7 +29,7 @@ export default defineConfig({
       "/api": {
         target: "http://47.97.215.255",
         changeOrigin: true,
-         //rewrite: (path) => path.replace(/^\/api/, ""),
+         rewrite: (path) => path.replace(/^\/api/, ""),
       }
     }
   }
