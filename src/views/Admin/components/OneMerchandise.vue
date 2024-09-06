@@ -1,13 +1,13 @@
-<!-- 投诉 -->
+<!-- 下架商品 -->
 <script lang="ts" setup>
-import type { complationinformation } from './ComplationSection.vue'
+import type { merchandiseinformation } from './PullMerchandise.vue'
 import axios from 'axios'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import 'element-plus/dist/index.css'
 
 const props = defineProps({
-  onecomplationinformation: {
-    type: Object as () => complationinformation,
+  onemerchandiseinformation: {
+    type: Object as () => merchandiseinformation,
     default: null
   },
   num: {
@@ -16,25 +16,24 @@ const props = defineProps({
   }
 })
 
-const complation_id = props.onecomplationinformation.complation_id
+const merchandise_id = props.onemerchandiseinformation.id
 
 const emit = defineEmits(['delete'])
 const deleteconfirm = () => {
   emit('delete', props.num)
 }
 
-const deductpoint = async (point: number) => {
+const pullmerchandise = async () => {
   try {
-    const response = await axios.post('/api/complationAudit/audit', {
-      complation_id: complation_id,
-      is_passed: point > 0 ? true : false
+    const response = await axios.post('/api/merchandiseaudit/offshelf', {
+        merchandise_id: merchandise_id
     })
     if (response.status === 200) {
       deleteconfirm()
     } else {
       ElMessageBox({
         type: 'error',
-        message: `数据获取失败`
+        message: `数据错误`
       })
     }
   } catch (error) {
@@ -48,14 +47,16 @@ const deductpoint = async (point: number) => {
 </script>
 
 <template>
-  <div class="main">
-    <div class="introduce">投诉商家：{{ onecomplationinformation.seller }}</div>
-    <div class="introduce">投诉原因：{{ onecomplationinformation.reason }}</div>
-    <div class="introduce">投诉人：{{ onecomplationinformation.complainant }}</div>
-    <div class="introduce">投诉时间：{{ onecomplationinformation.time }}</div>
-    <div class="introduce">信誉分：{{ onecomplationinformation.credibility }}</div>
-    <div @click="deductpoint(0)" class="button">不扣分</div>
-    <div @click="deductpoint(5)" class="button">扣除5分</div>
+  <div calss="main">
+    <div class="introduce">商品ID：{{ onemerchandiseinformation.id }}</div>
+    <div class="introduce">商品名：{{ onemerchandiseinformation.name }}</div>
+    <div class="introduce">商品类型：{{ onemerchandiseinformation.type }}</div>
+    <div class="introduce">商品价格：{{ onemerchandiseinformation.price }}</div>
+    <div class="introduce">商家：{{ onemerchandiseinformation.seller_name }}</div>
+    <div class="introduce">商家信誉值：{{ onemerchandiseinformation.reputation }}</div>
+    <div class="introduce">评价数量：{{ onemerchandiseinformation.comment_num }}</div>
+    <div class="introduce">平均评分：{{ onemerchandiseinformation.average_score }}</div>
+    <div @click="pullmerchandise" class="button">下架商品</div>
   </div>
 </template>
 
