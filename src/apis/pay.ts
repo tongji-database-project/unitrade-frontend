@@ -19,3 +19,14 @@ export const getOrderTotalAPI = (order_id: string) => {
       }
     })
 }
+
+export const getPaymentStatusAPI = (order_id: string) => {
+    return httpInstance({
+      url: '/pay/payment-status',
+      method: 'GET',
+      params: {
+          order_id: order_id,
+      }
+    })
+  }
+  

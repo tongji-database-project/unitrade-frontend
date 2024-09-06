@@ -15,7 +15,7 @@
         投诉卖家
       </button>
       <button class="action-button" style="background-color: #e6e6fa" @click="goToOther">
-        其他
+        关注
       </button>
     </div>
   </div>

@@ -7,17 +7,16 @@ import { getImageUrl } from '@/utils/utils'
 const cartStore = useCartStore();
 const router = useRouter();
 
-// 单选回调
-const singleCheck = (merchandise_id: string, selected: boolean) => {
-  cartStore.updateProductInCart({ merchandise_id, selected });
-};
-
 // 全选回调
-const allCheck = (selected: boolean) => {
-  // 全选时，遍历所有商品进行单选状态更新
-  cartStore.cartItems.forEach(item => {
-    cartStore.updateProductInCart({ merchandise_id: item.merchandise_id, selected });
-  });
+const allCheck = async (selected: boolean) => {
+  // 遍历所有商品，更新每个商品的选中状态
+  for (let item of cartStore.cartItems) {
+    await cartStore.updateProductInCart({
+      merchandise_id: item.merchandise_id, // 确保拼写正确
+      quanity: item.quanity,
+      selected: selected // 将 selected 传入
+    })
+  }
 };
 
 // 删除购物车项
@@ -27,7 +26,7 @@ const delCart = (item: any) => {
 
 // 计算属性
 const cartItems = computed(() => cartStore.cartItems);
-const isAllSelected = computed(() => cartItems.value.every(item => item.selected));
+const isAllSelected = computed(() => cartItems.value.length > 0 && cartItems.value.every(item => item.selected));
 const totalCount = computed(() => cartItems.value.reduce((acc, item) => acc + item.quanity, 0));
 const selectedCount = computed(() => cartItems.value.filter(item => item.selected).reduce((acc, item) => acc + item.quanity, 0));
 const selectedPrice = computed(() => cartItems.value.filter(item => item.selected).reduce((acc, item) => acc + item.merchandise_price * item.quanity, 0));
@@ -46,6 +45,7 @@ onMounted(() => {
           <thead>
             <tr>
               <th width="120">
+                 <!-- 全选框 -->
                 <el-checkbox :model-value="isAllSelected" @change="allCheck" />
               </th>
               <th width="400">商品信息</th>
@@ -59,8 +59,8 @@ onMounted(() => {
           <tbody>
             <tr v-for="(i, index) in cartItems" :key="index">
               <td>
-                <!-- 单选框 -->
-                <el-checkbox :model-value="i.selected" @change="(selected: boolean) => singleCheck(i.merchandise_id, selected)" />
+                <!-- 单选框，使用 v-model 双向绑定商品的选中状态 -->
+                <el-checkbox v-model="i.selected" @change="(selected) => cartStore.updateProductInCart({ ...i, selected })" />
               </td>
               <td>
                 <div class="goods">
@@ -75,7 +75,7 @@ onMounted(() => {
                 </div>
               </td>
               <td class="tc">
-                <p>&yen;{{ i.merchandise_price }}</p>
+                <p>&yen;{{ i.merchandise_price.toFixed(2) }}</p>
               </td>
               <td class="tc">
                 <el-input-number v-model="i.quanity" @change="value => cartStore.updateProductInCart({ ...i, quanity: value })" />
@@ -119,6 +119,7 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
 
 <style scoped>
 .xtx-cart-page {
