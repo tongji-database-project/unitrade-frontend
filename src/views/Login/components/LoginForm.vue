@@ -10,6 +10,7 @@ import { adminLoginAPI } from '@/apis/admin'
 import 'element-plus/dist/index.css'
 
 const TokenStore = useTokenStore()
+const cartStore = useCartStore()
 const router = useRouter()
 
 const isPasswordLogin = ref(true)
@@ -221,6 +222,13 @@ const submitForm = async () => {
 
       if (response.status === 200) {
         TokenStore.updatetoken(response.data.access_token)
+        try {
+          await cartStore.loadCart(); // 加载购物车数据
+          console.log('购物车数据已成功加载');
+        } 
+        catch (error) {
+          console.error('加载购物车数据失败:', error);
+        }
         //跳转到用户页面
         router.replace('/')
       } else {

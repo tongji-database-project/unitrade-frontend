@@ -10,7 +10,6 @@ const logged_in = computed(() => useTokenStore().logged_in)
 <template>
   <el-card>
     <div class="profile-card">
-      <p>鼠标放在用户头像后出现的悬浮窗口</p>
       <!-- 具体布局待定，先放一些必要的内容 -->
       <div>
         <RouterLink to="/login">切换账号</RouterLink>
