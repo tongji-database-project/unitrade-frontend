@@ -35,10 +35,10 @@ function chooseAdminenroll() {
   <div class="main">
     <div class="list">
       <p @click="choosePersonalinformation">个人信息</p>
-      <p @click="chooseComplation">投诉</p>
-      <p @click="chooseRefund">退款</p>
-      <p @click="chooseAppeal">申诉</p>
-      <p @click=" choosePullMerchandise">下架商品</p>
+      <p @click="chooseComplation">投诉审核</p>
+      <p @click="chooseRefund">退款审核</p>
+      <p @click="chooseAppeal">申诉审核</p>
+      <p @click=" choosePullMerchandise">商品下架</p>
       <p @click="chooseAdminenroll">管理员注册</p>
     </div>
     <div class="content">
