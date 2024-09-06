@@ -55,3 +55,13 @@ export const seekUserProducts = (seekName: string) => {
     }
   })
 }
+
+export const getSellerProducts = (sellerID: string) => {
+  return httpInstance({
+    url: '/seller/getSellerProducts',
+    method: 'POST',
+    data: {
+      ProductID: sellerID
+    }
+  })
+}

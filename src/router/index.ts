@@ -18,7 +18,7 @@ import OrderView from '@/views/Order/OrderView.vue'
 import RefundRequestView from '@/views/RefundRequest/RefundRequestView.vue'
 import MessageView from '@/views/Message/MessageView.vue'
 import ChatView from '@/views/Chat/ChatView.vue'
-
+import ProfileMerchandiseView from '@/views/ProfileMerchandise/ProfileMerchandiseView.vue'
 import EditInfoView from '@/views/Editinfo/EditInfoView.vue'
 import ReceivedView from '@/views/Received/ReceivedView.vue'
 import TransitView from '@/views/Transit/TransitView.vue'
@@ -62,6 +62,11 @@ const router = createRouter({
           path: 'complaintsubmission/:seller_id',
           name: 'complaintsubmission',
           component: ComplaintSubmissionView
+        },
+        {
+          path: 'profilemerchandise/:id',
+          name: 'profilemerchandise',
+          component: ProfileMerchandiseView
         },
         // 以下几个 URL 均结合当前的 token 来确定返回哪一个用户的信息
         {
