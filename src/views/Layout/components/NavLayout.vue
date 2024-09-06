@@ -6,6 +6,7 @@ import { computed, ref, watch, onMounted } from 'vue'
 import { getImageUrl } from '@/utils/utils'
 import { useTokenStore } from '@/stores/token'
 import { getUserInfo } from '@/apis/user'
+import { getSpecialProductID } from '@/apis/home'
 
 // 追踪登录状态
 const logged_in = computed(() => useTokenStore().logged_in)
@@ -34,6 +35,27 @@ onMounted(() => {
   load_avatar()
 })
 
+const searchProducts = async () => {
+  console.log(input.value)
+  await getSpecialProductID(input.value)
+    .then((response) => {
+      if (response.status === 200) {
+        console.log(response.data)
+      } else if (response.status === 400) {
+        ElMessage({
+          type: 'warning',
+          message: `无法获取用户信息状态码：${response.status}`
+        })
+      }
+    })
+    .catch((error) => {
+      ElMessage({
+        type: 'warning',
+        message: `无法获取,错误信息：${error}`
+      })
+    })
+}
+
 // const categories = [
 //   {
 //     name: '分类 1',
@@ -57,9 +79,8 @@ onMounted(() => {
         <RouterLink :to="path">{{ name }}</RouterLink>
       </div> -->
       <div class="input-box">
-        <el-input v-model="input" placeholder="请输入商品">
-          <template #append>搜素</template>ss
-        </el-input>
+        <el-input v-model="input" placeholder="搜索商品..." class="search-input"></el-input>
+        <el-button type="primary" @click="searchProducts" class="search-button">搜索</el-button>
       </div>
     </el-space>
     <el-space class="container" v-if="logged_in" spacer="|">
@@ -91,6 +112,7 @@ onMounted(() => {
   </div>
 </template>
 
+
 <style scoped>
 .top-nav {
   width: 100%;
@@ -104,6 +126,10 @@ onMounted(() => {
   align-items: center;
   justify-content: flex-end;
   padding: 0.3rem;
+
+  .input-box{
+    display: flex;
+  }
 }
 
 .container div {
