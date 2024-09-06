@@ -53,10 +53,10 @@ const countChange = (countValue: any) => {
 const addCart = async () => {
   try {
     const cartItem = {
-      merchandise_id: route.params.id,
-      merchandise_name: meichandise_name.value,
-      merchandise_price: meichandise_price.value,
-      picture: meichandise_cover.value,
+      merchandise_id: route.params.id as string,
+      merchandise_name: meichandise_name.value!,
+      merchandise_price: meichandise_price.value!,
+      picture: meichandise_cover.value!,
       quanity: count.value,
       cart_time: new Date().toISOString(),
       selected: true // 初始状态为选中

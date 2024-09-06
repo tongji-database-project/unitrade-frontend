@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, Ref } from 'vue';
 import { getCartItemsAPI, addToCartAPI, updateCartItemAPI, removeFromCartAPI } from '@/apis/cart';
+import type { CartItem } from '@/utils/interfaces';
 
 // 定义 CartItem 接口
 interface CartItem {
@@ -21,7 +22,7 @@ interface ApiResponse<T> {
 }
 
 export const useCartStore = defineStore('cart', () => {
-  const cartItems: Ref<CartItem[]> = ref([]); // 定义购物车商品列表的类型
+    const cartItems = ref<CartItem[]>(); // 定义购物车商品列表的类型
 
     // 加载购物车
     const loadCart = async () => {
