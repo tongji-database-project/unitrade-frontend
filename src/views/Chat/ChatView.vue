@@ -77,6 +77,7 @@ const sendNewMessage = async () => {
     resetMessage(inputFormRef.value)
     return
   }
+  new_msg.receiver = route.params.user_id as string
   new_msg.sender = my_id.value
   new_msg.time = dayjs().format()
   sendMessage(new_msg)
