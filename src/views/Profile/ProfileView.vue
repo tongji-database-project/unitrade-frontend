@@ -41,12 +41,13 @@ export default defineComponent({
       reputation: 0
     })
     const followStatus = ref('关注')
+    const userId = ref('')
 
     // 获取卖家信息
     const fetchUserInfo = async () => {
-      const userId = route.params.id as string // 从路由参数获取ID
+      userId.value = route.params.id as string // 从路由参数获取ID
       try {
-        const response = await getUserInfo(userId)
+        const response = await getUserInfo(userId.value)
         userInfo.value = response.data
         userInfo.value.avatar = getImageUrl(userInfo.value.avatar)
       } catch (error) {
@@ -56,6 +57,10 @@ export default defineComponent({
 
     // 按钮功能占位符
     const contactSeller = () => {
+      router.push({
+        name: 'chat',
+        params: { user_id: userId.value }
+      })
       console.log('联系卖家功能')
     }
 
@@ -64,6 +69,10 @@ export default defineComponent({
     }
 
     const complainSeller = () => {
+      router.push({
+        name: 'complaintsubmission',
+        params: { seller_id: userId.value }
+      })
       console.log('投诉卖家功能')
     }
 
