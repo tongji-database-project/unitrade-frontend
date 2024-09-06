@@ -1,7 +1,8 @@
-import axios from 'axios'
+import { httpInstance } from '@/utils/utils'
 
-const API_BASE_URL = 'http://localhost:5173/profile'
-
-export const getProfile = (id: string) => {
-  return axios.get(`${API_BASE_URL}/${id}`)
+export const getUserInfo = (userId: string) => {
+  return httpInstance({
+    url: `/profile/${userId}`,
+    method: 'GET'
+  })
 }
