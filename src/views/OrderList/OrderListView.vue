@@ -102,9 +102,8 @@ const handleRefundClick = (order: any) => {
 };
 
 const statusMap: { [key: string]: string } = {
-  'ysh': '已收货',
   'Rec': '已收货',
-  'yjs': '已拒收',
+  'Pen': '已拒收',
   'Tra': '运输中',
   'UNP': '未付款',
   'WAI': '待发货'
