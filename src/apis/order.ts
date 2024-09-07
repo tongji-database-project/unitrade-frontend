@@ -80,8 +80,28 @@ export const getUserAddress = async (): Promise<string | null> => {  // 返回�
   return null;  // 如果出现错误或者状态码不为 200，返回 null
 };
 
+export const getMerchandiseNameById = async (merchandise_id: string) :Promise<void> => {
+  try {
+    const response = await httpInstance({
+      url: '/order/merchandise/name',
+      method: 'GET',
+      params:{
+        merchandise_id: merchandise_id
+      }
+    })
+    if(response.status === 200){
+      ElMessage.success(response.data.message || '找到商品')
+      return response.data
+    }else{
+      ElMessage.error(`请求失败，状态码：${response.status}`);
+    }
+  } catch(error){
+    ElMessage.error(`查询商品失败，错误信息：${error || '未知错误'}`)
+  }
+}
+
 // 上传评论的 API
-export const addComment = async (order_id: string , merchandise_id: string, content: string,comment_type: string): Promise<void> => {
+export const addComment = async (order_id: string , merchandise_id: string, content: string,comment_type: string,quality_rating: number,attitude_rating:number,price_rating:number,logistic_speed_rating:number,conformity_rating:number): Promise<void> => {
   try {
     const response = await httpInstance({
       url: '/order/addComment',

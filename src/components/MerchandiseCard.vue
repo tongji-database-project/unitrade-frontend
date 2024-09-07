@@ -60,7 +60,6 @@ onMounted(() => {
     <div class="merchandise-card-name">{{ name }}</div>
     <div class="merchandise-card-info">
       <span class="merchandise-card-price">￥{{ price?.toFixed(2) }}</span>
-      <span class="merchandise-card-sales">已售 1,000</span>
     </div>
   </div>
 </template>

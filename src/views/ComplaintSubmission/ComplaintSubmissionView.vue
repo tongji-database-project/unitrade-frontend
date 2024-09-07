@@ -34,8 +34,8 @@ export default defineComponent({
         // this.$router.push('/profile');  // 提交成功后跳转到用户页面
         this.complaintReason = '';  // 重置输入框
       } catch (error) {
-        console.error('提交投诉时出错:', error);
-        ElMessage.error('投诉提交失败，请稍后重试');
+        // console.error('提交投诉时出错:', error);
+        // ElMessage.error('投诉提交失败，请稍后重试');
       }
     }
   }

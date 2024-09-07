@@ -88,11 +88,11 @@ const fetchProducts = async () => {
 const sortOrder = [
   {
     value: 'desc',
-    label: '降序'
+    label: '升序'
   },
   {
     value: 'asc',
-    label: '升序'
+    label: '降序'
   }
 ]
 

@@ -13,21 +13,15 @@ const data = reactive({})
 const router = useRouter()
 const avatar = ref<string>()
 const name = ref<string>()
-const content = ref<number>()
-const pictures = ref<string[]>()
-//const time = ref<DateTime>()
+const content = ref<string>()
+const com_quality = ref<number>()
+const com_attitude = ref<number>()
+const com_price = ref<number>()
+const com_logistic_speed = ref<number>()
+const com_conformity = ref<number>()
 
 const modalOpen = ref(false)
 const currentImage = ref('')
-
-const i= [
-  {img:getImageUrl('banner/banner0.png')},
-  {img:getImageUrl('banner/banner1.png')},
-  {img:getImageUrl('banner/banner2.png')},
-  {img:getImageUrl('banner/banner0.png')},
-  {img:getImageUrl('banner/banner1.png')},
-  {img:getImageUrl('banner/banner2.png')},
-]
 
 const loadInfo = async () => {
   const info= await getCommentCardAPI(props.comment_id)
@@ -35,8 +29,11 @@ const loadInfo = async () => {
   avatar.value = getImageUrl(info.user_avatar)
   name.value = info.user_name
   content.value = info.content
-  //time.value = info.time
-  //pictures.value = info.pictures.map((pic: string) => getImageUrl(pic))
+  com_quality.value = info.quality
+  com_attitude.value = info.attitude
+  com_price.value = info.price
+  com_logistic_speed.value = info.logistic_speed
+  com_conformity.value = info.conformity
 }
 
 const openModal = (image: string) => {
@@ -71,11 +68,23 @@ onMounted(() => {
         <div class ="user-name">
             <p class="p-name"> {{ name }} </p>
         </div>
+        <div v-if="com_quality! < 6"class ="scores">
+          <p class ="quality">质量：</p>
+          <el-rate v-model="com_quality" disabled text-color="#ff9900" />
+          <p class ="attitude">服务态度：</p>
+          <el-rate v-model="com_attitude" disabled text-color="#ff9900" />
+          <p class ="price">价格实惠度：</p>
+          <el-rate v-model="com_price" disabled text-color="#ff9900" />
+          <p class ="logistic_speed">物流速度：</p>
+          <el-rate v-model="com_logistic_speed" disabled text-color="#ff9900" />
+          <p class ="conformity">满意度：</p>
+          <el-rate v-model="com_conformity" disabled text-color="#ff9900" />
+        </div>
     </div>
     <!-- <el-divider border-style="double" /> -->
     <div class="comment-body">
         <p class="content"> {{ content }} </p>
-        <div class="gallery">
+        <!-- <div class="gallery">
         <div 
             v-for="(image, index) in i" 
             :key="index" 
@@ -90,7 +99,7 @@ onMounted(() => {
                 <span class="close-btn" @click="closeModal">&times;</span>
                 <img :src="currentImage" alt="fullsize" />
             </div>
-        </div>
+        </div> -->
     </div>
 
     <el-divider border-style="double" />
@@ -114,12 +123,19 @@ onMounted(() => {
         padding: 14px; 
       }
     }
+
+    .scores{
+      display: flex;
+    flex-direction: row;
+    padding:10px;
+
+    }
 }
 
 .comment-body{
   padding-left: 20px;
 
-    .gallery {
+    /* .gallery {
   display: flex;
   justify-content: space-around;
   padding: 20px;
@@ -130,9 +146,9 @@ onMounted(() => {
   height: 100px; 
   cursor: pointer;
   object-fit: cover;
-}
+} */
 
-.modal-overlay {
+/* .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -153,15 +169,15 @@ onMounted(() => {
 .modal-content img {
   max-width: 100%;
   max-height: 100%;
-}
+} */
 
-.close-btn {
+/* .close-btn {
   position: absolute;
   top: 10px;
   right: 10px;
   font-size: 24px;
   color: #fff;
   cursor: pointer;
-}
+} */
 } 
 </style>
