@@ -28,15 +28,14 @@ export default defineComponent({
       }
 
       try {
-        // const sellerId = String(this.$route.params.seller_id);  // 将 seller_id 转换为 string
-        const sellerId = '3';  // （这里是测试用的）
+        const sellerId = String(this.$route.params.seller_id);  // 将 seller_id 转换为 string
         await submitComplaint(sellerId, this.complaintReason);
         ElMessage.success('投诉提交成功');
         // this.$router.push('/profile');  // 提交成功后跳转到用户页面
         this.complaintReason = '';  // 重置输入框
       } catch (error) {
-        console.error('提交投诉时出错:', error);
-        ElMessage.error('投诉提交失败，请稍后重试');
+        // console.error('提交投诉时出错:', error);
+        // ElMessage.error('投诉提交失败，请稍后重试');
       }
     }
   }

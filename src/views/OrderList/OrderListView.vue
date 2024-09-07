@@ -17,7 +17,7 @@
             <el-table-column width="150">
               <template #default="scope">
                 <el-button size="small" type="primary" @click="handleOrderClick(scope.row)">订单详情</el-button>
-                <el-button size="small" type="danger" @click="handleRefundClick(scope.row.ordeR_ID)">申请退款</el-button>
+                <el-button size="small" type="danger" @click="handleRefundClick(scope.row)">申请退款</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -83,9 +83,14 @@ const handleOrderClick = (order: any) => {
   });
 };
 
-const handleRefundClick = (orderId: string) => {
-  console.log('点击申请退款，订单号:', orderId);
-  router.push({ name: 'RefundRequest', params: { id: orderId } });
+const handleRefundClick = (order: any) => {
+  console.log('点击申请退款，订单号:', order.ordeR_ID);
+  const encodedOrderData = encodeURIComponent(JSON.stringify(order));
+  router.push({ 
+    name: 'RefundRequest', 
+    params: { id: order.ordeR_ID }, 
+    query: { order: encodedOrderData } 
+  });
 };
 
 // 页面加载时获取订单数据

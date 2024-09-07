@@ -81,20 +81,16 @@ export const getUserAddress = async (): Promise<string | null> => {  // 返回�
 };
 
 // 上传评论的 API
-export const addComment = async (params: AddCommentParams): Promise<void> => {
+export const addComment = async (order_id: string , merchandise_id: string, content: string,comment_type: string,quality_rating: number,attitude_rating:number,price_rating:number,logistic_speed_rating:number,conformity_rating:number): Promise<void> => {
   try {
-    const formData = new FormData();
-    formData.append('OrderId', params.orderId);
-    formData.append('MerchandiseId', params.merchandiseId);
-    formData.append('Content', params.content);
-    formData.append('CommentType', params.commentType);
-
     const response = await httpInstance({
-      url: '/order/AddComment',
+      url: '/order/addComment',
       method: 'POST',
-      data: formData,
-      headers: {
-        'Content-Type': 'multipart/form-data'
+      params:{
+        order_id: order_id,
+        merchandise_id: merchandise_id,
+        content:content,
+        comment_type:comment_type
       }
     });
 
@@ -104,19 +100,20 @@ export const addComment = async (params: AddCommentParams): Promise<void> => {
       ElMessage.error(`请求失败，状态码：${response.status}`);
     }
   } catch (error) {
-    ElMessage.error(`提交评论失败，错误信息：${error.message || '未知错误'}`);
+    ElMessage.error(`提交评论失败，错误信息：${error || '未知错误'}`);
   }
 };
 
-export const confirmReceipt = async (orderId: string, merchandiseId: string): Promise<void> => {
+// 确认收货API请求
+export const confirmReceipt = async (order_id: string, merchandise_id: string): Promise<void> => {
   try {
     const response = await httpInstance({
       url: '/order/confirmReceipt',
       method: 'POST',
-      data: { orderId, merchandiseId },
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      params: {
+        order_id: order_id,
+        merchandise_id: merchandise_id
+      },
     });
 
     if (response.status === 200) {
@@ -125,19 +122,20 @@ export const confirmReceipt = async (orderId: string, merchandiseId: string): Pr
       ElMessage.error(`请求失败，状态码：${response.status}`);
     }
   } catch (error) {
-    ElMessage.error(`收货确认失败，错误信息：${error.message}`);
+    ElMessage.error(`收货确认失败，错误信息：${error}`);
   }
 };
 
 // 申请退款的 API 请求
-export const requestRefund = async (orderId: string, reason: string, feedback: string): Promise<void> => {
+export const requestRefund = async (order_id: string, refund_reason: string, refund_feedback: string): Promise<void> => {
   try {
     const response = await httpInstance({
       url: '/order/requestRefund',
       method: 'POST',
-      data: { orderId, reason, feedback },
-      headers: {
-        'Content-Type': 'application/json'
+      params:{
+        order_id: order_id,
+        refund_reason: refund_reason,
+        refund_feedback: refund_feedback,
       }
     });
 
@@ -147,6 +145,6 @@ export const requestRefund = async (orderId: string, reason: string, feedback: s
       ElMessage.error(`请求失败，状态码：${response.status}`);
     }
   } catch (error) {
-    ElMessage.error(`退款申请失败，错误信息：${error.message}`);
+    ElMessage.error(`退款申请失败，错误信息：${error}`);
   }
 };

@@ -3,13 +3,14 @@
     <h1>退款申请</h1>
 
     <!-- 订单信息 -->
-    <div v-if="order">
+    
       <p>订单 ID: {{ orderId }}</p>
-      <p>订单状态: {{ order.state}}</p>
-      <p>下单时间: {{ order.ordeR_TIME }}</p>
-      <p>发货时间: {{ order.receivinG_TIME }}</p>
-      <p>商品ID:   {{ order.merchandisE_ID }}</p>
-    </div>
+      <p>订单状态: {{order?.state }}</p>
+      <p>下单时间: {{order?.ordeR_TIME }}</p>
+      <p>商品ID: {{ order?.merchandisE_ID}}</p>
+      <p>地址: {{ order.userAddress}}</p>
+      
+    
 
     <!-- 退款理由选择 -->
     <div>
@@ -51,7 +52,7 @@ const orderData = route.query.order
   : null
 
 // 创建状态来存储订单信息
-const order = ref<Order | null>(orderData) // 使用传递的数据初始化订单
+const order = ref<any | null>(orderData) // 使用传递的数据初始化订单
 
 // 退款理由列表
 const refundReasons = ref<string[]>(['商品质量问题', '发错商品/少件', '商品与描述不符', '其他'])
@@ -90,14 +91,14 @@ const applyRefund = async () => {
 
   try {
     // 调用申请退款 API
-    await requestRefund(orderId, reason, '');
-
-    // 提示成功信息
-    ElMessage.success('退款申请已成功提交。');
-
+    await requestRefund(
+      orderId,
+      reason,
+      'fb'
+    );
     // 更新订单状态，模拟将订单状态更新为“已申请退款”
     if (order.value) {
-      order.value.state = 'yjs'; // 更新订单状态为“已申请退款”
+      order.value.state = '已拒收'; // 更新订单状态为“已申请退款”
     }
   } catch (error) {
     // 处理错误情况

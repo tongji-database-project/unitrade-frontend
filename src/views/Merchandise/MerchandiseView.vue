@@ -28,7 +28,7 @@ const loadInfo = async () => {
   meichandise_cover.value = getImageUrl(info.image)
   meichandise_name.value = info.name
   meichandise_detail_name.value = info.detail
-  meichandise_price.value = info.price / 100
+  meichandise_price.value = info.price
 
   const seller_info = await getSellerIdAPI(route.params.id as string)
   seller_id.value = seller_info

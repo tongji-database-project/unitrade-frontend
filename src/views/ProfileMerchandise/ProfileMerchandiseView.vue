@@ -2,9 +2,9 @@
   <div class="product-display">
     <h1 class="title">在售商品</h1>
     <div class="product-grid">
-      <!-- 商品卡片将会展示在这里 -->
+      <!-- 商品卡片展示 -->
       <div class="merchandise-card" v-for="(merchandise_id, id) in products" :key="`${id}`">
-        <MerchandiseCard :merchandise_id = "merchandise_id.id" />
+        <MerchandiseCard :merchandise_id="merchandise_id.id" />
       </div>
       <slot></slot>
     </div>
@@ -16,13 +16,8 @@ import { ref, onMounted } from 'vue'
 import type { ProductOnsale } from '@/utils/interfaces'
 import { getSellerProducts } from '@/apis/product'
 import { getImageUrl } from '@/utils/utils'
-import { seekUserProducts } from '@/apis/product'
-import { id } from 'element-plus/es/locales.mjs'
-import { useRouter, useRoute } from 'vue-router'
+import { useRoute } from 'vue-router'
 import MerchandiseCard from '@/components/MerchandiseCard.vue'
-// export default {
-//   name: "ProductDisplay",
-// };
 
 const route = useRoute()
 
@@ -76,24 +71,28 @@ const fetchProducts = async () => {
 }
 
 .product-grid {
-  /*display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* 设置列的最小和最大宽度 */
   gap: 20px;
   width: 100%;
   max-width: 1200px;
-  justify-items: center;
-  align-items: center;*/
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: flex-start;
+  justify-items: center; /* 卡片水平居中对齐 */
+  align-items: start; /* 卡片顶部对齐 */
   padding: 10px;
   box-sizing: border-box;
 }
 
-.product-grid::before {
-  content: " ";
-  display: block;
-  padding-top: 10px;
+.merchandise-card {
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ccc; /* 边框缩小，颜色更柔和 */
+  border-radius: 8px;
+  min-height: 300px; /* 确保卡片高度一致 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: border 0.3s ease;
+}
+
+.merchandise-card:hover {
+  border: 1px solid #007bff; /* 鼠标悬停时的边框颜色 */
 }
 </style>

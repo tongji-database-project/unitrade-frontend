@@ -61,9 +61,9 @@ export interface AddCommentParams {
 }
 
 export interface RefundRequest {
-  orderId: string;
-  refundReason: string;
-  refundFeedback?: string;
+  order_id: string;
+  refund_reason: string;
+  refund_feedback?: string;
 }
 
 export interface ConfirmReceiptParams {
