@@ -29,6 +29,7 @@
 import { defineComponent, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getUserInfo } from '@/apis/profile' // 调用封装的API
+import { followSeller, unfollowSeller, isFollowing } from '@/apis/follow' // 关注和取消关注API
 import { getImageUrl } from '@/utils/utils'
 
 export default defineComponent({
@@ -50,8 +51,19 @@ export default defineComponent({
         const response = await getUserInfo(userId.value)
         userInfo.value = response.data
         userInfo.value.avatar = getImageUrl(userInfo.value.avatar)
+        await checkFollowStatus() // 获取卖家信息后检查是否已关注
       } catch (error) {
         console.error('获取用户信息失败', error)
+      }
+    }
+
+    // 检查是否已关注卖家
+    const checkFollowStatus = async () => {
+      try {
+        const following = await isFollowing(userId.value)
+        followStatus.value = following ? '已关注' : '关注'
+      } catch (error) {
+        console.error('检查关注状态失败', error)
       }
     }
 
@@ -61,7 +73,6 @@ export default defineComponent({
         name: 'chat',
         params: { user_id: userId.value }
       })
-      console.log('联系卖家功能')
     }
 
     const viewProducts = () => {
@@ -69,7 +80,6 @@ export default defineComponent({
         name: 'profilemerchandise',
         params: { id: userId.value }
       })
-      console.log('查看商品功能')
     }
 
     const complainSeller = () => {
@@ -77,11 +87,21 @@ export default defineComponent({
         name: 'complaintsubmission',
         params: { seller_id: userId.value }
       })
-      console.log('投诉卖家功能')
     }
 
-    const toggleFollow = () => {
-      followStatus.value = followStatus.value === '关注' ? '已关注' : '关注'
+    // 切换关注与取消关注
+    const toggleFollow = async () => {
+      try {
+        if (followStatus.value === '关注') {
+          await followSeller(userId.value)
+          followStatus.value = '已关注'
+        } else {
+          await unfollowSeller(userId.value)
+          followStatus.value = '关注'
+        }
+      } catch (error) {
+        console.error('切换关注状态失败', error)
+      }
     }
 
     onMounted(fetchUserInfo) // 页面挂载时调用获取用户信息

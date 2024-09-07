@@ -123,17 +123,6 @@ const selectChange = (value: any[]) => {
     console.log('店铺')
   }
 }
-
-// const categories = [
-//   {
-//     name: '分类 1',
-//     path: '/'
-//   },
-//   {
-//     name: '分类 2',
-//     path: '/'
-//   }
-// ]
 </script>
 
 <template>
@@ -142,9 +131,6 @@ const selectChange = (value: any[]) => {
       <RouterLink class="logo" to="/">
         <img alt="Vue logo" class="logo" :src="getImageUrl('logo.png')" width="100" height="70" />
       </RouterLink>
-      <!-- <div class="header-category" v-for="({ name, path }, index) in categories" :key="index">
-        <RouterLink :to="path">{{ name }}</RouterLink>
-      </div> -->
       <el-cascader
         v-model="selectMethod"
         :options="selectOptions"

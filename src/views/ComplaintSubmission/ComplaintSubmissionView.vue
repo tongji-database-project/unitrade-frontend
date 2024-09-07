@@ -28,8 +28,7 @@ export default defineComponent({
       }
 
       try {
-        // const sellerId = String(this.$route.params.seller_id);  // 将 seller_id 转换为 string
-        const sellerId = '3';  // （这里是测试用的）
+        const sellerId = String(this.$route.params.seller_id);  // 将 seller_id 转换为 string
         await submitComplaint(sellerId, this.complaintReason);
         ElMessage.success('投诉提交成功');
         // this.$router.push('/profile');  // 提交成功后跳转到用户页面
