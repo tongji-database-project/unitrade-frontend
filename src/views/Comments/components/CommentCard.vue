@@ -75,7 +75,7 @@ onMounted(() => {
     <!-- <el-divider border-style="double" /> -->
     <div class="comment-body">
         <p class="content"> {{ content }} </p>
-        <div class="gallery">
+        <!-- <div class="gallery">
         <div 
             v-for="(image, index) in i" 
             :key="index" 
@@ -90,7 +90,7 @@ onMounted(() => {
                 <span class="close-btn" @click="closeModal">&times;</span>
                 <img :src="currentImage" alt="fullsize" />
             </div>
-        </div>
+        </div> -->
     </div>
 
     <el-divider border-style="double" />
@@ -119,7 +119,7 @@ onMounted(() => {
 .comment-body{
   padding-left: 20px;
 
-    .gallery {
+    /* .gallery {
   display: flex;
   justify-content: space-around;
   padding: 20px;
@@ -130,9 +130,9 @@ onMounted(() => {
   height: 100px; 
   cursor: pointer;
   object-fit: cover;
-}
+} */
 
-.modal-overlay {
+/* .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -153,15 +153,15 @@ onMounted(() => {
 .modal-content img {
   max-width: 100%;
   max-height: 100%;
-}
+} */
 
-.close-btn {
+/* .close-btn {
   position: absolute;
   top: 10px;
   right: 10px;
   font-size: 24px;
   color: #fff;
   cursor: pointer;
-}
+} */
 } 
 </style>
