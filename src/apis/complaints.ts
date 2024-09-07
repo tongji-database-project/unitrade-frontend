@@ -23,6 +23,6 @@ export const submitComplaint = async (sellerId: string, complaintReason: string)
       }
     })
     .catch((error) => {
-      ElMessage.error(`提交失败，错误信息：${error}`)
+      // ElMessage.error(`提交失败，错误信息：${error}`)
     })
 }
