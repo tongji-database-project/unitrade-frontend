@@ -163,7 +163,7 @@ const handleSubmit = async () => {
 }
 
 const handleCancle = async () => {
-  router.push('onsale')
+  router.push('/onsale')
 }
 
 const fileList = ref<UploadFile[]>([])

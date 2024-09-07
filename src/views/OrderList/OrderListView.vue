@@ -11,11 +11,13 @@
             <el-table-column prop="state" label="订单状态" width="150" />
             <el-table-column prop="ordeR_TIME" label="下单时间" width="220" />
             <el-table-column prop="receivinG_TIME" label="收货时间" width="220" />
-            <el-table-column prop="ordeR_QUANITY" label="订单数量" />
+            <el-table-column prop="ordeR_QUANITY" label="订单数量" width="100"/>
+            <el-table-column prop="userAddress" label="用户地址" />
+
             <el-table-column width="150">
               <template #default="scope">
                 <el-button size="small" type="primary" @click="handleOrderClick(scope.row)">订单详情</el-button>
-                <el-button size="small" type="danger" @click="handleRefundClick(scope.row.ordeR_ID)">申请退款</el-button>
+                <el-button size="small" type="danger" @click="handleRefundClick(scope.row)">申请退款</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -28,7 +30,7 @@
 <script lang="ts" setup>
 import { ref,onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { getOrderInfo } from '@/apis/order';
+import { getOrderInfo,getUserAddress } from '@/apis/order';
 import type { Order } from '@/utils/interfaces';
 const router = useRouter()
 // 定义包含多个商品的订单数据
@@ -48,7 +50,20 @@ const fetchOrders = async () => {
     });
 
     if (response) {
-      tableData.value = response;  // 将获取到的数据赋值给 tableData
+      // 获取用户地址
+      const address = await getUserAddress();
+
+      if (address) {
+        // 为每个订单添加用户地址信息
+        tableData.value = response.map(order => ({
+          ...order,
+          userAddress: address  // 添加用户地址到每个订单数据对象中
+        }));
+        console.log('成功获取地址',address)
+      } else {
+        tableData.value = response; // 如果未获取到地址，只显示订单数据
+      }
+
       console.log('获取订单成功', tableData.value);
     } else {
       console.error('无法获取订单数据');
@@ -68,9 +83,14 @@ const handleOrderClick = (order: any) => {
   });
 };
 
-const handleRefundClick = (orderId: string) => {
-  console.log('点击申请退款，订单号:', orderId);
-  router.push({ name: 'RefundRequest', params: { id: orderId } });
+const handleRefundClick = (order: any) => {
+  console.log('点击申请退款，订单号:', order.ordeR_ID);
+  const encodedOrderData = encodeURIComponent(JSON.stringify(order));
+  router.push({ 
+    name: 'RefundRequest', 
+    params: { id: order.ordeR_ID }, 
+    query: { order: encodedOrderData } 
+  });
 };
 
 // 页面加载时获取订单数据
