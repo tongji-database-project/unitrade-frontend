@@ -59,7 +59,7 @@ const fetchOrders = async () => {
 
       if (address) {
         // 为每个订单添加用户地址和商品名信息
-        const ordersWithDetails = await Promise.all(response.map(async (order) => {
+        const ordersWithDetails = await Promise.all(response.map(async (order: any) => {
           const merchandise_name = await getMerchandiseNameById(order.merchandisE_ID);
           return {
             ...order,
