@@ -81,7 +81,7 @@ export const getUserAddress = async (): Promise<string | null> => {  // 返回�
 };
 
 // 上传评论的 API
-export const addComment = async (order_id: string , merchandise_id: string, content: string,comment_type: string): Promise<void> => {
+export const addComment = async (order_id: string , merchandise_id: string, content: string,comment_type: string,quality_rating: number,attitude_rating:number,price_rating:number,logistic_speed_rating:number,conformity_rating:number): Promise<void> => {
   try {
     const response = await httpInstance({
       url: '/order/addComment',
