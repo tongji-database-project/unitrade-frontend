@@ -71,12 +71,10 @@ const createOrder = async () => {
         params: { id: orderIds[0] } 
       });
 
-      // 如果需要清除部分商品而不是全部商品，根据具体逻辑来执行
-      // await cartStore.removeProductFromCart(orderData.cart_items.map(item => item.merchandise_id));
+      // 逐个删除商品
       for (var item of orderData.cart_items) {
         await cartStore.removeProductFromCart(item.merchandise_id)
       }
-      
     } else {
       console.error('生成订单失败，响应为空');
     }
