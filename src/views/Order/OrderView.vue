@@ -15,7 +15,7 @@ const orderData = route.query.order
   : null
 
 // 创建状态来存储订单信息
-const order = ref<Order | null>(orderData); // 使用传递的数据初始化订单
+const order = ref<any | null>(orderData); // 使用传递的数据初始化订单
 console.log("order:", order.value)
 const isDelivered = ref<boolean>(false); // 状态来控制是否已收货
 const showReviewBox = ref<boolean>(false)
@@ -39,13 +39,13 @@ const confirmReceipt = async () => {
 
   try {
     // 调用确认收货 API
-    await apiConfirmReceipt({
-      orderId: orderId,        // 确保传递了正确的参数
-      merchandiseId: order.value.merchandisE_ID
-    });
+    await apiConfirmReceipt(
+      orderId,        // 确保传递了正确的参数
+      order.value.merchandisE_ID
+    );
 
     // 更新本地状态和显示评价框
-    order.value.state = 'ysh';             // 更新状态为已收货
+    order.value.state = '已收货';             // 更新状态为已收货
     isDelivered.value = true;             // 更新本地状态
     showReviewBox.value = true;           // 显示评价框
     
@@ -58,13 +58,12 @@ const confirmReceipt = async () => {
 const submitReview = async () => {
   if (reviewText.value.trim()) {
     try {
-      await addComment({
-        orderId: orderId, // 确保这与后端匹配
-        merchandiseId: order.value?.merchandise_id ?? '', // 确保这与后端匹配
-        content: reviewText.value,
-        commentType: 'buyer', // 示例类型
-        commentPicture: null // 如果有图片可以在这里传递
-      });
+      await addComment(
+        orderId,
+        order.value.merchandisE_ID,
+        reviewText.value,
+        'T'
+      )
       reviewText.value = ''; // 清空评价输入框
     } catch (error) {
       console.error('评价提交失败', error);
@@ -90,9 +89,9 @@ const clearReview = () => {
       <p>订单 ID: {{ orderId }}</p>
       <p>订单状态: {{ order.state}}</p>
       <p>下单时间: {{ order.ordeR_TIME }}</p>
-      <p>发货时间: {{ order.receivinG_TIME }}</p>
+      <p>收货时间: {{ order.receivinG_TIME }}</p>
       <p>商品ID:   {{ order.merchandisE_ID }}</p>
-      
+      <p>地址: {{ order.userAddress }}</p>
       <!-- 确认收货按钮 -->
       <button v-if="!isDelivered" @click="confirmReceipt">确认收货</button>
 
