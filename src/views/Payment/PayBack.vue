@@ -12,7 +12,7 @@ const order_id = route.query.order_id; // 从查询参数中获取 order_id
 const getPaymentStatus = async () => {
   try {
     console.log('订单id', order_id)
-    const res = await getPaymentStatusAPI(order_id)
+    const res = await getPaymentStatusAPI(order_id as string)
     paymentStatus.value = res.data.success ? 'success' : 'fail'
     console.log('支付状态', res.data.success)
   } catch (error) {
